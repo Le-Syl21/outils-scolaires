@@ -15,13 +15,14 @@
 }
 
 /* ---------- Réglages ---------- */
-.reglages{
-  display:grid;gap:16px;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  margin-bottom:12px;
-}
+.reglages{display:grid;gap:16px;margin-bottom:16px}
+/* les listes déroulantes : larges, deux ou trois par ligne */
+.reglages-listes{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+/* les nombres : étroits, alignés entre eux */
+.reglages-nombres{grid-template-columns:repeat(auto-fit,minmax(180px,220px))}
 .reglages .field{margin-bottom:0}
-.reglages select{width:100%;min-width:0}
+.reglages select,
+.reglages input[type=number]{width:100%;min-width:0}
 .row-actions{margin-top:18px;align-items:center}
 .jauge{font-size:.95rem;color:var(--gris)}
 .jauge.ok{color:var(--vert)}

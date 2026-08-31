@@ -31,7 +31,7 @@
     <p class="lead">Chaque phrase est écrite en petit, expliquée, puis proposée en transparence
        sur des lignes Seyes à repasser. La page en enchaîne autant qu'elle peut en contenir.</p>
 
-    <div class="reglages">
+    <div class="reglages reglages-listes">
       <div class="field">
         <label for="mode-phrases">Phrases de la feuille</label>
         <select id="mode-phrases">
@@ -46,11 +46,6 @@
       </div>
 
       <div class="field">
-        <label for="nb-pages">Nombre de pages</label>
-        <input type="number" id="nb-pages" min="1" max="5" value="2">
-      </div>
-
-      <div class="field">
         <label for="taille">Taille de l'écriture</label>
         <select id="taille">
           <option value="4">Très grande — interligne 4 mm (GS, CP)</option>
@@ -58,6 +53,13 @@
           <option value="2.5">Moyenne — interligne 2,5 mm (CE1, CE2)</option>
           <option value="2" selected>Cahier Seyes — interligne 2 mm (CE2 et au-delà)</option>
         </select>
+      </div>
+    </div>
+
+    <div class="reglages reglages-nombres">
+      <div class="field">
+        <label for="nb-pages">Nombre de pages</label>
+        <input type="number" id="nb-pages" min="1" max="5" value="2">
       </div>
 
       <div class="field">

@@ -97,10 +97,11 @@ function blocHTML(p, repasses, libres, avecMots, avecGrammaire, avecChrono) {
   const sens = avecMots
     ? `<p class="sens"><strong>Explication de texte :</strong> ${echapper(p.sens)}</p>`
     : '';
+  /* tous les mots à la suite, pour tenir sur une ou deux lignes */
+  const capitale = (mot) => mot.charAt(0).toUpperCase() + mot.slice(1);
   const mots = (avecMots && p.mots.length)
-    ? `<p class="explication">${p.mots.map(m =>
-        `<span class="mot"><strong>${echapper(m.mot)}</strong> : ${echapper(m.sens)}</span>`
-      ).join('')}</p>`
+    ? `<p class="explication"><strong>Mots rares :</strong> ${p.mots.map(m =>
+        `<strong>${echapper(capitale(m.mot))}</strong> — ${echapper(m.sens)}`).join(' ')}</p>`
     : '';
   /* de quoi noter l'heure de départ et d'arrivée sur chaque phrase :
      l'enfant écrit loin de l'ordinateur, le temps se relève au crayon */

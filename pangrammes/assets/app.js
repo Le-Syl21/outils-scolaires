@@ -224,8 +224,18 @@ async function construireFeuille() {
     parPage.push(zone.children.length);
   }
 
+  compenserAgrandissement(zoom);
   majJauge(parPage);
   majPhraseChrono();
+}
+
+/* transform ne pousse pas ce qui suit : on rend à chaque page la hauteur
+   qu'elle occupe réellement une fois agrandie. */
+function compenserAgrandissement(zoom) {
+  $$('#feuille .page').forEach(page => {
+    const surplus = page.offsetHeight * (zoom - 1);
+    page.style.marginBottom = (24 + Math.max(0, surplus)) + 'px';
+  });
 }
 
 function majJauge(parPage) {

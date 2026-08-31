@@ -87,10 +87,13 @@ function blocHTML(p, repasses, libres, avecMots, avecGrammaire) {
   const grammaire = avecGrammaire
     ? `<p class="analyse"><strong>${echapper(p.temps)}</strong> — ${echapper(p.quand)}</p>`
     : '';
-  const sens = avecMots ? `<p class="sens">${echapper(p.sens)}</p>` : '';
+  const sens = avecMots
+    ? `<p class="sens"><strong>Explication de texte :</strong> ${echapper(p.sens)}</p>`
+    : '';
   const mots = (avecMots && p.mots.length)
     ? `<p class="explication">${p.mots.map(m =>
-        `<strong>${echapper(m.mot)}</strong> : ${echapper(m.sens)}`).join(' · ')}</p>`
+        `<span class="mot"><strong>${echapper(m.mot)}</strong> : ${echapper(m.sens)}</span>`
+      ).join('')}</p>`
     : '';
   return `<section class="bloc">
     <p class="phrase-ref">${avecGrammaire ? phraseAnalysee(p) : echapper(p.texte)}</p>
@@ -140,11 +143,17 @@ async function construireFeuille() {
       <div class="zone-ecriture">${blocs.join('')}</div>
     </div>`;
 
-  // Les mesures n'ont de sens qu'une fois Marelle chargée
+  /* Les mesures n'ont de sens qu'une fois Marelle chargée. `ready` seul ne
+     suffit pas : il peut se résoudre avant que le navigateur n'ait réclamé la
+     police du contenu qu'on vient d'insérer, et l'on mesurerait alors les
+     lignes de la police de repli, bien plus larges. */
   if (document.fonts) {
+    try { await document.fonts.load(`${interligne}mm "Marelle Lignes"`); } catch { /* ignore */ }
     await document.fonts.ready;
     if (moi !== generation) return;          // un autre rendu a pris la main
   }
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+  if (moi !== generation) return;
   ajusterALaPage(uneSeule);
 }
 

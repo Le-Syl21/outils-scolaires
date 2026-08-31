@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le défi géométrique</title>
+<meta name="description" content="Reproduire des figures sur quadrillage, à l'écran ou sur feuille à imprimer.">
+<link rel="stylesheet" href="../assets/commun.css">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M4 20 L12 4 L20 20 Z' fill='none' stroke='%23e8501e' stroke-width='2'/></svg>">
+</head>
+<body>
+
+<header class="topbar no-print">
+  <a class="retour" href="../">← Outils</a>
+  <h1>📐 Défi géométrique</h1>
+  <nav class="tabs" role="tablist">
+    <button class="tab is-active" data-view="tracer" role="tab">Tracer</button>
+    <button class="tab" data-view="imprimer" role="tab">Imprimer</button>
+    <button class="tab" data-view="scores" role="tab">Scores</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============ TRACER ============ -->
+<section id="view-tracer" class="view">
+
+  <div id="ecran-accueil" class="panel">
+    <h2>Reproduis la figure</h2>
+    <p class="lead">Une figure est tracée à gauche. Reproduis-la à droite, en cliquant un point
+       puis un autre pour tirer un trait. Tu ne sauras ce que tu as dessiné qu'une fois la figure
+       juste : elle se colorie et dit son nom.</p>
+
+    <div class="reglages">
+      <div class="field">
+        <label for="select-eleve">Qui joue ?</label>
+        <div class="row">
+          <select id="select-eleve"></select>
+          <button id="btn-ajout-eleve" class="btn btn-ghost btn-sm" type="button">+ Nouveau</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="palier">Palier</label>
+        <select id="palier">
+          <option value="1" selected>La roue — traits droits, grands carreaux</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="choix-figure">Figure</label>
+        <select id="choix-figure"></select>
+      </div>
+    </div>
+
+    <div class="row row-actions">
+      <button id="btn-demarrer" class="btn btn-primary btn-xl" type="button">Commencer ▶</button>
+      <button id="btn-hasard" class="btn btn-ghost btn-xl" type="button">🎲 Au hasard</button>
+    </div>
+    <p id="record-eleve" class="note-info"></p>
+  </div>
+
+  <div id="ecran-partie" class="panel hidden">
+    <div class="hud">
+      <div class="hud-item"><span class="hud-label">Élève</span><span id="hud-nom" class="hud-value">—</span></div>
+      <div class="hud-item"><span class="hud-label">Chrono</span><span id="hud-chrono" class="hud-value chrono">00:00</span></div>
+      <div class="hud-item"><span class="hud-label">Traits</span><span id="hud-traits" class="hud-value">0</span></div>
+      <button id="btn-annuler" class="btn btn-ghost" type="button">Annuler le dernier</button>
+      <button id="btn-effacer-tout" class="btn btn-ghost" type="button">Tout effacer</button>
+      <button id="btn-verifier" class="btn btn-primary" type="button">J'ai fini ✓</button>
+    </div>
+
+    <div class="ateliers">
+      <figure class="atelier">
+        <figcaption>Le modèle</figcaption>
+        <div id="modele" class="quadrillage"></div>
+      </figure>
+      <figure class="atelier">
+        <figcaption>À toi</figcaption>
+        <div id="copie" class="quadrillage"></div>
+      </figure>
+    </div>
+
+    <p id="message-partie" class="message"></p>
+    <div class="row hidden" id="apres-partie">
+      <button id="btn-suivante" class="btn btn-primary" type="button">Figure suivante</button>
+      <button id="btn-retour" class="btn btn-ghost" type="button">Accueil</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ IMPRIMER ============ -->
+<section id="view-imprimer" class="view hidden">
+  <div class="panel no-print">
+    <h2>🖨️ Feuilles à tracer</h2>
+    <p class="lead">Le modèle à gauche, le quadrillage vide à droite. À faire à la règle et au
+       crayon, puis à colorier.</p>
+    <div class="reglages reglages-nombres">
+      <div class="field">
+        <label for="nb-exercices">Figures par page</label>
+        <input type="number" id="nb-exercices" min="1" max="4" value="3">
+      </div>
+      <div class="field">
+        <label for="carreau">Taille du carreau</label>
+        <select id="carreau">
+          <option value="10" selected>10 mm — gros carreaux</option>
+          <option value="7">7 mm</option>
+          <option value="5">5 mm — cahier</option>
+        </select>
+      </div>
+    </div>
+    <div class="row row-actions">
+      <button id="btn-tirage" class="btn btn-ghost btn-xl" type="button">🎲 Nouveau tirage</button>
+      <button id="btn-imprimer" class="btn btn-primary btn-xl" type="button">Imprimer</button>
+    </div>
+  </div>
+  <div id="feuille" class="feuille"></div>
+</section>
+
+<!-- ============ SCORES ============ -->
+<section id="view-scores" class="view hidden">
+  <div class="panel">
+    <h2>🏆 Classement</h2>
+    <p class="lead">Le score est le <strong>temps corrigé</strong> : le temps réel, augmenté pour
+       chaque trait oublié ou en trop. Le plus petit gagne.</p>
+    <div id="podium" class="podium"></div>
+    <div class="table-wrap">
+      <table id="table-historique" class="historique">
+        <thead><tr><th>Date</th><th>Élève</th><th>Figure</th><th>Traits</th>
+          <th>Temps</th><th>Temps corrigé</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="row">
+      <button id="btn-effacer" class="btn btn-ghost btn-danger btn-sm" type="button">Effacer l'historique</button>
+    </div>
+    <p class="note-info">Les élèves sont partagés avec les autres défis ; les scores restent dans
+       ce navigateur.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="no-print">
+  <p>Outils scolaires — <a href="https://github.com/Le-Syl21/outils-scolaires">code source</a> — GPL v3</p>
+</footer>
+
+<script src="assets/figures.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

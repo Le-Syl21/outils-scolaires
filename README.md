@@ -22,6 +22,16 @@ autres opérations sur le même principe.
   si bien que la pénalité pèse le même pourcentage pour un enfant rapide et pour un enfant lent.
 - **Imprimer** : grilles vierges dimensionnées pour tenir sur une page A4.
 
+## Le défi géométrique
+
+Reproduire une figure tracée sur un quadrillage.
+
+- **Tracer** : le modèle à gauche, un quadrillage cliquable à droite ; on relie les points, on
+  vérifie, et la figure réussie se colorie en révélant son nom. Chronométré, avec classement.
+- **Imprimer** : la même chose sur feuille A4, carreaux de 5, 7 ou 10 mm, à faire à la règle.
+- **Paliers** : de la roue — traits droits et gros carreaux — au vaisseau spatial, avec des
+  diagonales et une reproduction décalée dans le quadrillage.
+
 ## Le défi des pangrammes
 
 Améliorer son écriture — la vitesse et la lisibilité — en découvrant plein de pangrammes.

@@ -18,7 +18,7 @@
   border-color:var(--orange);transform:translateY(-2px);outline:none;
 }
 .carte-emoji{font-size:2.6rem;line-height:1;display:block;color:var(--orange)}
-.logo-grille{width:1em;height:1em;display:block}
+.logo-grille,.logo-geo{width:1em;height:1em;display:block}
 /* la couleur est posée sur les tracés : currentColor n'est pas hérité partout */
 .logo-grille rect,.logo-grille path{stroke:var(--orange)}
 .carte-outil h2{margin:14px 0 8px;font-size:1.5rem;color:var(--orange)}

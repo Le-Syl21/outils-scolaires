@@ -56,6 +56,7 @@ $$('.tab').forEach(tab => tab.addEventListener('click', () => {
   $$('.view').forEach(v => v.classList.toggle('hidden', v.id !== 'view-' + tab.dataset.view));
   if (tab.dataset.view === 'scores') afficherScores();
   if (tab.dataset.view === 'impression' && !$('#feuilles').children.length) genererFeuilles();
+  if (tab.dataset.view === 'scores') afficherScores();
 }));
 
 /* ------------------------------------------------------------------ */
@@ -96,7 +97,8 @@ function ajouterTable() {
   }
   champ.value = '';
   construireChoixTables();
-  $('#feuilles').innerHTML = '';
+genererFeuilles();
+  genererFeuilles();
 }
 
 $('#btn-ajout-table').addEventListener('click', ajouterTable);
@@ -114,7 +116,7 @@ $('#choix-tables').addEventListener('click', (e) => {
   ecrire(CLES.extras, extras);
   ecrire(CLES.tables, tables);
   construireChoixTables();
-  $('#feuilles').innerHTML = '';
+  genererFeuilles();
 });
 
 function majPresetActif() {
@@ -135,14 +137,14 @@ $('#choix-tables').addEventListener('change', () => {
   tables = $$('#choix-tables input:checked').map(i => Number(i.value)).sort((a,b) => a-b);
   ecrire(CLES.tables, tables);
   majInfoTables();
-  $('#feuilles').innerHTML = '';   // les feuilles seront régénérées
+  genererFeuilles();               // garde les feuilles à jour
 });
 
 $$('.presets .btn').forEach(btn => btn.addEventListener('click', () => {
   tables = btn.dataset.preset.split(',').map(Number);
   ecrire(CLES.tables, tables);
   construireChoixTables();
-  $('#feuilles').innerHTML = '';
+  genererFeuilles();
 }));
 
 /* ------------------------------------------------------------------ */
@@ -275,6 +277,11 @@ const arreterChrono = () => { if (partie?.minuteur) clearInterval(partie.minuteu
 
 function construireGrille() {
   const t = $('#grille-jeu');
+  // au-delà d'une douzaine de tables, on rétrécit les cases plutôt que
+  // d'imposer un long défilement horizontal
+  const cote = Math.max(30, Math.min(56, Math.round(940 / (partie.colonnes.length + 1))));
+  t.style.setProperty('--case-w', cote + 'px');
+  t.style.setProperty('--case-fs', Math.max(.8, Math.min(1.15, cote / 48)) + 'rem');
   let html = '<tr><th class="coin">X</th>' +
     partie.colonnes.map(c => `<th>${c}</th>`).join('') + '</tr>';
   partie.lignes.forEach((l, i) => {
@@ -472,10 +479,15 @@ function feuilleHTML() {
     grille += `<tr><th>${l}</th>` + colonnes.map(() => '<td></td>').join('') + '</tr>';
   });
 
-  // hauteur de case : au plus 17 mm, et assez petite pour tenir sur une page
-  const hauteur = Math.min(17, Math.round(195 / (lignes.length + 1) * 10) / 10);
+  /* Dimensionnement : la grille occupe la largeur de la page (186 mm utiles
+     sur A4 avec 12 mm de marge), donc une colonne mesure 186/(n+1) mm.
+     On rend les cases carrées et on plafonne à 17 mm pour les petites
+     grilles ; la police suit la taille des cases. */
+  const cotes   = lignes.length + 1;
+  const cote    = Math.min(17, Math.round(186 / cotes * 10) / 10);
+  const police  = Math.max(6, Math.min(15, Math.round(cote * 0.9 * 10) / 10));
 
-  return `<div class="feuille" style="--case-h:${hauteur}mm">
+  return `<div class="feuille" style="--case-h:${cote}mm;--case-fs:${police}pt">
     <div class="nom-ligne">Nom : ______________________</div>
     <div class="entete">
       <table>
@@ -494,6 +506,7 @@ function feuilleHTML() {
 function genererFeuilles() {
   const nb = Math.min(10, Math.max(1, Number($('#nb-grilles').value) || 1));
   $('#feuilles').innerHTML = Array.from({ length: nb }, feuilleHTML).join('');
+  $('#alerte-impression').classList.toggle('hidden', tables.length <= 30);
 }
 
 $('#btn-generer').addEventListener('click', genererFeuilles);

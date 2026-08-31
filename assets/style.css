@@ -121,13 +121,14 @@ select{min-width:180px}
 .grille{border-collapse:collapse;margin:0 auto;background:var(--peche)}
 .grille th,.grille td{
   border:2px solid var(--trait);
-  width:56px;height:46px;text-align:center;padding:0;
+  width:var(--case-w,56px);height:calc(var(--case-w,56px) * .82);
+  text-align:center;padding:0;
 }
-.grille th{font-size:1.25rem;font-weight:700}
+.grille th{font-size:var(--case-fs,1.25rem);font-weight:700}
 .grille .coin{background:var(--peche);font-size:1.4rem}
 .grille input{
   width:100%;height:100%;border:0;background:transparent;
-  text-align:center;font:inherit;font-size:1.15rem;font-weight:600;
+  text-align:center;font:inherit;font-size:var(--case-fs,1.15rem);font-weight:600;
   color:var(--encre);padding:0;
 }
 .grille input:focus{outline:0;background:#fff7b0}
@@ -172,6 +173,7 @@ select{min-width:180px}
 .historique .sup{background:none;border:0;color:var(--gris);cursor:pointer;font-size:1rem}
 .historique .sup:hover{color:var(--rouge)}
 .note-info{color:var(--gris);font-size:.9rem}
+.alerte{background:var(--rouge-clair);color:var(--rouge);border-radius:8px;padding:10px 14px;margin:12px 0 0}
 .vide{color:var(--gris);font-style:italic}
 
 /* ---------- Feuilles imprimables ---------- */
@@ -186,7 +188,7 @@ select{min-width:180px}
 .entete .note-case{min-width:120px;text-align:right;font-weight:400;font-size:.8rem;vertical-align:bottom}
 .nom-ligne{font-weight:700;font-size:1.05rem;margin-bottom:10px}
 .feuille .grille{width:100%;table-layout:fixed;background:transparent}
-.feuille .grille th,.feuille .grille td{width:auto;height:52px;font-size:1.4rem}
+.feuille .grille th,.feuille .grille td{width:auto;height:52px;font-size:1.3rem}
 
 footer{text-align:center;color:var(--gris);font-size:.9rem;padding:16px}
 footer a{color:var(--orange)}
@@ -195,7 +197,8 @@ footer a{color:var(--orange)}
 @media print{
   @page{size:A4 portrait;margin:12mm}
   body{background:#fff}
-  .no-print,.topbar,footer{display:none !important}
+  .no-print,.topbar,footer,#view-jeu,#view-scores{display:none !important}
+  #view-impression{display:block !important}   /* même depuis un autre onglet */
   main{padding:0;max-width:none}
   .feuille{
     box-shadow:none;border-radius:0;padding:0;margin:0;
@@ -203,8 +206,10 @@ footer a{color:var(--orange)}
   }
   .feuille:last-child{break-after:auto;page-break-after:auto}
   .feuille .grille{width:100%;table-layout:fixed;background:transparent}
-  .feuille .grille th,.feuille .grille td{width:auto;height:var(--case-h,17mm);padding:0;font-size:15pt}
-  .feuille .grille th{font-size:17pt}
+  .feuille .grille th,.feuille .grille td{
+    width:auto;height:var(--case-h,17mm);padding:0;font-size:var(--case-fs,15pt);
+  }
+  .feuille .grille th{font-size:calc(var(--case-fs,15pt) * 1.15)}
   .entete{margin-bottom:8mm}
   .entete td{height:11mm;font-size:12pt}
   .grille,.entete td{-webkit-print-color-adjust:exact;print-color-adjust:exact}

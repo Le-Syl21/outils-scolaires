@@ -102,27 +102,34 @@ const pointsDeCle = (cle) => cle.split('-').map(p => p.split(',').map(Number));
    traits disparaîtraient. */
 const TRAIT_GRILLE = '#9aa0a6', POINT_GRILLE = '#5f6772', ENCRE = '#111111';
 
-function svgQuadrillage(cotes, contenu, options = {}) {
+/* Le quadrillage peut être rectangulaire : la symétrie demande deux fois la
+   largeur, de part et d'autre de l'axe. */
+function svgQuadrillage(cols, contenu, options = {}) {
+  const lignes = options.lignes ?? cols;
   const m = 0.5;                                  // marge autour du quadrillage
   const traits = [];
-  for (let i = 0; i <= cotes; i++) {
-    traits.push(`<line x1="${i}" y1="0" x2="${i}" y2="${cotes}" stroke="${TRAIT_GRILLE}" stroke-width="0.02"/>`);
-    traits.push(`<line x1="0" y1="${i}" x2="${cotes}" y2="${i}" stroke="${TRAIT_GRILLE}" stroke-width="0.02"/>`);
+  for (let i = 0; i <= cols; i++) {
+    traits.push(`<line x1="${i}" y1="0" x2="${i}" y2="${lignes}" stroke="${TRAIT_GRILLE}" stroke-width="0.02"/>`);
   }
-  const noeuds = options.cliquables
-    ? Array.from({ length: (cotes + 1) * (cotes + 1) }, (_, k) => {
-        const x = k % (cotes + 1), y = Math.floor(k / (cotes + 1));
-        return `<circle class="noeud" cx="${x}" cy="${y}" r="0.34" data-x="${x}" data-y="${y}"/>`;
-      }).join('')
-    : '';
-  return `<svg viewBox="${-m} ${-m} ${cotes + 2 * m} ${cotes + 2 * m}"
+  for (let j = 0; j <= lignes; j++) {
+    traits.push(`<line x1="0" y1="${j}" x2="${cols}" y2="${j}" stroke="${TRAIT_GRILLE}" stroke-width="0.02"/>`);
+  }
+  const noeuds = [];
+  const points = [];
+  for (let y = 0; y <= lignes; y++) {
+    for (let x = 0; x <= cols; x++) {
+      points.push(`<circle cx="${x}" cy="${y}" r="0.06" fill="${POINT_GRILLE}"/>`);
+      if (options.cliquables) {
+        noeuds.push(`<circle class="noeud" cx="${x}" cy="${y}" r="0.34" data-x="${x}" data-y="${y}"/>`);
+      }
+    }
+  }
+  return `<svg viewBox="${-m} ${-m} ${cols + 2 * m} ${lignes + 2 * m}"
     role="img" aria-label="quadrillage">
     <g class="grille">${traits.join('')}</g>
-    <g class="points">${Array.from({ length: (cotes + 1) * (cotes + 1) }, (_, k) =>
-      `<circle cx="${k % (cotes + 1)}" cy="${Math.floor(k / (cotes + 1))}" r="0.06"
-        fill="${POINT_GRILLE}"/>`).join('')}</g>
+    <g class="points">${points.join('')}</g>
     <g class="trace">${contenu}</g>
-    <g class="noeuds">${noeuds}</g>
+    <g class="noeuds">${noeuds.join('')}</g>
   </svg>`;
 }
 
@@ -168,6 +175,23 @@ function decalagePour(figure) {
   return [tirer(Math.min(...xs), figure.grille - Math.max(...xs)),
           tirer(Math.min(...ys), figure.grille - Math.max(...ys))];
 }
+
+/* L'axe se pose juste à droite de la figure, et le quadrillage s'arrête après
+   son image : sans quoi la moitié de la feuille reste vide. */
+function cadreSymetrie(figure) {
+  const xs = contoursDe(figure).flat().map(p => p[0]);
+  const axe = Math.max(...xs) + 1;
+  return { axe, colonnes: 2 * axe - Math.min(...xs) + 1 };
+}
+
+/* La symétrie par rapport à un axe vertical : le point d'abscisse x se
+   retrouve à la même distance de l'autre côté. */
+const symetrique = (figure, axe) => ({ ...figure,
+  contours: contoursDe(figure).map(pts => pts.map(([x, y]) => [2 * axe - x, y])) });
+
+const axeSVG = (axe, lignes) =>
+  `<line x1="${axe}" y1="-0.35" x2="${axe}" y2="${lignes + 0.35}"
+     stroke="#e8501e" stroke-width="0.05" stroke-dasharray="0.4 0.25"/>`;
 
 const croixSVG = ([x, y]) =>
   `<path d="M${x - 0.22} ${y - 0.22} L${x + 0.22} ${y + 0.22}
@@ -238,10 +262,18 @@ function demarrer(indexVoulu) {
     ? indexVoulu : Math.floor(Math.random() * liste.length);
   const figure = liste[i];
 
-  const decalage = decalagePour(figure);
-  const cible = translater(figure, decalage[0], decalage[1]);
+  const symetrie = $('#exercice').value === 'symetrie';
+  /* en symétrie, le quadrillage est deux fois plus large : la figure donnée à
+     gauche, son image à construire à droite de l'axe */
+  const cadre = symetrie ? cadreSymetrie(figure) : null;
+  const axe = symetrie ? cadre.axe : 0;
+  const colonnes = symetrie ? cadre.colonnes : figure.grille;
+  const decalage = symetrie ? [0, 0] : decalagePour(figure);
+  const cible = symetrie
+    ? symetrique(figure, axe)
+    : translater(figure, decalage[0], decalage[1]);
   partie = {
-    eleve, figure, cible, decalage,
+    eleve, figure, cible, decalage, symetrie, axe, colonnes,
     attendus: segmentsDe(cible),
     traces: [],
     historique: [],          // pour annuler le dernier geste
@@ -251,9 +283,11 @@ function demarrer(indexVoulu) {
     finie: false,
   };
 
-  $('#consigne-partie').textContent = (decalage[0] || decalage[1])
-    ? 'La figure est à reproduire décalée : commence à la croix.'
-    : 'Reproduis la figure à la même place, en face.';
+  $('#consigne-partie').textContent = symetrie
+    ? 'Trace le symétrique de la figure, de l’autre côté de l’axe pointillé.'
+    : ((decalage[0] || decalage[1])
+        ? 'La figure est à reproduire décalée : commence à la croix.'
+        : 'Reproduis la figure à la même place, en face.');
   $('#hud-nom').textContent = eleve;
   $('#hud-chrono').textContent = '00:00';
   $('#message-partie').textContent = '';
@@ -273,6 +307,9 @@ const tempsEcoule = () => Math.round((Date.now() - partie.debut) / 1000);
 
 function dessinerModele() {
   const f = partie.figure;
+  /* en symétrie, tout se passe dans un seul quadrillage : pas de modèle à part */
+  $('#atelier-modele').classList.toggle('hidden', partie.symetrie);
+  if (partie.symetrie) return;
   $('#modele').innerHTML = svgQuadrillage(f.grille,
     cotesDe(f).map(c => traitSVG(c, 'modele')).join(''));
 }
@@ -287,8 +324,13 @@ function dessinerCopie() {
   /* la croix du point de départ, quand la figure est à reproduire décalée */
   const repere = (partie.decalage[0] || partie.decalage[1])
     ? croixSVG(contoursDe(partie.cible)[0][0]) : '';
-  $('#copie').innerHTML = svgQuadrillage(f.grille, repere + traits + attente,
-    { cliquables: true });
+  /* en symétrie, la figure donnée et l'axe sont dessinés d'avance */
+  const donne = partie.symetrie
+    ? axeSVG(partie.axe, f.grille) + cotesDe(f).map(c => traitSVG(c, 'modele')).join('')
+    : '';
+  $('#copie').innerHTML = svgQuadrillage(partie.colonnes,
+    donne + repere + traits + attente,
+    { cliquables: true, lignes: f.grille });
   $('#hud-traits').textContent = partie.traces.length;
 }
 
@@ -329,7 +371,11 @@ $('#btn-verifier').addEventListener('click', verifier);
 function verifier() {
   if (!partie || partie.finie) return;
   const attendus = new Set(partie.attendus);
-  const traces = new Set(partie.traces);
+  /* en symétrie, ce qui est tracé du côté donné est ignoré : ce n'est pas le
+     travail demandé, et l'enfant peut repasser dessus sans être pénalisé */
+  const aGauche = (c) => partie.symetrie
+    && pointsDeCle(c).every(([x]) => x <= partie.axe);
+  const traces = new Set(partie.traces.filter(c => !aGauche(c)));
   const justes  = [...traces].filter(c => attendus.has(c));
   const enTrop  = [...traces].filter(c => !attendus.has(c));
   const oublies = [...attendus].filter(c => !traces.has(c));
@@ -364,8 +410,14 @@ function verifier() {
   const correction = justes.map(c => traitSVG(c, 'juste')).join('')
     + oublies.map(c => traitSVG(c, 'manquant')).join('')
     + enTrop.map(c => traitSVG(c, 'en-trop')).join('');
-  $('#copie').innerHTML = svgQuadrillage(partie.figure.grille,
-    (parfait ? polygoneSVG(partie.cible) : '') + correction);
+  const donne = partie.symetrie
+    ? axeSVG(partie.axe, partie.figure.grille)
+      + cotesDe(partie.figure).map(c => traitSVG(c, 'modele')).join('')
+      + (parfait ? polygoneSVG(partie.figure) : '')
+    : '';
+  $('#copie').innerHTML = svgQuadrillage(partie.colonnes,
+    donne + (parfait ? polygoneSVG(partie.cible) : '') + correction,
+    { lignes: partie.figure.grille });
 
   if (parfait) {
     $('#message-partie').innerHTML =
@@ -427,11 +479,23 @@ function genererFeuille() {
         <div class="champ-boite"><span>Fin</span></div>
       </div>
     </header>
-    <p class="consigne">Reproduis chaque figure dans le quadrillage de droite, à la règle et au
-       crayon. Quand elle est juste, colorie-la.</p>
+    <p class="consigne">${$('#exercice').value === 'symetrie'
+      ? 'Trace le symétrique de chaque figure, de l’autre côté de l’axe pointillé, à la règle '
+        + 'et au crayon. Quand il est juste, colorie la figure entière.'
+      : 'Reproduis chaque figure dans le quadrillage de droite, à la règle et au crayon. '
+        + 'Quand elle est juste, colorie-la.'}</p>
     ${tirage.map(f => {
       /* le viewBox fait (côtés + 1) unités : la largeur suit la taille du carreau */
       const large = `style="--cotes:${f.grille + 1}"`;
+      if ($('#exercice').value === 'symetrie') {
+        const { axe, colonnes } = cadreSymetrie(f);
+        const donne = axeSVG(axe, f.grille)
+          + cotesDe(f).map(c => traitSVG(c, 'modele')).join('');
+        return `<div class="exercice">
+          <div class="quadrillage papier" style="--cotes:${colonnes + 1}">${
+            svgQuadrillage(colonnes, donne, { lignes: f.grille })}</div>
+        </div>`;
+      }
       const [dx, dy] = decalagePour(f);
       const repere = (dx || dy) ? croixSVG(contoursDe(translater(f, dx, dy))[0][0]) : '';
       return `<div class="exercice">
@@ -446,7 +510,8 @@ function genererFeuille() {
 
 $('#btn-tirage').addEventListener('click', genererFeuille);
 $('#btn-imprimer').addEventListener('click', () => window.print());
-$$('#nb-exercices, #carreau').forEach(el => el.addEventListener('change', genererFeuille));
+$$('#nb-exercices, #carreau, #exercice').forEach(el =>
+  el.addEventListener('change', genererFeuille));
 
 /* ------------------------------------------------------------------ */
 /* Scores                                                              */

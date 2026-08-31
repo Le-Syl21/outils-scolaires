@@ -42,6 +42,13 @@
         </div>
       </div>
       <div class="field">
+        <label for="exercice">Exercice</label>
+        <select id="exercice">
+          <option value="reproduire" selected>Reproduire la figure</option>
+          <option value="symetrie">Tracer le symétrique</option>
+        </select>
+      </div>
+      <div class="field">
         <label for="palier">Niveau</label>
         <select id="palier">
           <option value="1" selected>Facile — traits droits, grands carreaux</option>
@@ -76,7 +83,7 @@
     <p id="consigne-partie" class="note-info"></p>
 
     <div class="ateliers">
-      <figure class="atelier">
+      <figure class="atelier" id="atelier-modele">
         <figcaption>Le modèle</figcaption>
         <div id="modele" class="quadrillage"></div>
       </figure>

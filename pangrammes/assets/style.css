@@ -142,6 +142,16 @@
   font-family:system-ui,sans-serif;font-size:10.5pt;font-weight:600;
   margin:0 0 1.5mm;color:#111;
 }
+/* Heure de départ et d'arrivée, à droite de chaque phrase : le temps se
+   relève phrase par phrase, au crayon */
+.chrono-champs{
+  float:right;margin-left:6mm;
+  font-size:8.5pt;font-weight:400;color:#444;white-space:nowrap;
+}
+.chrono-champs b{
+  display:inline-block;width:16mm;margin:0 3mm 0 1mm;
+  border-bottom:.5pt solid #555;
+}
 .analyse,.sens,.explication{
   font-family:system-ui,sans-serif;font-size:8.5pt;color:#333;margin:0 0 1mm;
 }

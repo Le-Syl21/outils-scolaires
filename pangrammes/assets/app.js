@@ -89,7 +89,7 @@ const legendeHTML = () => Object.entries(FONCTIONS)
   .map(([cle, nom]) => `<span class="g-${cle}">${nom}</span>`).join(' · ');
 
 /* Un bloc : la phrase analysée, ce qu'elle raconte, puis les lignes à écrire */
-function blocHTML(p, repasses, libres, avecMots, avecGrammaire) {
+function blocHTML(p, repasses, libres, avecMots, avecGrammaire, avecChrono) {
   const grammaire = avecGrammaire
     ? `<p class="analyse"><strong>${echapper(p.temps)}</strong> — ${echapper(p.quand)}</p>`
     : '';
@@ -101,8 +101,12 @@ function blocHTML(p, repasses, libres, avecMots, avecGrammaire) {
         `<span class="mot"><strong>${echapper(m.mot)}</strong> : ${echapper(m.sens)}</span>`
       ).join('')}</p>`
     : '';
+  /* de quoi noter l'heure de départ et d'arrivée sur chaque phrase :
+     l'enfant écrit loin de l'ordinateur, le temps se relève au crayon */
+  const chrono = avecChrono
+    ? '<span class="chrono-champs">début <b></b> fin <b></b></span>' : '';
   return `<section class="bloc">
-    <p class="phrase-ref">${avecGrammaire ? phraseAnalysee(p) : echapper(p.texte)}</p>
+    <p class="phrase-ref">${chrono}${avecGrammaire ? phraseAnalysee(p) : echapper(p.texte)}</p>
     ${grammaire}${sens}${mots}
     <div class="lignes">
       ${Array.from({ length: repasses }, () => ligneRepasse(echapper(p.texte))).join('')}
@@ -122,9 +126,7 @@ function enteteHTML(numero, total) {
   }
   const champs = $('#opt-chrono').checked ? `
     <div class="feuille-champs">
-      <div class="champ-boite"><span>Début</span></div>
-      <div class="champ-boite"><span>Fin</span></div>
-      <div class="champ-boite"><span>Temps</span></div>
+      <div class="champ-boite"><span>Temps total</span></div>
       <div class="champ-boite"><span>Lisibilité — /10</span></div>
     </div>` : '';
   const legende = $('#opt-grammaire').checked
@@ -146,6 +148,7 @@ async function construireFeuille() {
   const pages    = Math.max(1, Math.min(5, Number($('#nb-pages').value) || 1));
   const avecMots = $('#opt-mots').checked;
   const avecGrammaire = $('#opt-grammaire').checked;
+  const avecChrono = $('#opt-chrono').checked;
   const uneSeule = $('#mode-phrases').value === 'une';
 
   $('#champ-choix').classList.toggle('hidden', !uneSeule);
@@ -209,7 +212,7 @@ async function construireFeuille() {
       }
       const i = file.shift();
       zone.insertAdjacentHTML('beforeend',
-        blocHTML(PANGRAMMES[i], repasses, libres, avecMots, avecGrammaire));
+        blocHTML(PANGRAMMES[i], repasses, libres, avecMots, avecGrammaire, avecChrono));
       if (mesure(zone) > dispo) {
         if (zone.children.length === 1) break;   // même seule, elle déborde
         zone.removeChild(zone.lastElementChild);

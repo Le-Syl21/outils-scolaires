@@ -513,8 +513,12 @@ $('#btn-generer').addEventListener('click', genererFeuilles);
 $('#nb-grilles').addEventListener('change', genererFeuilles);
 $('#btn-imprimer').addEventListener('click', () => window.print());
 
-/* Le même bouton depuis l'accueil : les feuilles sont déjà prêtes */
-$('#btn-imprimer-accueil').addEventListener('click', () => window.print());
+/* Depuis l'accueil, on bascule sur l'aperçu plutôt que d'imprimer d'emblée :
+   on y règle le nombre de feuilles avant de lancer l'impression. */
+$('#btn-imprimer-accueil').addEventListener('click', () => {
+  $('.tab[data-view="impression"]').click();
+  window.scrollTo(0, 0);
+});
 
 /* ------------------------------------------------------------------ */
 construireChoixTables();

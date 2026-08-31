@@ -47,11 +47,22 @@
         <button id="btn-ajout-table" class="btn btn-ghost btn-sm" type="button">+ Ajouter</button>
         <span class="aide-inline">par exemple 16 pour l'hexadécimal</span>
       </div>
-      <div class="row presets">
-        <button class="btn btn-ghost btn-sm" data-preset="1,2,3,4,5,6,7,8,9,10" type="button">Facile <small>1 à 10</small></button>
-        <button class="btn btn-ghost btn-sm" data-preset="3,4,5,6,7,8,9,10,11,12" type="button">Moyen <small>3 à 12</small></button>
-        <button class="btn btn-ghost btn-sm" data-preset="6,7,8,9" type="button">Les difficiles <small>6 à 9</small></button>
-        <button class="btn btn-ghost btn-sm" data-preset="5,6,7,8,9,10,11,12,13,14,15" type="button">Dur <small>5 à 15</small></button>
+      <div class="presets-groupe">
+        <span class="presets-titre">Par cœur</span>
+        <div class="row presets">
+          <button class="btn btn-ghost btn-sm" data-preset="1,2,3,4,5,6,7,8,9,10" type="button">Facile <small>1 à 10</small></button>
+          <button class="btn btn-ghost btn-sm" data-preset="3,4,5,6,7,8,9,10,11,12" type="button">Moyen <small>3 à 12</small></button>
+          <button class="btn btn-ghost btn-sm" data-preset="5,6,7,8,9,10,11,12,13,14,15" type="button">Dur <small>5 à 15</small></button>
+          <button class="btn btn-ghost btn-sm" data-preset="6,7,8,9" type="button">Les difficiles <small>6 à 9</small></button>
+        </div>
+      </div>
+      <div class="presets-groupe">
+        <span class="presets-titre">Calcul mental</span>
+        <div class="row presets">
+          <button class="btn btn-ghost btn-sm" data-preset="5,6,7,8,9,10,11,12,13,14,15" type="button">Facile <small>5 à 15</small></button>
+          <button class="btn btn-ghost btn-sm" data-preset="13,14,15,16,17,18" type="button">Moyen <small>13 à 18</small></button>
+          <button class="btn btn-ghost btn-sm" data-preset="9,10,11,12,13,14,15,16,17,18,19" type="button">Dur <small>9 à 19</small></button>
+        </div>
       </div>
       <p id="info-grille" class="info-grille"></p>
     </div>

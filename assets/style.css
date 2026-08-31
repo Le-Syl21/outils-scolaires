@@ -83,7 +83,13 @@ select{min-width:180px}
 .ajout-table label{font-weight:400}
 .ajout-table input{width:90px}
 .aide-inline{color:var(--gris);font-size:.9rem}
-.presets{margin-bottom:8px}
+.presets-groupe{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.presets-titre{
+  font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--gris);font-weight:700;min-width:105px;
+}
+.presets{margin:0}
+.btn-sm.is-active{background:var(--orange);color:#fff;border-color:var(--orange)}
 .info-grille{color:var(--gris);margin:0}
 
 /* ---------- Boutons ---------- */

@@ -3,7 +3,7 @@
 (() => {
 'use strict';
 
-const TOUTES  = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+const TOUTES  = Array.from({ length: 20 }, (_, i) => i + 1);   // 1 à 20
 const DEFAUT  = [1,2,3,4,5,6,7,8,9,10];   // niveau facile
 const CLES = { eleves:'defiTables.eleves', resultats:'defiTables.resultats',
                tables:'defiTables.tables', cout:'defiTables.coutErreur',
@@ -117,7 +117,14 @@ $('#choix-tables').addEventListener('click', (e) => {
   $('#feuilles').innerHTML = '';
 });
 
+function majPresetActif() {
+  const courant = tables.join(',');
+  $$('.presets .btn').forEach(b =>
+    b.classList.toggle('is-active', b.dataset.preset === courant));
+}
+
 function majInfoTables() {
+  majPresetActif();
   const n = tables.length;
   $('#info-grille').textContent =
     `Grille ${n} × ${n} = ${n * n} multiplications. La note est ramenée sur 100.`;

@@ -99,7 +99,8 @@ select{min-width:180px}
 .btn-ghost{background:#fff;color:var(--orange);border-color:var(--peche)}
 .btn-ghost:hover{border-color:var(--orange)}
 .btn-danger{color:var(--rouge)}
-.btn-xl{font-size:1.3rem;padding:14px 40px}
+.btn-xl{font-size:1.3rem;padding:14px 40px;display:inline-flex;align-items:center;gap:10px}
+.row-actions{margin-bottom:4px}
 .btn-sm{padding:6px 16px;font-size:1rem;font-weight:600}
 .btn-sm small{display:block;font-weight:400;font-size:.78rem;opacity:.75}
 

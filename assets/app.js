@@ -513,6 +513,9 @@ $('#btn-generer').addEventListener('click', genererFeuilles);
 $('#nb-grilles').addEventListener('change', genererFeuilles);
 $('#btn-imprimer').addEventListener('click', () => window.print());
 
+/* Le même bouton depuis l'accueil : les feuilles sont déjà prêtes */
+$('#btn-imprimer-accueil').addEventListener('click', () => window.print());
+
 /* ------------------------------------------------------------------ */
 construireChoixTables();
 $('#cout-erreur').value = String(coutErreur);

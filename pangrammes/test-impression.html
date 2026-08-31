@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test 3 — intensité de la réglure</title>
+<style>
+@font-face{font-family:"Marelle";src:url("../fonts/Marelle-Regular.woff2") format("woff2")}
+
+body{font-family:system-ui,sans-serif;margin:0;padding:10mm;color:#000;background:#fff}
+h1{font-size:13pt;margin:0 0 2mm}
+.mode{font-size:9pt;color:#333;margin:0 0 5mm;max-width:175mm}
+.essai{margin:0 0 5mm;break-inside:avoid}
+.titre{font-size:9.5pt;font-weight:700;margin:0 0 1mm}
+.titre span{font-weight:400;color:#444}
+.coche{display:inline-block;border:1pt solid #000;width:5mm;height:5mm;
+  vertical-align:-1mm;margin-right:3mm}
+
+.ligne{
+  --interligne:2mm;
+  --ep:1px;
+  --forte:#6B4FD0;
+  --fine:#9186E8;
+  font-family:"Marelle",cursive;
+  font-size:calc(var(--interligne) / 0.48);
+  line-height:2.4;
+  margin:0;
+  color:#666666;                     /* modèle à 60 %, la valeur retenue */
+  background-image:
+    repeating-linear-gradient(to bottom,
+      var(--forte) 0, var(--forte) var(--ep), transparent var(--ep), transparent 2.4em),
+    repeating-linear-gradient(to bottom,
+      var(--fine) 0, var(--fine) var(--ep), transparent var(--ep), transparent .48em);
+  background-position:
+    0 1.68em,
+    0 0.24em;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;
+}
+
+/* Cinq intensités de réglure, du plus clair au plus dense */
+.r1{--forte:#896CE5;--fine:#B0A7F7}   /* le violet d'origine de Marelle */
+.r2{--forte:#7A5CDB;--fine:#9E93EF}
+.r3{--forte:#6B4FD0;--fine:#9186E8}   /* la valeur actuelle du site */
+.r4{--forte:#5A3FC0;--fine:#7E71DC}
+.r5{--forte:#4732A8;--fine:#6559C6}   /* le plus dense */
+
+/* Deux épaisseurs, sur la réglure actuelle */
+.ep15{--ep:1.5px}
+.ep2 {--ep:2px}
+</style>
+</head>
+<body>
+
+<h1>Test 3 — quelle intensité pour la réglure ?</h1>
+<p class="mode">Le modèle est à 60 % partout : c'est la valeur retenue. Seule change la réglure.
+   Regarde la feuille à l'œil, pas au scan : coche celle où les lignes se voient bien sans écraser
+   le modèle à repasser. Chaque essai a une ligne écrite et une ligne vide, car c'est sur les
+   lignes vides que la réglure doit rester lisible.</p>
+
+<div class="essai">
+  <p class="titre"><span class="coche"></span>1 — violet d'origine de Marelle <span>(le plus clair)</span></p>
+  <p class="ligne r1">Zoé croque dix kiwis frais et grimpe vers le chêne.</p>
+  <p class="ligne r1">&nbsp;</p>
+</div>
+
+<div class="essai">
+  <p class="titre"><span class="coche"></span>2 — un peu plus soutenu</p>
+  <p class="ligne r2">Zoé croque dix kiwis frais et grimpe vers le chêne.</p>
+  <p class="ligne r2">&nbsp;</p>
+</div>
+
+<div class="essai">
+  <p class="titre"><span class="coche"></span>3 — réglage actuel du site</p>
+  <p class="ligne r3">Zoé croque dix kiwis frais et grimpe vers le chêne.</p>
+  <p class="ligne r3">&nbsp;</p>
+</div>
+
+<div class="essai">
+  <p class="titre"><span class="coche"></span>4 — plus dense</p>
+  <p class="ligne r4">Zoé croque dix kiwis frais et grimpe vers le chêne.</p>
+  <p class="ligne r4">&nbsp;</p>
+</div>
+
+<div class="essai">
+  <p class="titre"><span class="coche"></span>5 — le plus dense</p>
+  <p class="ligne r5">Zoé croque dix kiwis frais et grimpe vers le chêne.</p>
+  <p class="ligne r5">&nbsp;</p>
+</div>
+
+<h1 style="margin-top:7mm">Et si le trait était plus épais ?</h1>
+<p class="mode">Réglure du site, mais trait épaissi. À comparer avec l'essai 3 ci-dessus.</p>
+
+<div class="essai">
+  <p class="titre"><span class="coche"></span>6 — trait de 1,5 px <span>(0,40 mm)</span></p>
+  <p class="ligne ep15">Zoé croque dix kiwis frais et grimpe vers le chêne.</p>
+  <p class="ligne ep15">&nbsp;</p>
+</div>
+
+<div class="essai">
+  <p class="titre"><span class="coche"></span>7 — trait de 2 px <span>(0,53 mm)</span></p>
+  <p class="ligne ep2">Zoé croque dix kiwis frais et grimpe vers le chêne.</p>
+  <p class="ligne ep2">&nbsp;</p>
+</div>
+
+<p class="mode">Note aussi, si tu veux : la réglure doit-elle rester violette, ou préfères-tu du
+   bleu, ou du gris ? Une fois ces deux réponses données — intensité et couleur — la feuille est
+   figée et je n'aurai plus besoin d'impression d'essai.</p>
+
+</body>
+</html>

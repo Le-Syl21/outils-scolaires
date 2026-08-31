@@ -150,6 +150,7 @@ async function construireFeuille() {
 
   const feuille = $('#feuille');
   feuille.style.setProperty('--interligne', interligne + 'mm');
+  feuille.className = 'feuille reglure-' + $('#couleur-reglure').value;
   feuille.innerHTML = '';
 
   /* Les mesures n'ont de sens qu'une fois Marelle chargée. `ready` seul ne
@@ -227,6 +228,7 @@ function majJauge(parPage) {
 function memoriserReglages() {
   reglages = {
     mode: $('#mode-phrases').value,
+    couleur: $('#couleur-reglure').value,
     pages: $('#nb-pages').value,
     taille: $('#taille').value,
     repasse: $('#nb-repasse').value,
@@ -240,6 +242,7 @@ function memoriserReglages() {
 
 function appliquerReglages() {
   if (reglages.mode)    $('#mode-phrases').value = reglages.mode;
+  if (reglages.couleur) $('#couleur-reglure').value = reglages.couleur;
   if (reglages.pages)   $('#nb-pages').value     = reglages.pages;
   if (reglages.taille)  $('#taille').value       = reglages.taille;
   if (reglages.repasse) $('#nb-repasse').value   = reglages.repasse;
@@ -249,7 +252,7 @@ function appliquerReglages() {
   if ('chrono' in reglages)    $('#opt-chrono').checked    = reglages.chrono;
 }
 
-$$('#mode-phrases, #nb-pages, #taille, #nb-repasse, #nb-libres, #opt-mots, #opt-grammaire, #opt-chrono')
+$$('#mode-phrases, #nb-pages, #couleur-reglure, #taille, #nb-repasse, #nb-libres, #opt-mots, #opt-grammaire, #opt-chrono')
   .forEach(el => el.addEventListener('change', () => {
     memoriserReglages();
     construireFeuille();

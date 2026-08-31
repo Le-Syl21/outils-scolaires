@@ -1342,7 +1342,7 @@ const PANGRAMMES = [
       },
       {
         "mot": "Y",
-        "sens": "Ici, un carrefour en forme de Y, où la route se sépare en deux."
+        "sens": "La lettre Y en majuscule — attention, sa cursive ne ressemble guère au Y imprimé. Ici, un carrefour en forme de Y, où la route se sépare en deux."
       },
       {
         "mot": "Xantia",

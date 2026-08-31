@@ -46,12 +46,17 @@ const cleSegment = (a, b) => {
   return `${p[0]},${p[1]}-${q[0]},${q[1]}`;
 };
 
+/* Une figure est faite d'un ou plusieurs contours : un bateau, c'est une
+   coque et une voile, deux tracés qui ne se touchent pas. */
+const contoursDe = (figure) => figure.contours || [figure.points];
+
 /* Les côtés de la figure, tels qu'ils sont décrits : pour le dessin. */
 function cotesDe(figure) {
-  const pts = figure.points;
   const segs = [];
-  for (let i = 0; i < pts.length - 1; i++) segs.push(cleSegment(pts[i], pts[i + 1]));
-  if (figure.ferme) segs.push(cleSegment(pts[pts.length - 1], pts[0]));
+  contoursDe(figure).forEach(pts => {
+    for (let i = 0; i < pts.length - 1; i++) segs.push(cleSegment(pts[i], pts[i + 1]));
+    if (figure.ferme !== false) segs.push(cleSegment(pts[pts.length - 1], pts[0]));
+  });
   return segs;
 }
 
@@ -133,9 +138,9 @@ const traitSVG = (cle, classe = '') =>
     ${classe === 'manquant' ? 'stroke-dasharray="0.28 0.22"' : ''}/>`)(pointsDeCle(cle));
 
 /* La figure pleine, pour la récompense */
-const polygoneSVG = (figure) =>
-  `<polygon class="remplissage" points="${figure.points.map(p => p.join(',')).join(' ')}"
-    fill="${figure.couleur}"/>`;
+const polygoneSVG = (figure) => contoursDe(figure).map(pts =>
+  `<polygon class="remplissage" points="${pts.map(p => p.join(',')).join(' ')}"
+    fill="${figure.couleur}"/>`).join('');
 
 /* ------------------------------------------------------------------ */
 /* Élèves                                                              */
@@ -350,7 +355,15 @@ $('#btn-retour').addEventListener('click', () => {
   rafraichirEleves();
 });
 
-$('#palier').addEventListener('change', () => { remplirChoixFigures(); genererFeuille(); });
+/* Chaque palier a son carreau : grand pour débuter, plus fin ensuite */
+const CARREAU_PALIER = { 1: '10', 2: '7', 3: '5', 4: '5' };
+
+$('#palier').addEventListener('change', () => {
+  const carreau = CARREAU_PALIER[$('#palier').value];
+  if (carreau) $('#carreau').value = carreau;
+  remplirChoixFigures();
+  genererFeuille();
+});
 
 /* ------------------------------------------------------------------ */
 /* La feuille                                                          */

@@ -34,4 +34,25 @@ const FIGURES = [
     points: [[2, 1], [4, 1], [4, 2], [5, 2], [5, 4], [4, 4], [4, 5], [2, 5],
              [2, 4], [1, 4], [1, 2], [2, 2]], ferme: true,
   },
+
+  /* ---- Palier 2 : la maison — les diagonales à 45° entrent en jeu ---- */
+  {
+    nom: 'La maison', palier: 2, grille: 8, couleur: '#c0562b',
+    points: [[1, 7], [1, 4], [4, 1], [7, 4], [7, 7]], ferme: true,
+  },
+  {
+    nom: 'La flèche', palier: 2, grille: 8, couleur: '#1a56b0',
+    points: [[1, 4], [4, 1], [4, 3], [7, 3], [7, 5], [4, 5], [4, 7]], ferme: true,
+  },
+  {
+    /* deux contours : la coque, puis la voile posée sur le pont */
+    nom: 'Le bateau', palier: 2, grille: 8, couleur: '#1f7a8c',
+    contours: [[[0, 5], [1, 7], [7, 7], [8, 5]],
+               [[4, 1], [8, 5], [4, 5]]], ferme: true,
+  },
+  {
+    nom: 'Le sapin', palier: 2, grille: 8, couleur: '#1f8a4c',
+    points: [[4, 1], [6, 3], [5, 3], [7, 5], [5, 5], [5, 6], [3, 6], [3, 5],
+             [1, 5], [3, 3], [2, 3]], ferme: true,
+  },
 ];

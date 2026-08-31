@@ -84,6 +84,7 @@
       <div class="carte"><span class="carte-label">Note</span><span id="res-note" class="carte-value">—</span><span class="carte-unit">/100</span></div>
       <div class="carte"><span class="carte-label">Cases justes</span><span id="res-justes" class="carte-value">—</span></div>
       <div class="carte"><span class="carte-label">Temps</span><span id="res-temps" class="carte-value">—</span></div>
+      <div class="carte carte-forte"><span class="carte-label">Temps corrigé</span><span id="res-corrige" class="carte-value">—</span><span id="res-detail-penalite" class="carte-unit">—</span></div>
       <div class="carte"><span class="carte-label">Erreurs</span><span id="res-erreurs" class="carte-value">—</span></div>
     </div>
     <p id="res-message" class="res-message"></p>
@@ -101,17 +102,24 @@
 <section id="view-scores" class="view hidden">
   <div class="panel">
     <h2>🏆 Classement</h2>
-    <p class="lead">Meilleure performance de chaque élève (note la plus haute, puis le temps le plus court).</p>
+    <p class="lead">Classement au <strong>temps corrigé</strong> : le temps réel augmenté d'une pénalité
+       pour chaque case fausse ou laissée vide. Le plus petit temps corrigé gagne.</p>
+    <p class="note-info">temps corrigé = temps réel + nombre d'erreurs ×
+       <span id="cout-info">5</span> × (temps ÷ cases justes) — chaque erreur coûte le temps
+       de plusieurs cases, donc la pénalité pèse autant pour un rapide que pour un lent.</p>
     <div id="podium" class="podium"></div>
 
     <h2>Historique</h2>
     <div class="row">
       <select id="filtre-eleve"><option value="">Tous les élèves</option></select>
+      <label class="field-inline">Une erreur coûte le temps de
+        <input type="number" id="cout-erreur" min="1" max="20" step="1" value="5"> cases
+      </label>
       <button id="btn-effacer" class="btn btn-ghost btn-danger" type="button">Effacer l'historique</button>
     </div>
     <div class="table-wrap">
       <table id="table-historique" class="historique">
-        <thead><tr><th>Date</th><th>Élève</th><th>Note</th><th>Cases</th><th>Temps</th><th></th></tr></thead>
+        <thead><tr><th>Date</th><th>Élève</th><th>Note</th><th>Cases</th><th>Temps</th><th>Temps corrigé</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>

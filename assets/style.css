@@ -127,6 +127,8 @@ select{min-width:180px}
   background:var(--peche-clair);border-radius:var(--radius);
   padding:12px 24px;display:flex;flex-direction:column;align-items:center;min-width:130px;
 }
+.carte-forte{background:var(--orange);color:#fff}
+.carte-forte .carte-label,.carte-forte .carte-value,.carte-forte .carte-unit{color:#fff}
 .carte-label{font-size:.8rem;text-transform:uppercase;color:var(--gris)}
 .carte-value{font-size:2.2rem;font-weight:800;line-height:1.1;color:var(--orange)}
 .carte-unit{font-size:.85rem;color:var(--gris)}
@@ -143,7 +145,8 @@ select{min-width:180px}
 .podium-place.p2{border-left-color:#9aa0a6}
 .podium-place.p3{border-left-color:#b87333}
 .podium-nom{font-weight:700;font-size:1.1rem}
-.podium-detail{color:var(--gris);font-size:.95rem}
+.podium-corrige{font-size:1.5rem;font-weight:800;color:var(--orange);line-height:1.2}
+.podium-detail{color:var(--gris);font-size:.9rem}
 .table-wrap{overflow-x:auto}
 .historique{width:100%;border-collapse:collapse}
 .historique th,.historique td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--peche)}

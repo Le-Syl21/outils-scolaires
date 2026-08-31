@@ -6,7 +6,7 @@
 const TOUTES  = [1,2,3,4,5,6,7,8,9,10,11,12];
 const DEFAUT  = [2,3,4,5,6,7,8,9,10];
 const CLES = { eleves:'defiTables.eleves', resultats:'defiTables.resultats',
-               tables:'defiTables.tables' };
+               tables:'defiTables.tables', cout:'defiTables.coutErreur' };
 const $  = (sel, ctx=document) => ctx.querySelector(sel);
 const $$ = (sel, ctx=document) => [...ctx.querySelectorAll(sel)];
 
@@ -24,6 +24,7 @@ const ecrire = (cle, valeur) => {
 let eleves    = lire(CLES.eleves, []);
 let resultats = lire(CLES.resultats, []);
 let tables    = lire(CLES.tables, DEFAUT);   // tables travaillées
+let coutErreur = lire(CLES.cout, 5);   // une erreur coûte le temps de N cases justes
 
 /* ------------------------------------------------------------------ */
 /* Utilitaires                                                         */
@@ -126,12 +127,43 @@ function afficherRecord() {
   if (!nom || !perso.length) { zone.textContent = ''; return; }
   const best = meilleur(perso);
   zone.innerHTML = `Record de <strong>${echapper(nom)}</strong> : ` +
-    `${best.note}/100 en ${formatTemps(best.temps)} — ${perso.length} partie(s) jouée(s).`;
+    `${afficherCorrige(best)} de temps corrigé ` +
+    `(${formatTemps(best.temps)}, ${casesJustes(best)}/${totalCases(best)} justes) ` +
+    `— ${perso.length} partie(s) jouée(s).`;
 }
 
-/* Meilleur = note la plus haute, puis le temps le plus court */
+/* ------------------------------------------------------------------ */
+/* Temps corrigé : temps réel + nb erreurs × coût × (temps / cases justes)
+   Une erreur coûte le temps de N cases justes : la pénalité est donc
+   proportionnelle au rythme du joueur (même pourcentage pour un rapide
+   et pour un lent) et à la taille de la grille. Diviser par les cases
+   JUSTES (et non par le total) rend l'abandon de cases perdant.        */
+/* ------------------------------------------------------------------ */
+const totalCases = (r) => r.total ?? 100;
+const casesJustes = (r) => r.justes ?? r.note;
+const nbErreurs = (r) => totalCases(r) - casesJustes(r);
+
+function tempsCorrige(r) {
+  const justes = casesJustes(r);
+  if (justes <= 0) return Infinity;            // rien de juste : hors classement
+  return Math.round(r.temps * (1 + coutErreur * nbErreurs(r) / justes));
+}
+
+const afficherCorrige = (r) => {
+  const tc = tempsCorrige(r);
+  return Number.isFinite(tc) ? formatTemps(tc) : '—';
+};
+
+/* Pourcentage ajouté par les erreurs, pour l'affichage */
+function penalitePct(r) {
+  const tc = tempsCorrige(r);
+  if (!Number.isFinite(tc) || r.temps === 0) return null;
+  return Math.round((tc / r.temps - 1) * 100);
+}
+
+/* Meilleur = plus petit temps corrigé */
 const meilleur = (liste) => [...liste].sort(
-  (a, b) => b.note - a.note || a.temps - b.temps)[0];
+  (a, b) => tempsCorrige(a) - tempsCorrige(b))[0];
 
 /* ------------------------------------------------------------------ */
 /* Partie en cours                                                     */
@@ -269,6 +301,11 @@ function afficherResultat(res, cases) {
   $('#res-justes').textContent  = `${res.justes}/${res.total}`;
   $('#res-temps').textContent   = formatTemps(res.temps);
   $('#res-erreurs').textContent = res.total - res.justes;
+  $('#res-corrige').textContent = afficherCorrige(res);
+  const pct = penalitePct(res);
+  $('#res-detail-penalite').textContent = !pct
+    ? 'aucune pénalité'
+    : `+${pct} % pour ${nbErreurs(res)} erreur(s)`;
 
   const perso = resultats.filter(r => r.eleve === res.eleve);
   const best = meilleur(perso);
@@ -279,7 +316,7 @@ function afficherResultat(res, cases) {
     : `Résultat de ${res.eleve}`;
   $('#res-message').textContent = record
     ? '🥇 Nouveau record personnel !'
-    : `Meilleur score : ${best.note}/100 en ${formatTemps(best.temps)}.`;
+    : `Meilleur temps corrigé de ${res.eleve} : ${afficherCorrige(best)}.`;
 
   // Grille de correction
   let html = '<tr><th class="coin">X</th>' +
@@ -310,13 +347,15 @@ function afficherScores() {
   // Podium : le meilleur résultat de chaque élève
   const parEleve = [...new Set(resultats.map(r => r.eleve))]
     .map(nom => meilleur(resultats.filter(r => r.eleve === nom)))
-    .sort((a, b) => b.note - a.note || a.temps - b.temps);
+    .sort((a, b) => tempsCorrige(a) - tempsCorrige(b));
 
   $('#podium').innerHTML = parEleve.length
     ? parEleve.map((r, i) => `
         <div class="podium-place p${i+1}">
           <div class="podium-nom">${['🥇','🥈','🥉'][i] || ''} ${echapper(r.eleve)}</div>
-          <div class="podium-detail">${r.note}/100 en ${formatTemps(r.temps)}</div>
+          <div class="podium-corrige">${afficherCorrige(r)}</div>
+          <div class="podium-detail">${formatTemps(r.temps)} + ${nbErreurs(r)} erreur(s)
+            · ${r.note}/100</div>
         </div>`).join('')
     : '<p class="vide">Aucune partie enregistrée pour le moment.</p>';
 
@@ -333,12 +372,21 @@ function afficherScores() {
         <td><strong>${r.note}</strong>/100</td>
         <td title="Tables : ${(r.tables || [1,2,3,4,5,6,7,8,9,10]).join(', ')}">${r.justes ?? r.note}/${r.total ?? 100}</td>
         <td>${formatTemps(r.temps)}</td>
+        <td><strong>${afficherCorrige(r)}</strong></td>
         <td><button class="sup" data-id="${r.id}" title="Supprimer">✕</button></td>
       </tr>`).join('')
-    : '<tr><td colspan="6" class="vide">Rien à afficher.</td></tr>';
+    : '<tr><td colspan="7" class="vide">Rien à afficher.</td></tr>';
 }
 
 $('#filtre-eleve').addEventListener('change', afficherScores);
+
+$('#cout-erreur').addEventListener('change', (e) => {
+  coutErreur = Math.min(20, Math.max(1, Number(e.target.value) || 5));
+  e.target.value = String(coutErreur);
+  ecrire(CLES.cout, coutErreur);
+  $('#cout-info').textContent = coutErreur;
+  afficherScores();
+});
 
 $('#table-historique').addEventListener('click', (e) => {
   const btn = e.target.closest('.sup');
@@ -396,5 +444,7 @@ $('#btn-imprimer').addEventListener('click', () => window.print());
 
 /* ------------------------------------------------------------------ */
 construireChoixTables();
+$('#cout-erreur').value = String(coutErreur);
+$('#cout-info').textContent = coutErreur;
 rafraichirEleves();
 })();

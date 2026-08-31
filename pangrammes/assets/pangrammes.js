@@ -136,6 +136,58 @@ const PANGRAMMES = [
     ]
   },
   {
+    "texte": "Voyez ce grand wombat joyeux qui pique dix kiwis chez le fakir.",
+    "signes": 63,
+    "niveau": "moyen",
+    "temps": "impératif présent",
+    "quand": "On donne un ordre ou on attire l'attention. Le sujet n'est pas écrit.",
+    "sens": "Un wombat chapardeur se sert chez le fakir.",
+    "mots": [
+      {
+        "mot": "wombat",
+        "sens": "Petit marsupial australien, trapu, qui creuse des terriers."
+      },
+      {
+        "mot": "fakir",
+        "sens": "En Inde, un ascète ; dans les spectacles, celui qui s'allonge sur des clous."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Voyez",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "ce grand wombat joyeux",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "qui pique dix kiwis",
+        "f": "neutre"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "chez le fakir",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
     "texte": "Un quetzal réfugié en kimono achète dix pyjamas verts sur le Web.",
     "signes": 65,
     "niveau": "moyen",
@@ -284,6 +336,54 @@ const PANGRAMMES = [
       {
         "t": "au phoque affamé",
         "f": "coi"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Wilfrid, le yak boxeur, mange quinze prunes juteuses chez son voisin.",
+    "signes": 69,
+    "niveau": "moyen",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant.",
+    "sens": "Un yak qui fait de la boxe s'invite chez le voisin pour se régaler.",
+    "mots": [
+      {
+        "mot": "yak",
+        "sens": "Grand bœuf à longs poils des hautes montagnes d'Asie."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Wilfrid, le yak boxeur,",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "mange",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "quinze prunes juteuses",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "chez son voisin",
+        "f": "cc"
       },
       {
         "t": ".",
@@ -709,6 +809,157 @@ const PANGRAMMES = [
     ]
   },
   {
+    "texte": "Ce vieux wagon jaune emporte quinze kiwis frais chez le joyeux phoque blond.",
+    "signes": 76,
+    "niveau": "long",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant.",
+    "sens": "Un train livre des fruits à un phoque.",
+    "mots": [],
+    "segments": [
+      {
+        "t": "Ce vieux wagon jaune",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "emporte",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "quinze kiwis frais",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "chez le joyeux phoque blond",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Le yak joyeux avait mangé dix bonbons puis visé quinze kiwis frais chez Zoé.",
+    "signes": 76,
+    "niveau": "long",
+    "temps": "plus-que-parfait",
+    "quand": "Une action déjà finie avant une autre action du passé. L'auxiliaire est à l'imparfait : « avait » suivi du participe passé.",
+    "sens": "Avant qu'on arrive, le yak s'était déjà servi.",
+    "mots": [
+      {
+        "mot": "yak",
+        "sens": "Grand bœuf à longs poils des hautes montagnes d'Asie."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Le yak joyeux",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "avait mangé",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dix bonbons",
+        "f": "cod"
+      },
+      {
+        "t": " puis ",
+        "f": "neutre"
+      },
+      {
+        "t": "visé",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "quinze kiwis frais",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "chez Zoé",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Wilfrid, emmène ce yak boxeur et quinze prunes juteuses chez ton grand voisin.",
+    "signes": 78,
+    "niveau": "long",
+    "temps": "impératif présent",
+    "quand": "On donne un ordre. Le sujet n'est pas écrit : c'est « tu ».",
+    "sens": "On confie à Wilfrid un yak et des prunes à livrer.",
+    "mots": [
+      {
+        "mot": "yak",
+        "sens": "Grand bœuf à longs poils des hautes montagnes d'Asie."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Wilfrid, ",
+        "f": "neutre"
+      },
+      {
+        "t": "emmène",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "ce yak boxeur et quinze prunes juteuses",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "chez ton grand voisin",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
     "texte": "Dans un wagon bleu, tout en mangeant cinq kiwis frais, vous jouez du xylophone.",
     "signes": 79,
     "niveau": "long",
@@ -765,6 +1016,183 @@ const PANGRAMMES = [
     ]
   },
   {
+    "texte": "Jacky, le phoque, dévore six gaufres, quinze kiwis et un bonbon en pyjama vert.",
+    "signes": 79,
+    "niveau": "long",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant.",
+    "sens": "Un phoque en pyjama fait un festin.",
+    "mots": [],
+    "segments": [
+      {
+        "t": "Jacky, le phoque,",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dévore",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "six gaufres, quinze kiwis et un bonbon",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "en pyjama vert",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Jacky, le phoque, dévora six gaufres, quinze kiwis et un bonbon en pyjama vert.",
+    "signes": 79,
+    "niveau": "long",
+    "temps": "passé simple",
+    "quand": "Le temps du récit : l'action est arrivée une fois, dans le passé. On le lit dans les livres plus qu'on ne le parle.",
+    "sens": "Le même festin, raconté comme dans un livre.",
+    "mots": [],
+    "segments": [
+      {
+        "t": "Jacky, le phoque,",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dévora",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "six gaufres, quinze kiwis et un bonbon",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "en pyjama vert",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Quinze bijoux exquis dorment dans le pyjama chic du vieux fakir wallon grognon.",
+    "signes": 79,
+    "niveau": "long",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant.",
+    "sens": "Un fakir belge cache son trésor dans son pyjama.",
+    "mots": [
+      {
+        "mot": "exquis",
+        "sens": "Délicieux."
+      },
+      {
+        "mot": "fakir",
+        "sens": "En Inde, un ascète ; dans les spectacles, celui qui s'allonge sur des clous."
+      },
+      {
+        "mot": "wallon",
+        "sens": "De Wallonie, la partie francophone de la Belgique."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Quinze bijoux exquis",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dorment",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dans le pyjama chic du vieux fakir wallon grognon",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Ce vieux wagon jaune emporterait quinze kiwis frais chez le joyeux phoque blond.",
+    "signes": 80,
+    "niveau": "long",
+    "temps": "conditionnel présent",
+    "quand": "L'action n'est pas sûre : elle dépend d'autre chose. Le verbe prend -rait.",
+    "sens": "La même livraison, mais seulement si tout se passe bien.",
+    "mots": [],
+    "segments": [
+      {
+        "t": "Ce vieux wagon jaune",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "emporterait",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "quinze kiwis frais",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "chez le joyeux phoque blond",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
     "texte": "Le grand Kevin emportera bientôt douze kiwis exquis chez le fameux phoque joyeux.",
     "signes": 81,
     "niveau": "long",
@@ -812,6 +1240,70 @@ const PANGRAMMES = [
       },
       {
         "t": "chez le fameux phoque joyeux",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Le yak farceur, joyeux, mange dix bonbons puis vise quinze petits kiwis chez Zoé.",
+    "signes": 81,
+    "niveau": "long",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant. Deux verbes se suivent, reliés par « puis ».",
+    "sens": "Le yak se sert en bonbons et lorgne déjà les fruits.",
+    "mots": [
+      {
+        "mot": "yak",
+        "sens": "Grand bœuf à longs poils des hautes montagnes d'Asie."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Le yak farceur, joyeux,",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "mange",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dix bonbons",
+        "f": "cod"
+      },
+      {
+        "t": " puis ",
+        "f": "neutre"
+      },
+      {
+        "t": "vise",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "quinze petits kiwis",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "chez Zoé",
         "f": "cc"
       },
       {

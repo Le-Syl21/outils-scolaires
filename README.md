@@ -30,7 +30,7 @@ Améliorer son écriture — la vitesse et la lisibilité — en découvrant ple
   les groupes soulignés selon leur fonction (sujet, verbe, compléments), le temps du verbe, ce que
   la phrase raconte, les mots rares, puis les lignes à repasser en transparence sur réglure Seyes.
   Taille d'écriture réglable de 2 mm (cahier Seyes) à 4 mm (grande section).
-- **Collection** : 16 pangrammes français, chacun vérifié par programme — les 26 lettres sont bien
+- **Collection** : 26 pangrammes français, chacun vérifié par programme — les 26 lettres sont bien
   présentes, le découpage grammatical se recompose exactement en la phrase. Les phrases sans queue
   ni tête ont été écartées : un pangramme doit pouvoir se raconter.
 - **Chrono** : la vitesse d'écriture pondérée par une note de lisibilité donnée par l'adulte,

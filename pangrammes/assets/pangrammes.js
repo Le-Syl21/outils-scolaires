@@ -1334,11 +1334,15 @@ const PANGRAMMES = [
     "niveau": "long",
     "temps": "passé composé",
     "quand": "L'action est finie. Le verbe s'écrit en deux mots ; ici, un seul auxiliaire « a » commande trois participes passés.",
-    "sens": "Une voiture franchit les hachures d'un carrefour en Y, klaxonne, puis file chez le garagiste.",
+    "sens": "",
     "mots": [
       {
         "mot": "zébras",
         "sens": "Bandes blanches peintes en biais sur la route, qu'on ne doit pas franchir."
+      },
+      {
+        "mot": "Y",
+        "sens": "Ici, un carrefour en forme de Y, où la route se sépare en deux."
       },
       {
         "mot": "Xantia",

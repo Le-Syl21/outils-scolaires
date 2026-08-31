@@ -1,0 +1,29 @@
+/* Page d'accueil : le choix entre les outils */
+.intro{
+  color:var(--gris);font-size:1.1rem;max-width:60ch;
+  margin:12px auto 24px;text-align:center;
+}
+.cartes{
+  display:grid;gap:20px;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+}
+.carte-outil{
+  display:flex;flex-direction:column;
+  background:var(--carte);border-radius:var(--radius);box-shadow:var(--ombre);
+  border:2px solid transparent;
+  padding:28px;text-decoration:none;color:inherit;
+  transition:border-color .15s, transform .15s;
+}
+.carte-outil:hover,.carte-outil:focus-visible{
+  border-color:var(--orange);transform:translateY(-2px);outline:none;
+}
+.carte-emoji{font-size:2.6rem;line-height:1}
+.carte-outil h2{margin:14px 0 8px;font-size:1.5rem;color:var(--orange)}
+.carte-accroche{font-size:1.05rem;font-weight:600;margin:0 0 10px}
+.carte-detail{color:var(--gris);margin:0 0 20px}
+.carte-lien{margin-top:auto;font-weight:700;color:var(--orange)}
+
+@media (prefers-reduced-motion:reduce){
+  .carte-outil{transition:none}
+  .carte-outil:hover,.carte-outil:focus-visible{transform:none}
+}

@@ -1,0 +1,93 @@
+/* Charte partagée par les outils du dépôt.
+   Reprend les couleurs du Défi Tables : pêche, orange, encre brune. */
+:root{
+  --peche:#fbdcd0;
+  --peche-clair:#fdf1ec;
+  --orange:#e8501e;
+  --orange-fonce:#b93c13;
+  --encre:#3b1d10;
+  --trait:#6b3b28;
+  --fond:#fffaf7;
+  --carte:#ffffff;
+  --vert:#1f8a4c;
+  --vert-clair:#dcf5e5;
+  --rouge:#c62828;
+  --rouge-clair:#fde3e1;
+  --gris:#8a7a72;
+  --ombre:0 2px 8px rgba(59,29,16,.10);
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--fond);
+  color:var(--encre);
+  line-height:1.5;
+}
+main{max-width:1000px;margin:0 auto;padding:16px}
+h1,h2{margin:0 0 8px}
+h2{font-size:1.35rem}
+.lead{color:var(--gris);margin:0 0 16px}
+.hidden{display:none !important}
+kbd{background:var(--peche);border:1px solid var(--trait);border-radius:4px;padding:0 5px;font-size:.85em}
+
+/* Barre du haut */
+.topbar{
+  background:var(--orange);color:#fff;padding:10px 16px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.topbar h1{font-size:1.25rem;margin:0}
+.topbar a{color:#fff}
+.retour{
+  color:#fff;text-decoration:none;font-size:.95rem;
+  background:rgba(255,255,255,.15);padding:6px 14px;border-radius:999px;
+}
+.retour:hover{background:rgba(255,255,255,.28)}
+.tabs{display:flex;gap:6px;margin-left:auto}
+.tab{
+  background:rgba(255,255,255,.15);color:#fff;border:0;
+  padding:8px 16px;border-radius:999px;cursor:pointer;font-size:1rem;
+}
+.tab:hover{background:rgba(255,255,255,.28)}
+.tab.is-active{background:#fff;color:var(--orange);font-weight:700}
+
+/* Blocs */
+.panel{
+  background:var(--carte);border-radius:var(--radius);box-shadow:var(--ombre);
+  padding:20px;margin-bottom:16px;
+}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.field{margin-bottom:16px}
+.field > label{display:block;font-weight:600;margin-bottom:6px}
+.field-inline{display:flex;align-items:center;gap:8px;font-weight:600}
+.check{display:flex;align-items:center;gap:8px;font-weight:400 !important}
+select,input[type=number],input[type=text]{
+  font:inherit;padding:8px 10px;border:2px solid var(--peche);
+  border-radius:8px;background:#fff;color:inherit;
+}
+input[type=number]{width:80px}
+select{min-width:180px}
+
+/* Boutons */
+.btn{font:inherit;cursor:pointer;border-radius:999px;padding:10px 20px;border:2px solid transparent}
+.btn-primary{background:var(--orange);color:#fff}
+.btn-primary:hover{background:var(--orange-fonce)}
+.btn-ghost{background:#fff;color:var(--orange);border-color:var(--peche)}
+.btn-ghost:hover{border-color:var(--orange)}
+.btn-danger{color:var(--rouge)}
+.btn-xl{font-size:1.3rem;padding:14px 40px;display:inline-flex;align-items:center;gap:10px}
+.btn-sm{padding:6px 16px;font-size:1rem;font-weight:600}
+.btn-sm small{display:block;font-weight:400;font-size:.78rem;opacity:.75}
+.btn-sm.is-active{background:var(--orange);color:#fff;border-color:var(--orange)}
+
+.note-info{color:var(--gris);font-size:.9rem}
+.vide{color:var(--gris);font-style:italic}
+.alerte{background:var(--rouge-clair);color:var(--rouge);border-radius:8px;padding:10px 14px;margin:12px 0 0}
+
+footer{text-align:center;color:var(--gris);font-size:.9rem;padding:16px}
+footer a{color:var(--orange)}
+
+@media print{
+  .no-print,.topbar,footer{display:none !important}
+}

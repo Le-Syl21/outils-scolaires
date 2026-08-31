@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le défi des pangrammes</title>
+<meta name="description" content="Feuilles d'écriture cursive sur lignes Seyes, à partir de pangrammes français expliqués.">
+<link rel="stylesheet" href="../assets/commun.css">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✍️</text></svg>">
+</head>
+<body>
+
+<header class="topbar no-print">
+  <a class="retour" href="../">← Outils</a>
+  <h1>✍️ Défi des pangrammes</h1>
+  <nav class="tabs" role="tablist">
+    <button class="tab is-active" data-view="feuille" role="tab">Feuille</button>
+    <button class="tab" data-view="collection" role="tab">Collection</button>
+    <button class="tab" data-view="chrono" role="tab">Chrono</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============ FEUILLE ============ -->
+<section id="view-feuille" class="view">
+
+  <div class="panel no-print">
+    <h2>La feuille d'écriture</h2>
+    <p class="lead">Le modèle en cursive, trois lignes à repasser en transparence, puis des lignes
+       libres pour recopier. La réglure Seyes est dessinée par la police elle-même.</p>
+
+    <div class="reglages">
+      <div class="field">
+        <label for="choix-pangramme">Pangramme</label>
+        <div class="row">
+          <select id="choix-pangramme"></select>
+          <button id="btn-hasard" class="btn btn-ghost btn-sm" type="button">🎲 Au hasard</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="taille">Taille de l'écriture</label>
+        <select id="taille">
+          <option value="4">Très grande — interligne 4 mm (GS, CP)</option>
+          <option value="3">Grande — interligne 3 mm (CP, CE1)</option>
+          <option value="2.5">Moyenne — interligne 2,5 mm (CE1, CE2)</option>
+          <option value="2" selected>Cahier Seyes — interligne 2 mm (CE2 et au-delà)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="nb-repasse">Lignes à repasser</label>
+        <input type="number" id="nb-repasse" min="0" max="10" value="3">
+      </div>
+
+      <div class="field">
+        <label for="nb-libres">Lignes libres</label>
+        <input type="number" id="nb-libres" min="0" max="30" value="6">
+      </div>
+    </div>
+
+    <div class="row">
+      <label class="check"><input type="checkbox" id="opt-mots" checked> Expliquer les mots rares</label>
+      <label class="check"><input type="checkbox" id="opt-chrono" checked> Cases début / fin / temps</label>
+    </div>
+
+    <div class="row row-actions">
+      <button id="btn-imprimer" class="btn btn-primary btn-xl" type="button">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+          <path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"
+            d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/>
+        </svg>
+        Imprimer
+      </button>
+      <span id="jauge" class="jauge"></span>
+    </div>
+  </div>
+
+  <div id="feuille" class="feuille"></div>
+</section>
+
+<!-- ============ COLLECTION ============ -->
+<section id="view-collection" class="view hidden">
+  <div class="panel">
+    <h2>La collection</h2>
+    <p class="lead">Un pangramme est une phrase qui contient les 26 lettres de l'alphabet.
+       Chacune de celles-ci a été vérifiée. <span id="compte-collection"></span></p>
+    <div class="row filtres">
+      <button class="btn btn-ghost btn-sm is-active" data-niveau="" type="button">Tous</button>
+      <button class="btn btn-ghost btn-sm" data-niveau="court" type="button">Courts</button>
+      <button class="btn btn-ghost btn-sm" data-niveau="moyen" type="button">Moyens</button>
+      <button class="btn btn-ghost btn-sm" data-niveau="long" type="button">Longs</button>
+    </div>
+  </div>
+  <div id="liste-pangrammes"></div>
+</section>
+
+<!-- ============ CHRONO ============ -->
+<section id="view-chrono" class="view hidden">
+  <div class="panel">
+    <h2>Le défi : vite et lisible</h2>
+    <p class="lead">On lance le chrono, l'enfant recopie la phrase sur sa feuille, on arrête.
+       Un adulte note ensuite la lisibilité : le score final récompense les deux à la fois.</p>
+
+    <div class="reglages">
+      <div class="field">
+        <label for="select-eleve">Qui écrit ?</label>
+        <div class="row">
+          <select id="select-eleve"></select>
+          <button id="btn-ajout-eleve" class="btn btn-ghost btn-sm" type="button">+ Nouveau</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="nb-copies">Nombre de copies écrites</label>
+        <input type="number" id="nb-copies" min="1" max="20" value="3">
+      </div>
+    </div>
+
+    <p class="phrase-en-cours">Phrase : <strong id="chrono-phrase">—</strong></p>
+
+    <div class="chrono-bloc">
+      <span id="chrono-affichage" class="chrono-affichage">00:00</span>
+      <button id="btn-chrono" class="btn btn-primary btn-xl" type="button">Démarrer ▶</button>
+      <button id="btn-raz" class="btn btn-ghost" type="button">Remettre à zéro</button>
+    </div>
+
+    <div id="bloc-lisibilite" class="hidden">
+      <div class="field">
+        <label for="lisibilite">Lisibilité de l'écriture : <output id="lisibilite-valeur">7</output>/10</label>
+        <input type="range" id="lisibilite" min="1" max="10" value="7" step="1" class="curseur">
+        <p class="note-info" id="lisibilite-texte"></p>
+      </div>
+      <button id="btn-enregistrer" class="btn btn-primary" type="button">Enregistrer le résultat</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>🏆 Classement</h2>
+    <p class="lead">Le score est le nombre de <strong>signes lisibles par minute</strong> :
+       la vitesse d'écriture multipliée par la note de lisibilité. Écrire vite mais illisible
+       ne rapporte rien.</p>
+    <div id="podium" class="podium"></div>
+
+    <div class="table-wrap">
+      <table id="table-historique" class="historique">
+        <thead><tr>
+          <th>Date</th><th>Élève</th><th>Score</th><th>Vitesse</th>
+          <th>Lisibilité</th><th>Phrase</th><th></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="row">
+      <button id="btn-effacer" class="btn btn-ghost btn-danger btn-sm" type="button">Effacer l'historique</button>
+    </div>
+    <p class="note-info">Les scores et la liste des élèves sont partagés avec le Défi Tables,
+       et restent dans ce navigateur.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="no-print">
+  <p>Écriture composée avec <a href="https://marelle.forge.apps.education.fr/">Marelle</a>,
+     police cursive libre (OFL) du ministère de l'Éducation nationale —
+     <a href="https://github.com/Le-Syl21/outils-scolaires">code source</a>.</p>
+</footer>
+
+<script src="assets/pangrammes.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

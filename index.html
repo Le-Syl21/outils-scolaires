@@ -3,181 +3,54 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Défi Tables de multiplication</title>
-<meta name="description" content="Grille de tables de multiplication chronométrée, notée sur 100, et générateur de grilles à imprimer.">
-<link rel="stylesheet" href="assets/style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✖️</text></svg>">
+<title>Outils scolaires</title>
+<meta name="description" content="Deux défis à imprimer ou à jouer à l'écran : les tables de multiplication et l'écriture cursive avec des pangrammes.">
+<link rel="stylesheet" href="assets/commun.css">
+<link rel="stylesheet" href="assets/accueil.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 </head>
 <body>
 
-<header class="topbar no-print">
-  <h1>✖️ Défi Tables</h1>
-  <nav class="tabs" role="tablist">
-    <button class="tab is-active" data-view="jeu" role="tab">Jouer</button>
-    <button class="tab" data-view="scores" role="tab">Scores</button>
-    <button class="tab" data-view="impression" role="tab">Imprimer</button>
-  </nav>
+<header class="topbar">
+  <h1>🎓 Outils scolaires</h1>
 </header>
 
 <main>
+  <p class="intro">Deux défis pour s'entraîner à la maison, à jouer à l'écran ou à imprimer.
+     Rien n'est envoyé sur Internet : les scores restent dans le navigateur.</p>
 
-<!-- ============ VUE JEU ============ -->
-<section id="view-jeu" class="view">
+  <div class="cartes">
 
-  <!-- Accueil -->
-  <div id="ecran-accueil" class="panel">
-    <h2>Prêt pour le défi ?</h2>
-    <p class="lead">Remplis la grille des tables de 1 à 10 le plus vite possible, sans faute.
-       Le chrono démarre quand tu cliques sur <strong>Démarrer</strong>.</p>
+    <a class="carte-outil" href="tables/">
+      <span class="carte-emoji" aria-hidden="true">✖️</span>
+      <h2>Le défi des tables</h2>
+      <p class="carte-accroche">Apprendre les tables de multiplication par la concurrence
+         et la répétition.</p>
+      <p class="carte-detail">Une grille mélangée à chaque partie, un chrono, une note sur 100 et
+         un classement entre les enfants. Trois niveaux par cœur, trois de calcul mental,
+         et des grilles vierges à imprimer.</p>
+      <span class="carte-lien">Ouvrir le défi →</span>
+    </a>
 
-    <div class="field">
-      <label for="select-eleve">Qui joue ?</label>
-      <div class="row">
-        <select id="select-eleve"></select>
-        <button id="btn-ajout-eleve" class="btn btn-ghost" type="button">+ Nouveau</button>
-      </div>
-    </div>
+    <a class="carte-outil" href="pangrammes/">
+      <span class="carte-emoji" aria-hidden="true">✍️</span>
+      <h2>Le défi des pangrammes</h2>
+      <p class="carte-accroche">Améliorer son écriture — la vitesse et la lisibilité — en
+         découvrant plein de pangrammes.</p>
+      <p class="carte-detail">Des feuilles d'écriture Seyes prêtes à imprimer : le modèle en
+         cursive, trois lignes à repasser en transparence, puis des lignes libres. Chaque
+         phrase contient les 26 lettres de l'alphabet, et les mots rares sont expliqués.</p>
+      <span class="carte-lien">Ouvrir le défi →</span>
+    </a>
 
-    <div class="field">
-      <label>Tables travaillées</label>
-      <div id="choix-tables" class="tables-choix"></div>
-      <div class="ajout-table">
-        <label for="table-perso">Autre table :</label>
-        <input type="number" id="table-perso" min="1" max="50" placeholder="16">
-        <button id="btn-ajout-table" class="btn btn-ghost btn-sm" type="button">+ Ajouter</button>
-        <span class="aide-inline">par exemple 16 pour l'hexadécimal</span>
-      </div>
-      <div class="presets-groupe">
-        <span class="presets-titre">Par cœur</span>
-        <div class="row presets">
-          <button class="btn btn-ghost btn-sm" data-preset="1,2,3,4,5,6,7,8,9,10" type="button">Facile <small>1 à 10</small></button>
-          <button class="btn btn-ghost btn-sm" data-preset="3,4,5,6,7,8,9,10,11,12" type="button">Moyen <small>3 à 12</small></button>
-          <button class="btn btn-ghost btn-sm" data-preset="5,6,7,8,9,10,11,12,13,14,15" type="button">Dur <small>5 à 15</small></button>
-          <button class="btn btn-ghost btn-sm" data-preset="6,7,8,9" type="button">Les difficiles <small>6 à 9</small></button>
-        </div>
-      </div>
-      <div class="presets-groupe">
-        <span class="presets-titre">Calcul mental</span>
-        <div class="row presets">
-          <button class="btn btn-ghost btn-sm" data-preset="5,6,7,8,9,10,11,12,13,14,15" type="button">Facile <small>5 à 15</small></button>
-          <button class="btn btn-ghost btn-sm" data-preset="13,14,15,16,17,18" type="button">Moyen <small>13 à 18</small></button>
-          <button class="btn btn-ghost btn-sm" data-preset="9,10,11,12,13,14,15,16,17,18,19" type="button">Dur <small>9 à 19</small></button>
-        </div>
-      </div>
-      <p id="info-grille" class="info-grille"></p>
-    </div>
-
-    <div class="field">
-      <label class="check">
-        <input type="checkbox" id="opt-melange" checked>
-        Mélanger l'ordre des lignes et des colonnes
-      </label>
-    </div>
-
-    <div class="row row-actions">
-      <button id="btn-demarrer" class="btn btn-primary btn-xl" type="button">Démarrer ▶</button>
-      <button id="btn-imprimer-accueil" class="btn btn-ghost btn-xl" type="button">
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
-          <path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"
-            d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/>
-        </svg>
-        Imprimer
-      </button>
-    </div>
-
-    <div id="record-eleve" class="record"></div>
   </div>
-
-  <!-- Partie en cours -->
-  <div id="ecran-partie" class="panel hidden">
-    <div class="hud">
-      <div class="hud-item"><span class="hud-label">Élève</span><span id="hud-nom" class="hud-value">—</span></div>
-      <div class="hud-item"><span class="hud-label">Chrono</span><span id="hud-chrono" class="hud-value chrono">00:00</span></div>
-      <div class="hud-item"><span class="hud-label">Remplies</span><span id="hud-remplies" class="hud-value">0/100</span></div>
-      <button id="btn-terminer" class="btn btn-primary" type="button">J'ai fini ✓</button>
-      <button id="btn-abandon" class="btn btn-ghost" type="button">Abandonner</button>
-    </div>
-    <div class="grille-wrap">
-      <table id="grille-jeu" class="grille"></table>
-    </div>
-    <p class="aide">Astuce : <kbd>Entrée</kbd> ou <kbd>Tab</kbd> pour la case suivante, les <kbd>flèches</kbd> pour te déplacer.</p>
-  </div>
-
-  <!-- Résultat -->
-  <div id="ecran-resultat" class="panel hidden">
-    <h2 id="res-titre">Résultat</h2>
-    <div class="resultat-cartes">
-      <div class="carte"><span class="carte-label">Note</span><span id="res-note" class="carte-value">—</span><span class="carte-unit">/100</span></div>
-      <div class="carte"><span class="carte-label">Cases justes</span><span id="res-justes" class="carte-value">—</span></div>
-      <div class="carte"><span class="carte-label">Temps</span><span id="res-temps" class="carte-value">—</span></div>
-      <div class="carte carte-forte"><span class="carte-label">Temps corrigé</span><span id="res-corrige" class="carte-value">—</span><span id="res-detail-penalite" class="carte-unit">—</span></div>
-      <div class="carte"><span class="carte-label">Erreurs</span><span id="res-erreurs" class="carte-value">—</span></div>
-    </div>
-    <p id="res-message" class="res-message"></p>
-    <div class="grille-wrap">
-      <table id="grille-correction" class="grille grille-correction"></table>
-    </div>
-    <div class="row">
-      <button id="btn-rejouer" class="btn btn-primary" type="button">Rejouer</button>
-      <button id="btn-retour" class="btn btn-ghost" type="button">Accueil</button>
-    </div>
-  </div>
-</section>
-
-<!-- ============ VUE SCORES ============ -->
-<section id="view-scores" class="view hidden">
-  <div class="panel">
-    <h2>🏆 Classement</h2>
-    <p class="lead">Classement au <strong>temps corrigé</strong> : le temps réel augmenté d'une pénalité
-       pour chaque case fausse ou laissée vide. Le plus petit temps corrigé gagne.</p>
-    <p class="note-info">temps corrigé = temps réel + nombre d'erreurs ×
-       <span id="cout-info">5</span> × (temps ÷ cases justes) — chaque erreur coûte le temps
-       de plusieurs cases, donc la pénalité pèse autant pour un rapide que pour un lent.</p>
-    <div id="podium" class="podium"></div>
-
-    <h2>Historique</h2>
-    <div class="row">
-      <select id="filtre-eleve"><option value="">Tous les élèves</option></select>
-      <label class="field-inline">Une erreur coûte le temps de
-        <input type="number" id="cout-erreur" min="1" max="20" step="1" value="5"> cases
-      </label>
-      <button id="btn-effacer" class="btn btn-ghost btn-danger" type="button">Effacer l'historique</button>
-    </div>
-    <div class="table-wrap">
-      <table id="table-historique" class="historique">
-        <thead><tr><th>Date</th><th>Élève</th><th>Note</th><th>Cases</th><th>Temps</th><th>Temps corrigé</th><th></th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <p class="note-info">Les scores sont enregistrés dans ce navigateur uniquement (aucun serveur, aucune donnée envoyée).</p>
-  </div>
-</section>
-
-<!-- ============ VUE IMPRESSION ============ -->
-<section id="view-impression" class="view hidden">
-  <div class="panel no-print">
-    <h2>🖨️ Grilles à imprimer</h2>
-    <p class="lead">Génère des grilles vierges, dans un ordre différent à chaque fois, à remplir au stylo.
-       Les tables imprimées sont celles choisies dans l'onglet <strong>Jouer</strong> (<span id="rappel-tables">—</span>).</p>
-    <div class="row">
-      <label class="field-inline">Nombre de grilles
-        <input type="number" id="nb-grilles" min="1" max="10" value="2">
-      </label>
-      <button id="btn-generer" class="btn btn-ghost" type="button">🎲 Nouvel ordre</button>
-      <button id="btn-imprimer" class="btn btn-primary" type="button">Imprimer</button>
-    </div>
-    <p id="alerte-impression" class="alerte hidden">Avec plus de 30 tables, la grille ne tient plus
-       sur une seule page : réduis la sélection dans l'onglet <strong>Jouer</strong>.</p>
-  </div>
-  <div id="feuilles"></div>
-</section>
-
 </main>
 
-<footer class="no-print">
-  <p>Outils scolaires — <a href="https://github.com/Le-Syl21/outils-scolaires">code source</a> — GPL v3</p>
+<footer>
+  <p>Code sous licence GPL v3 — <a href="https://github.com/Le-Syl21/outils-scolaires">dépôt GitHub</a>.
+     Écriture cursive composée avec la police
+     <a href="https://marelle.forge.apps.education.fr/">Marelle</a> (licence OFL).</p>
 </footer>
 
-<script src="assets/app.js"></script>
 </body>
 </html>

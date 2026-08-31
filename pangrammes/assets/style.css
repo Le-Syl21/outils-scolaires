@@ -1,0 +1,146 @@
+/* ------------------------------------------------------------------ */
+/* Marelle : la réglure Seyes est dessinée par la police elle-même.     */
+/* Le glyphe « espace » porte le lignage, les lettres prennent la       */
+/* couleur CSS. Une ligne d'espaces insécables = une ligne vierge.      */
+/* ------------------------------------------------------------------ */
+@font-face{
+  font-family:"Marelle";
+  src:url("../fonts/Marelle-Regular.woff2") format("woff2");
+  font-display:swap;
+}
+@font-face{
+  font-family:"Marelle Lignes";
+  src:url("../fonts/MarelleLIGNES-Regular.woff2") format("woff2");
+  font-display:swap;
+}
+
+/* ---------- Réglages ---------- */
+.reglages{
+  display:grid;gap:16px;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  margin-bottom:12px;
+}
+.reglages .field{margin-bottom:0}
+.reglages select{width:100%;min-width:0}
+.row-actions{margin-top:18px;align-items:center}
+.jauge{font-size:.95rem;color:var(--gris)}
+.jauge.ok{color:var(--vert)}
+.jauge.trop{color:var(--rouge);font-weight:600}
+
+/* ---------- La feuille ---------- */
+.feuille{
+  --interligne:2mm;
+  --taille-ecriture:calc(var(--interligne) / 0.48);   /* hauteur d'x = 0,48 em */
+  background:#fff;color:#000;
+  width:210mm;margin:0 auto 24px;padding:15mm;
+  box-shadow:var(--ombre);border-radius:2px;
+}
+.feuille-entete{
+  display:flex;flex-wrap:wrap;gap:10px 24px;align-items:flex-end;
+  margin-bottom:6mm;font-family:system-ui,sans-serif;
+}
+.feuille-titre{font-size:11pt;font-weight:700;margin:0}
+.feuille-titre small{display:block;font-weight:400;color:#555;font-size:9pt}
+.feuille-champs{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;font-size:10pt}
+.champ-boite{border:1.5pt solid #000;padding:2pt 6pt;min-width:26mm;min-height:8mm}
+.champ-boite span{font-size:8pt;color:#333;display:block}
+.consigne{
+  font-family:system-ui,sans-serif;font-size:9.5pt;color:#333;
+  margin:0 0 4mm;padding-bottom:2mm;border-bottom:.5pt solid #bbb;
+}
+
+/* ---------- Zone d'écriture ---------- */
+.zone-ecriture{
+  position:relative;padding-left:22mm;
+}
+.zone-ecriture::before{           /* la marge du cahier */
+  content:"";position:absolute;top:0;bottom:0;left:20mm;
+  width:.7mm;background:#e2574c;
+}
+.ligne{
+  font-family:"Marelle Lignes","Marelle",cursive;
+  font-size:var(--taille-ecriture);
+  line-height:2.4;                 /* 5 interlignes : la réglure s'enchaîne */
+  margin:0;color:#111;
+}
+.ligne.modele{color:#111}
+.ligne.repasse{color:rgba(17,17,17,.5)}   /* modèle à repasser, 50 % */
+.ligne.libre{white-space:nowrap;overflow:hidden;color:transparent}
+
+/* ---------- Mots expliqués ---------- */
+.lexique{
+  margin:6mm 0 0;padding-top:3mm;border-top:.5pt solid #bbb;
+  font-family:system-ui,sans-serif;font-size:9pt;color:#222;
+}
+.lexique h3{font-size:9pt;margin:0 0 2mm;text-transform:uppercase;letter-spacing:.06em;color:#555}
+.lexique dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:1mm 4mm}
+.lexique dt{font-weight:700}
+.lexique dd{margin:0}
+
+/* ---------- Collection ---------- */
+.filtres{margin-top:8px}
+.carte-pangramme{
+  background:var(--carte);border-radius:var(--radius);box-shadow:var(--ombre);
+  padding:20px 24px;margin-bottom:14px;
+}
+.carte-pangramme .cursive{
+  font-family:"Marelle",cursive;font-size:1.9rem;line-height:1.7;
+  margin:0 0 10px;color:var(--encre);
+}
+.carte-pangramme .infos{
+  display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+  font-size:.9rem;color:var(--gris);margin-bottom:10px;
+}
+.badge{
+  background:var(--peche-clair);color:var(--orange);border-radius:999px;
+  padding:2px 12px;font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;
+}
+.mots{margin:0 0 14px;padding:0;list-style:none;display:grid;gap:6px}
+.mots li{font-size:.95rem}
+.mots strong{color:var(--encre)}
+.mots span{color:var(--gris)}
+
+/* ---------- Chrono ---------- */
+.phrase-en-cours{margin:4px 0 16px;color:var(--gris)}
+.phrase-en-cours strong{color:var(--encre)}
+.chrono-bloc{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:8px}
+.chrono-affichage{
+  font-size:3.4rem;font-weight:800;font-variant-numeric:tabular-nums;
+  color:var(--orange);line-height:1;
+}
+.curseur{width:min(360px,100%);accent-color:var(--orange)}
+.podium{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.podium-place{
+  background:var(--peche-clair);border-radius:var(--radius);padding:14px 20px;
+  min-width:170px;border-left:6px solid var(--peche);
+}
+.podium-place.p1{border-left-color:#e0a800}
+.podium-place.p2{border-left-color:#9aa0a6}
+.podium-place.p3{border-left-color:#b87333}
+.podium-nom{font-weight:700;font-size:1.1rem}
+.podium-score{font-size:1.5rem;font-weight:800;color:var(--orange);line-height:1.2}
+.podium-detail{color:var(--gris);font-size:.9rem}
+.table-wrap{overflow-x:auto}
+.historique{width:100%;border-collapse:collapse}
+.historique th,.historique td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--peche)}
+.historique th{font-size:.8rem;text-transform:uppercase;color:var(--gris)}
+.historique .phrase{max-width:26ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.historique .sup{background:none;border:0;color:var(--gris);cursor:pointer;font-size:1rem}
+.historique .sup:hover{color:var(--rouge)}
+
+/* ---------- Impression ---------- */
+@media print{
+  @page{size:A4 portrait;margin:15mm}
+  body{background:#fff}
+  main{padding:0;max-width:none}
+  #view-collection,#view-chrono{display:none !important}
+  #view-feuille{display:block !important}
+  .feuille{
+    width:auto;padding:0;margin:0;box-shadow:none;border-radius:0;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+}
+
+@media (max-width:820px){
+  .feuille{width:auto;max-width:100%;padding:10mm}
+}

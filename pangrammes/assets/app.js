@@ -122,7 +122,7 @@ function blocHTML(p, repasses, libres, avecMots, avecGrammaire, avecChrono) {
     ? `<p class="analyse"><strong>Temps du verbe :</strong> ${echapper(p.temps)} — `
       + `${echapper(p.quand)}</p>`
     : '';
-  const sens = avecMots
+  const sens = (avecMots && p.sens)
     ? `<p class="sens"><strong>Explication de texte :</strong> ${echapper(p.sens)}</p>`
     : '';
   /* tous les mots à la suite, pour tenir sur une ou deux lignes */
@@ -525,7 +525,7 @@ $('#btn-enregistrer-pangramme').addEventListener('click', () => {
     niveau: n <= 55 ? 'court' : (n <= 72 ? 'moyen' : 'long'),
     temps: $('#temps-verbe').value,
     quand: $('#quand-verbe').value.trim() || TEMPS[$('#temps-verbe').value] || '',
-    sens: $('#sens-phrase').value.trim() || 'À toi de raconter ce que dit la phrase.',
+    sens: $('#sens-phrase').value.trim(),   // facultatif : rien ne s'affiche si vide
     mots: [...motsRares],
     segments,
     perso: true,
@@ -584,7 +584,8 @@ function afficherCollection() {
         <span class="badge">${p.niveau}</span>
         <span>${p.signes} signes</span>
       </p>
-      <p class="sens"><strong>Explication de texte :</strong> ${echapper(p.sens)}</p>
+      ${p.sens ? `<p class="sens"><strong>Explication de texte :</strong>
+        ${echapper(p.sens)}</p>` : ''}
       <p class="analyse"><strong>Temps du verbe :</strong> ${echapper(p.temps)} —
         ${echapper(p.quand)}</p>
       ${p.mots.length ? `<ul class="mots">${p.mots.map(m =>

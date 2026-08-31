@@ -37,6 +37,10 @@ let indexCourant = 0;   // pangramme affiché
 
 /* La collection : les phrases livrées, plus celles écrites à l'atelier */
 let mesPangrammes = lire(CLES.miens, []);
+/* les premières versions inscrivaient un texte de remplacement ; on l'oublie */
+mesPangrammes.forEach(p => {
+  if (p.sens === 'À toi de raconter ce que dit la phrase.') p.sens = '';
+});
 let COLLECTION = [];
 function majCollection() {
   COLLECTION = PANGRAMMES.concat(mesPangrammes);
@@ -542,6 +546,29 @@ $('#btn-enregistrer-pangramme').addEventListener('click', () => {
   remplirChoixPangrammes();
 });
 
+/* Recharge une création dans l'atelier pour la corriger : le texte, le
+   marquage des groupes, le temps et les mots rares y reviennent tels quels. */
+function chargerDansAtelier(p) {
+  $('#saisie-pangramme').value = p.texte;
+  jetons = p.texte.match(/\S+|\s+/g) || [];
+  const bornes = [];
+  let pos = 0;
+  p.segments.forEach(seg => { bornes.push([pos, pos + seg.t.length, seg.f]); pos += seg.t.length; });
+  let curseur = 0;
+  fonctions = jetons.map(jeton => {
+    const borne = bornes.find(([a, z]) => curseur >= a && curseur < z);
+    curseur += jeton.length;
+    return borne ? borne[2] : 'neutre';
+  });
+  $('#temps-verbe').value = p.temps;
+  $('#quand-verbe').value = p.quand || '';
+  $('#sens-phrase').value = p.sens || '';
+  motsRares = p.mots.map(m => ({ ...m }));
+  majMotsRares();
+  majAlphabet();
+  window.scrollTo(0, 0);
+}
+
 function afficherMesPangrammes() {
   $('#liste-mes-pangrammes').innerHTML = mesPangrammes.length
     ? mesPangrammes.map((p, i) => `<article class="carte-pangramme">
@@ -557,13 +584,30 @@ function afficherMesPangrammes() {
           `<li><strong>${echapper(m.mot)}</strong> — <span>${echapper(m.sens)}</span></li>`
         ).join('')}</ul>` : ''}
         <p class="legende">${legendeHTML()}</p>
-        <button class="btn btn-ghost btn-sm btn-danger" data-supprimer="${i}" type="button">
-          Retirer de la collection</button>
+        <div class="row">
+          <button class="btn btn-ghost btn-sm" data-modifier="${i}" type="button">
+            Reprendre dans l'atelier</button>
+          <button class="btn btn-ghost btn-sm btn-danger" data-supprimer="${i}" type="button">
+            Retirer de la collection</button>
+        </div>
       </article>`).join('')
     : '<p class="vide">Aucun pangramme écrit pour l’instant.</p>';
 }
 
 $('#liste-mes-pangrammes').addEventListener('click', (e) => {
+  const reprise = e.target.closest('[data-modifier]');
+  if (reprise) {
+    const i = Number(reprise.dataset.modifier);
+    const p = mesPangrammes[i];
+    mesPangrammes.splice(i, 1);          // elle repart de l'atelier
+    ecrire(CLES.miens, mesPangrammes);
+    majCollection();
+    chargerDansAtelier(p);
+    afficherMesPangrammes();
+    afficherCollection();
+    remplirChoixPangrammes();
+    return;
+  }
   const btn = e.target.closest('[data-supprimer]');
   if (!btn) return;
   if (!confirm('Retirer ce pangramme de la collection ?')) return;

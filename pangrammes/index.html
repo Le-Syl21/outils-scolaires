@@ -17,6 +17,7 @@
   <nav class="tabs" role="tablist">
     <button class="tab is-active" data-view="feuille" role="tab">Feuille</button>
     <button class="tab" data-view="collection" role="tab">Collection</button>
+    <button class="tab" data-view="cours" role="tab">Cours</button>
     <button class="tab" data-view="atelier" role="tab">Atelier</button>
     <button class="tab" data-view="chrono" role="tab">Chrono</button>
   </nav>
@@ -124,6 +125,58 @@
   <div id="liste-pangrammes"></div>
 </section>
 
+<!-- ============ COURS ============ -->
+<section id="view-cours" class="view hidden">
+  <div class="panel">
+    <h2>Les groupes de la phrase</h2>
+    <p class="lead">Chaque groupe répond à une question. Poser la question, c'est trouver la
+       fonction — c'est aussi ce que font les couleurs des feuilles.</p>
+    <div class="table-wrap">
+      <table class="cours">
+        <thead><tr><th>Groupe</th><th>Il répond à</th><th>Comment le reconnaître</th></tr></thead>
+        <tbody id="cours-fonctions"></tbody>
+      </table>
+    </div>
+    <p class="note-info">Attention à ne pas confondre <strong>nature</strong> et
+       <strong>fonction</strong>. « Demain » est un adverbe par nature ; dans « Demain, ce wombat
+       fabriquera… », sa fonction est complément circonstanciel de temps. Les couleurs marquent la
+       fonction, sauf pour l'adverbe de liaison qui n'en a aucune.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Les temps du verbe</h2>
+    <p class="lead">Ceux que l'on rencontre dans la collection, avec une phrase pour chacun.</p>
+    <div id="cours-temps" class="cours-temps"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Les mots qui relient</h2>
+    <p class="lead">Ils n'ont pas de fonction dans la phrase : ils l'articulent. On peut souvent
+       les retirer sans que la phrase s'écroule.</p>
+    <ul class="mots">
+      <li><strong>puis, ensuite, bientôt</strong> — <span>des adverbes. Ils marquent le moment
+        ou l'ordre des actions. « Il mange, <em>puis</em> il part. »</span></li>
+      <li><strong>et, ou, mais, donc, car</strong> — <span>des conjonctions de coordination.
+        Elles relient deux groupes ou deux phrases de même niveau.</span></li>
+      <li><strong>qui, que</strong> — <span>des pronoms relatifs. Ils accrochent à un nom une
+        petite phrase qui le complète : « le koala <em>qui</em> mange des journaux ».</span></li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2>Qu'est-ce qu'un pangramme ?</h2>
+    <p>Une phrase qui contient les <strong>26 lettres de l'alphabet</strong>. Le plus célèbre en
+       français est <em>« Portez ce vieux whisky au juge blond qui fume »</em> : aucune de ses
+       consonnes n'est répétée, ce qui est un exploit dans l'exploit.</p>
+    <p>Un bon pangramme est court, et il veut dire quelque chose — sans quoi ce n'est qu'une
+       liste de mots. Les phrases de cette collection sont toutes vérifiées : les 26 lettres y
+       sont, et chacune raconte une scène.</p>
+    <p class="note-info">Les accents ne comptent pas comme des lettres à part : « é » vaut « e ».
+       Les noms propres sont admis, mais un pangramme qui n'aurait besoin que de noms propres
+       serait un peu tricheur.</p>
+  </div>
+</section>
+
 <!-- ============ ATELIER ============ -->
 <section id="view-atelier" class="view hidden">
   <div class="panel">
@@ -147,6 +200,7 @@
       <button class="btn btn-ghost btn-sm" data-f="cod" type="button">objet direct</button>
       <button class="btn btn-ghost btn-sm" data-f="coi" type="button">objet indirect</button>
       <button class="btn btn-ghost btn-sm" data-f="cc" type="button">circonstanciel</button>
+      <button class="btn btn-ghost btn-sm" data-f="adv" type="button">adverbe</button>
     </div>
     <p id="mots-cliquables" class="mots-cliquables"></p>
 

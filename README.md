@@ -33,6 +33,8 @@ Améliorer son écriture — la vitesse et la lisibilité — en découvrant ple
 - **Collection** : 27 pangrammes français, chacun vérifié par programme — les 26 lettres sont bien
   présentes, le découpage grammatical se recompose exactement en la phrase. Les phrases sans queue
   ni tête ont été écartées : un pangramme doit pouvoir se raconter.
+- **Cours** : ce que sont les groupes de la phrase, la question à laquelle chacun répond, les
+  temps du verbe avec une phrase pour chacun, et les mots qui relient sans avoir de fonction.
 - **Atelier** : écrire ses propres pangrammes. L'alphabet s'affiche et chaque lettre employée se
   barre ; quand les 26 sont trouvées, la phrase peut être analysée — groupes cliqués un à un,
   temps du verbe, explication de texte, mots rares — puis rejoindre la collection et les feuilles.

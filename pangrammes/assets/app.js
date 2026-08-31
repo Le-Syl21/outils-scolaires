@@ -51,6 +51,7 @@ $$('.tab').forEach(tab => tab.addEventListener('click', () => {
   $$('.tab').forEach(t => t.classList.toggle('is-active', t === tab));
   $$('.view').forEach(v => v.classList.toggle('hidden', v.id !== 'view-' + tab.dataset.view));
   if (tab.dataset.view === 'chrono') { rafraichirEleves(); afficherScores(); }
+  if (tab.dataset.view === 'cours') afficherCours();
 }));
 
 const allerA = (vue) => $(`.tab[data-view="${vue}"]`).click();
@@ -94,6 +95,23 @@ const phraseAnalysee = (p) => p.segments.map(s =>
 const FONCTIONS = {
   sujet:'sujet', verbe:'verbe', cod:"complément d'objet direct",
   coi:"complément d'objet indirect", cc:'complément circonstanciel',
+  adv:'adverbe',
+};
+
+/* Ce que chaque groupe apporte, pour le cours */
+const LECON = {
+  sujet: ["Qui est-ce qui ? Qu'est-ce qui ?",
+    "Celui qui fait l'action. Retire-le et le verbe n'a plus personne pour agir."],
+  verbe: ["Que fait-il ? Que se passe-t-il ?",
+    "L'action ou l'état. Il change de forme avec le temps : mange, mangeait, mangera."],
+  cod: ["Le verbe, puis quoi ? ou qui ?",
+    "Il se place juste après le verbe, sans petit mot devant."],
+  coi: ["À qui ? À quoi ? De qui ? De quoi ?",
+    "Comme l'objet direct, mais annoncé par une préposition : à, de, chez, sur…"],
+  cc: ["Où ? Quand ? Comment ? Pourquoi ?",
+    "Il précise les circonstances. On peut souvent le déplacer, ou le supprimer."],
+  adv: ["Il ne répond à aucune de ces questions.",
+    "Il relie ou précise, sans fonction dans la phrase : puis, ensuite, bientôt."],
 };
 const legendeHTML = () => Object.entries(FONCTIONS)
   .map(([cle, nom]) => `<span class="g-${cle}">${nom}</span>`).join(' · ');
@@ -334,6 +352,42 @@ $('#btn-tirage').addEventListener('click', () => {
 
 $('#btn-imprimer').addEventListener('click', () => window.print());
 window.addEventListener('resize', construireFeuille);
+
+/* ------------------------------------------------------------------ */
+/* Le cours                                                            */
+/* ------------------------------------------------------------------ */
+/* Un exemple pris dans la collection : le premier groupe rencontré pour
+   cette fonction, cité avec la phrase d'où il vient. */
+function exemplePour(fonction) {
+  for (const p of COLLECTION) {
+    const seg = p.segments.find(x => x.f === fonction);
+    if (seg) return { groupe: seg.t.trim(), phrase: p.texte };
+  }
+  return null;
+}
+
+function afficherCours() {
+  $('#cours-fonctions').innerHTML = Object.entries(LECON).map(([cle, [question, aide]]) => {
+    const ex = exemplePour(cle);
+    return `<tr>
+      <td><span class="g-${cle}">${FONCTIONS[cle]}</span></td>
+      <td>${echapper(question)}</td>
+      <td>${echapper(aide)}
+        ${ex ? `<span class="exemple">« ${echapper(ex.groupe)} » dans
+          <em>${echapper(ex.phrase)}</em></span>` : ''}</td>
+    </tr>`;
+  }).join('');
+
+  /* un temps, son explication, et une phrase de la collection qui l'emploie */
+  const vus = new Map();
+  COLLECTION.forEach(p => { if (!vus.has(p.temps)) vus.set(p.temps, p); });
+  $('#cours-temps').innerHTML = [...vus.entries()].map(([temps, p]) => `
+    <article class="carte-temps">
+      <h3>${echapper(temps)}</h3>
+      <p>${echapper(p.quand)}</p>
+      <p class="exemple-phrase">${phraseAnalysee(p)}</p>
+    </article>`).join('');
+}
 
 /* ------------------------------------------------------------------ */
 /* L'atelier : écrire et analyser ses propres pangrammes               */
@@ -752,6 +806,7 @@ $('#temps-verbe').innerHTML = Object.keys(TEMPS).map(t => `<option>${t}</option>
 $('#quand-verbe').value = TEMPS[$('#temps-verbe').value];
 majAlphabet();
 afficherMesPangrammes();
+afficherCours();
 
 afficherCollection();
 majPhraseChrono();

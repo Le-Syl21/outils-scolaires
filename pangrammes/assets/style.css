@@ -173,6 +173,11 @@
 .g-cod  {color:#1f7a44;text-decoration-style:dotted;text-decoration-color:#1f7a44}
 .g-coi  {color:#7a3fa8;text-decoration-style:dashed;text-decoration-color:#7a3fa8}
 .g-cc   {color:#a8641a;text-decoration-style:wavy;text-decoration-color:#a8641a}
+/* L'adverbe n'a pas de fonction : il est encadré, non souligné */
+.g-adv{
+  color:#5c5c5c;text-decoration-line:none;
+  border:1px dotted #9a9a9a;border-radius:3px;padding:0 2px;
+}
 
 /* ---------- Mots expliqués ---------- */
 .lexique{
@@ -212,6 +217,22 @@
 .mots li{font-size:.95rem}
 .mots strong{color:var(--encre)}
 .mots span{color:var(--gris)}
+
+/* ---------- Cours ---------- */
+table.cours{width:100%;border-collapse:collapse;font-size:.98rem;min-width:640px}
+table.cours th,table.cours td{
+  text-align:left;padding:10px 12px;border-bottom:1px solid var(--peche);vertical-align:top;
+}
+table.cours th{font-size:.8rem;text-transform:uppercase;color:var(--gris)}
+table.cours td:first-child{white-space:nowrap;font-weight:600}
+.exemple{display:block;margin-top:6px;color:var(--gris);font-size:.92rem}
+.cours-temps{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.carte-temps{
+  background:var(--peche-clair);border-radius:var(--radius);padding:16px 18px;
+}
+.carte-temps h3{margin:0 0 6px;font-size:1.05rem;color:var(--orange)}
+.carte-temps p{margin:0 0 8px;font-size:.95rem}
+.exemple-phrase{font-size:1rem;color:var(--encre)}
 
 /* ---------- Atelier ---------- */
 #saisie-pangramme{

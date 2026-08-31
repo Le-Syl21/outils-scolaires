@@ -886,7 +886,15 @@ const PANGRAMMES = [
         "f": "cod"
       },
       {
-        "t": " puis ",
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "puis",
+        "f": "adv"
+      },
+      {
+        "t": " ",
         "f": "neutre"
       },
       {
@@ -1283,7 +1291,15 @@ const PANGRAMMES = [
         "f": "cod"
       },
       {
-        "t": " puis ",
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "puis",
+        "f": "adv"
+      },
+      {
+        "t": " ",
         "f": "neutre"
       },
       {
@@ -1371,7 +1387,15 @@ const PANGRAMMES = [
         "f": "cc"
       },
       {
-        "t": ", puis ",
+        "t": ", ",
+        "f": "neutre"
+      },
+      {
+        "t": "puis",
+        "f": "adv"
+      },
+      {
+        "t": " ",
         "f": "neutre"
       },
       {

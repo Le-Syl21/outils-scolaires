@@ -10,11 +10,11 @@ const CLES = { eleves:'defiTables.eleves', resultats:'defiTables.resultats',
                extras:'defiTables.extras', operation:'defiTables.operation' };
 
 const OPERATIONS = {
-  'x':     { signe:'×', nom:'multiplication', libelle:'fois' },
-  '+':     { signe:'+', nom:'addition',       libelle:'plus' },
-  '-':     { signe:'−', nom:'soustraction',   libelle:'moins' },
-  '/':     { signe:'÷', nom:'division',       libelle:'divisé par' },
-  'mixte': { signe:'?', nom:'calcul mélangé', libelle:'opéré avec' },
+  'x':     { signe:'×', nom:'multiplication', libelle:'fois',       cle:'mul' },
+  '+':     { signe:'+', nom:'addition',       libelle:'plus',       cle:'add' },
+  '-':     { signe:'−', nom:'soustraction',   libelle:'moins',      cle:'sou' },
+  '/':     { signe:'÷', nom:'division',       libelle:'divisé par', cle:'div' },
+  'mixte': { signe:'?', nom:'calcul mélangé', libelle:'opéré avec', cle:'mix' },
 };
 const $  = (sel, ctx=document) => ctx.querySelector(sel);
 const $$ = (sel, ctx=document) => [...ctx.querySelectorAll(sel)];
@@ -385,7 +385,8 @@ function construireGrille() {
         return '<td class="neutre" aria-hidden="true"></td>';
       }
       const marque = partie.operation === 'mixte'
-        ? `<span class="signe-case">${OPERATIONS[op].signe}</span>` : '';
+        ? `<span class="signe-case op-${OPERATIONS[op].cle}">${OPERATIONS[op].signe}</span>`
+        : '';
       return `<td>${marque}<input type="text" inputmode="numeric" autocomplete="off" maxlength="4"
         aria-label="${l} ${OPERATIONS[op].libelle} ${c}" data-r="${i}" data-c="${j}"></td>`;
     }).join('') + '</tr>';
@@ -401,11 +402,11 @@ function dimensionnerGrille() {
   const t = $('#grille-jeu');
   /* on retranche les marges de la page et du panneau, et on ne dépasse
      pas la largeur maximale du contenu */
-  const dispo = Math.max(320, Math.min(window.innerWidth, 1400) - 90);
+  const dispo = Math.max(320, Math.min(window.innerWidth, 1120) - 90);
   const cote = Math.max(30,
-    Math.min(114, Math.floor(dispo / (partie.colonnes.length + 1))));
+    Math.min(76, Math.floor(dispo / (partie.colonnes.length + 1))));
   t.style.setProperty('--case-w', cote + 'px');
-  t.style.setProperty('--case-fs', Math.max(.85, Math.min(2.2, cote / 46)) + 'rem');
+  t.style.setProperty('--case-fs', Math.max(.85, Math.min(1.55, cote / 46)) + 'rem');
 }
 window.addEventListener('resize', dimensionnerGrille);
 
@@ -608,7 +609,7 @@ function feuilleHTML() {
       if (attendu(l, c, op) === null) return '<td class="neutre"></td>';
       aRemplir++;
       return operation === 'mixte'
-        ? `<td><span class="signe-case">${OPERATIONS[op].signe}</span></td>`
+        ? `<td><span class="signe-case op-${OPERATIONS[op].cle}">${OPERATIONS[op].signe}</span></td>`
         : '<td></td>';
     }).join('') + '</tr>';
   });

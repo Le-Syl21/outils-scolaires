@@ -190,10 +190,12 @@ function figuresDuPalier() {
 
 function remplirChoixFigures() {
   const liste = figuresDuPalier();
+  /* le nombre de côtés se compte sur le tracé réel, contours multiples compris ;
+     le compter sur la liste des points oubliait la fermeture et le second contour */
   $('#choix-figure').innerHTML =
-    '<option value="-1">Au hasard</option>' +
-    liste.map((f, i) => `<option value="${i}">Figure ${i + 1} — ${f.points.length +
-      (f.ferme ? 0 : -1)} traits</option>`).join('');
+    '<option value="-1">Au hasard — tu découvriras la figure à la fin</option>' +
+    liste.map((f, i) => `<option value="${i}">${echapper(f.nom)} — ${cotesDe(f).length} côtés,
+      ${segmentsDe(f).length} segments</option>`).join('');
 }
 
 function demarrer(indexVoulu) {

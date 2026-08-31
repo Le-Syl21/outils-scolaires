@@ -1311,5 +1311,85 @@ const PANGRAMMES = [
         "f": "neutre"
       }
     ]
+  },
+  {
+    "texte": "La voiture Xantia a roulé sur les zébras du Y, klaxonné cinq fois, puis foncé chez mon jeune garagiste wallon.",
+    "signes": 110,
+    "niveau": "long",
+    "temps": "passé composé",
+    "quand": "L'action est finie. Le verbe s'écrit en deux mots ; ici, un seul auxiliaire « a » commande trois participes passés.",
+    "sens": "Une voiture franchit les hachures d'un carrefour en Y, klaxonne, puis file chez le garagiste.",
+    "mots": [
+      {
+        "mot": "zébras",
+        "sens": "Bandes blanches peintes en biais sur la route, qu'on ne doit pas franchir."
+      },
+      {
+        "mot": "Xantia",
+        "sens": "Un modèle de voiture des années 1990."
+      },
+      {
+        "mot": "wallon",
+        "sens": "De Wallonie, la partie francophone de la Belgique."
+      }
+    ],
+    "segments": [
+      {
+        "t": "La voiture Xantia",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "a roulé",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "sur les zébras du Y",
+        "f": "cc"
+      },
+      {
+        "t": ", ",
+        "f": "neutre"
+      },
+      {
+        "t": "klaxonné",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "cinq fois",
+        "f": "cc"
+      },
+      {
+        "t": ", puis ",
+        "f": "neutre"
+      },
+      {
+        "t": "foncé",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "chez mon jeune garagiste wallon",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
   }
 ];

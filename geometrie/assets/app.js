@@ -199,6 +199,52 @@ const croixSVG = ([x, y]) =>
      stroke="#e8501e" stroke-width="0.07" stroke-linecap="round"/>`;
 
 /* ------------------------------------------------------------------ */
+/* Mesures : périmètre et aire                                         */
+/* ------------------------------------------------------------------ */
+/* Le périmètre se compte en carreaux parcourus, l'aire par la formule du
+   lacet. L'exercice se limite aux figures à angles droits et à contour
+   unique : une diagonale mesure la racine de deux, et un enfant de primaire
+   ne compte pas des demi-carreaux. */
+const estRectiligne = (figure) => contoursDe(figure).length === 1
+  && cotesDe(figure).every(c => {
+       const [[x1, y1], [x2, y2]] = pointsDeCle(c);
+       return x1 === x2 || y1 === y2;
+     });
+
+const perimetreDe = (figure) => segmentsDe(figure).length;
+
+function aireDe(figure) {
+  const pts = contoursDe(figure)[0];
+  let deux = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const [x1, y1] = pts[i], [x2, y2] = pts[(i + 1) % pts.length];
+    deux += x1 * y2 - x2 * y1;
+  }
+  return Math.abs(deux) / 2;
+}
+
+/* De quoi varier à l'infini : un rectangle, parfois amputé d'un coin.
+   Le L a le même périmètre que le rectangle dont il vient — une belle
+   surprise à faire découvrir. */
+function figureRectiligne() {
+  const l = 3 + Math.floor(Math.random() * 5);
+  const h = 2 + Math.floor(Math.random() * 5);
+  const x = 1, y = 1;
+  /* le quadrillage colle à la figure, avec un carreau de marge : un grand
+     quadrillage vide pour un petit rectangle rend le comptage plus pénible */
+  const grille = Math.max(l, h) + 2;
+  if (Math.random() < 0.45) {
+    return { nom: 'Le rectangle', palier: 1, grille, couleur: '#e8501e',
+      points: [[x, y], [x + l, y], [x + l, y + h], [x, y + h]], ferme: true };
+  }
+  const a = 1 + Math.floor(Math.random() * (l - 1));
+  const b = 1 + Math.floor(Math.random() * (h - 1));
+  return { nom: 'La figure en L', palier: 1, grille, couleur: '#1f8a4c',
+    points: [[x, y], [x + l, y], [x + l, y + h - b], [x + l - a, y + h - b],
+             [x + l - a, y + h], [x, y + h]], ferme: true };
+}
+
+/* ------------------------------------------------------------------ */
 /* Élèves                                                              */
 /* ------------------------------------------------------------------ */
 function rafraichirEleves() {
@@ -436,8 +482,123 @@ function verifier() {
   afficherScores();
 }
 
-$('#btn-demarrer').addEventListener('click', () => demarrer(Number($('#choix-figure').value)));
-$('#btn-hasard').addEventListener('click', () => demarrer(-1));
+/* ------------------------------------------------------------------ */
+/* La série de mesures                                                 */
+/* ------------------------------------------------------------------ */
+const FIGURES_PAR_SERIE = 5;
+let serie = null;
+
+function tirerFigureMesurable() {
+  const livrees = FIGURES.filter(estRectiligne);
+  /* deux tirages sur trois viennent du générateur : les figures livrées se
+     reconnaîtraient trop vite */
+  return (Math.random() < 0.34 && livrees.length)
+    ? livrees[Math.floor(Math.random() * livrees.length)]
+    : figureRectiligne();
+}
+
+function demarrerMesures() {
+  const eleve = $('#select-eleve').value;
+  if (!eleve) { alert('Choisis d’abord un élève (bouton « + Nouveau »).'); return; }
+  serie = {
+    eleve, index: 0, justes: 0,
+    figures: Array.from({ length: FIGURES_PAR_SERIE }, tirerFigureMesurable),
+    debut: Date.now(), minuteur: null, finie: false,
+  };
+  $('#mes-nom').textContent = eleve;
+  $('#mes-message').textContent = '';
+  $('#mes-message').className = 'message';
+  $('#mes-apres').classList.add('hidden');
+  $('#ecran-accueil').classList.add('hidden');
+  $('#ecran-mesures').classList.remove('hidden');
+  serie.minuteur = setInterval(() => {
+    $('#mes-chrono').textContent = formatTemps((Date.now() - serie.debut) / 1000);
+  }, 250);
+  afficherMesure();
+}
+
+function afficherMesure() {
+  const f = serie.figures[serie.index];
+  $('#mes-compte').textContent = `${serie.index + 1}/${FIGURES_PAR_SERIE}`;
+  $('#mes-figure').innerHTML = svgQuadrillage(f.grille,
+    polygoneSVG({ ...f, couleur: '#f6d9cd' })
+    + cotesDe(f).map(c => traitSVG(c, 'modele')).join(''));
+  $('#mes-perimetre').value = '';
+  $('#mes-aire').value = '';
+  $('#mes-perimetre').focus();
+}
+
+$('#btn-mes-valider').addEventListener('click', () => {
+  if (!serie || serie.finie) return;
+  const f = serie.figures[serie.index];
+  const p = Number($('#mes-perimetre').value);
+  const a = Number($('#mes-aire').value);
+  const bonP = p === perimetreDe(f), bonA = a === aireDe(f);
+  serie.justes += (bonP ? 1 : 0) + (bonA ? 1 : 0);
+
+  if (!bonP || !bonA) {
+    const dits = [];
+    if (!bonP) dits.push(`périmètre ${perimetreDe(f)}`);
+    if (!bonA) dits.push(`aire ${aireDe(f)}`);
+    $('#mes-message').textContent = `Non : ${dits.join(', ')}.`;
+    $('#mes-message').className = 'message erreur';
+  } else {
+    $('#mes-message').textContent = 'Les deux sont justes !';
+    $('#mes-message').className = 'message reussite';
+  }
+
+  serie.index++;
+  if (serie.index < FIGURES_PAR_SERIE) { afficherMesure(); return; }
+
+  clearInterval(serie.minuteur);
+  serie.finie = true;
+  const temps = Math.max(1, Math.round((Date.now() - serie.debut) / 1000));
+  const total = FIGURES_PAR_SERIE * 2;
+  const erreurs = total - serie.justes;
+  const note = Math.round(serie.justes / total * 100);
+  const corrige = serie.justes
+    ? Math.round(temps * (1 + COUT_ERREUR * erreurs / serie.justes))
+    : temps * 10;
+  resultats.push({
+    id: Date.now(), date: new Date().toISOString(), eleve: serie.eleve,
+    figure: 'Périmètre et aire', palier: 0,
+    traits: total, justes: serie.justes, erreurs, note, temps, corrige,
+  });
+  ecrire(CLES.resultats, resultats);
+  $('#mes-message').innerHTML =
+    `<strong>${note}/100</strong> — ${serie.justes} bonnes réponses sur ${total}, `
+    + `en ${formatTemps(temps)} (corrigé ${formatTemps(corrige)}).`;
+  $('#mes-message').className = 'message ' + (note === 100 ? 'reussite' : 'erreur');
+  $('#mes-apres').classList.remove('hidden');
+  afficherScores();
+});
+
+$('#mes-aire').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') $('#btn-mes-valider').click();
+});
+$('#mes-suivante').addEventListener('click', demarrerMesures);
+$('#mes-retour').addEventListener('click', () => {
+  if (serie) clearInterval(serie.minuteur);
+  $('#ecran-mesures').classList.add('hidden');
+  $('#ecran-accueil').classList.remove('hidden');
+  rafraichirEleves();
+});
+
+$('#btn-demarrer').addEventListener('click', () => {
+  if ($('#exercice').value === 'mesures') { demarrerMesures(); return; }
+  demarrer(Number($('#choix-figure').value));
+});
+$('#btn-hasard').addEventListener('click', () => {
+  if ($('#exercice').value === 'mesures') { demarrerMesures(); return; }
+  demarrer(-1);
+});
+
+/* le choix d'une figure précise n'a pas de sens pour une série de mesures */
+$('#exercice').addEventListener('change', () => {
+  const mesures = $('#exercice').value === 'mesures';
+  $('#choix-figure').closest('.field').classList.toggle('hidden', mesures);
+  genererFeuille();
+});
 $('#btn-suivante').addEventListener('click', () => demarrer(-1));
 $('#btn-refaire').addEventListener('click', () => {
   const liste = figuresDuPalier();
@@ -466,8 +627,11 @@ $('#palier').addEventListener('change', () => {
 function genererFeuille() {
   const combien = Math.max(1, Math.min(4, Number($('#nb-exercices').value) || 1));
   const carreau = $('#carreau').value;
-  const liste = figuresDuPalier();
-  const tirage = [...liste].sort(() => Math.random() - 0.5).slice(0, combien);
+  const mesures = $('#exercice').value === 'mesures';
+  const liste = mesures ? [] : figuresDuPalier();
+  const tirage = mesures
+    ? Array.from({ length: combien }, tirerFigureMesurable)
+    : [...liste].sort(() => Math.random() - 0.5).slice(0, combien);
   while (tirage.length < combien) tirage.push(liste[Math.floor(Math.random() * liste.length)]);
 
   $('#feuille').innerHTML = `<section class="page" style="--carreau:${carreau}mm">
@@ -479,7 +643,9 @@ function genererFeuille() {
         <div class="champ-boite"><span>Fin</span></div>
       </div>
     </header>
-    <p class="consigne">${$('#exercice').value === 'symetrie'
+    <p class="consigne">${mesures
+      ? 'Le côté d’un carreau vaut 1. Écris le périmètre et l’aire de chaque figure.'
+      : $('#exercice').value === 'symetrie'
       ? 'Trace le symétrique de chaque figure, de l’autre côté de l’axe pointillé, à la règle '
         + 'et au crayon. Quand il est juste, colorie la figure entière.'
       : 'Reproduis chaque figure dans le quadrillage de droite, à la règle et au crayon. '
@@ -487,6 +653,16 @@ function genererFeuille() {
     ${tirage.map(f => {
       /* le viewBox fait (côtés + 1) unités : la largeur suit la taille du carreau */
       const large = `style="--cotes:${f.grille + 1}"`;
+      if ($('#exercice').value === 'mesures') {
+        return `<div class="exercice mesure-papier">
+          <div class="quadrillage papier" style="--cotes:${f.grille + 1}">${
+            svgQuadrillage(f.grille, cotesDe(f).map(c => traitSVG(c, 'modele')).join(''))}</div>
+          <div class="cases-mesure">
+            <div class="champ-boite"><span>Périmètre</span></div>
+            <div class="champ-boite"><span>Aire</span></div>
+          </div>
+        </div>`;
+      }
       if ($('#exercice').value === 'symetrie') {
         const { axe, colonnes } = cadreSymetrie(f);
         const donne = axeSVG(axe, f.grille)

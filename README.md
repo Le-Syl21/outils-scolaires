@@ -30,6 +30,9 @@ Deux exercices sur quadrillage : reproduire une figure, ou tracer son symétriqu
   vérifie, et la figure réussie se colorie en révélant son nom. Chronométré, avec classement.
 - **Symétrie** : la figure est donnée d'un côté d'un axe, son image se trace de l'autre. Ce qui
   est tracé du côté donné est ignoré, et l'axe se place au plus près de la figure.
+- **Périmètre et aire** : une série de cinq figures à angles droits, tirées d'une banque ou
+  engendrées à la volée ; on écrit le tour et la surface, comptés en carreaux. L'aire se calcule
+  par la formule du lacet, ce qui vaut aussi pour les figures en escalier.
 - **Imprimer** : la même chose sur feuille A4, carreaux de 5, 7 ou 10 mm, à faire à la règle.
 - **Quatre niveaux** : facile (traits droits, carreaux de 10 mm), moyen (diagonales à 45°),
   difficile (plusieurs contours et figure à reproduire décalée), expert (grandes figures,

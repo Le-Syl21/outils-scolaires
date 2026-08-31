@@ -53,6 +53,22 @@
 .message.erreur{color:var(--rouge)}
 .message.reussite{color:var(--vert);font-size:1.3rem}
 
+.mesure-papier{align-items:center;gap:8mm}
+.cases-mesure{display:flex;flex-direction:column;gap:4mm}
+
+/* ---------- Périmètre et aire ---------- */
+.mesures-bloc{
+  display:grid;gap:24px;grid-template-columns:minmax(260px,1fr) minmax(200px,260px);
+  align-items:start;
+}
+.mesures-champs .field{margin-bottom:18px}
+.mesures-champs label{display:block;font-weight:600;margin-bottom:6px}
+.mesures-champs input{
+  width:100%;font-size:1.8rem;font-weight:700;text-align:center;
+  padding:10px;border:2px solid var(--peche);border-radius:8px;
+}
+@media (max-width:700px){ .mesures-bloc{grid-template-columns:1fr} }
+
 /* ---------- Scores ---------- */
 .podium{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
 .podium-place{

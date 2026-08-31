@@ -46,6 +46,7 @@
         <select id="exercice">
           <option value="reproduire" selected>Reproduire la figure</option>
           <option value="symetrie">Tracer le symétrique</option>
+          <option value="mesures">Compter le périmètre et l'aire</option>
         </select>
       </div>
       <div class="field">
@@ -68,6 +69,38 @@
       <button id="btn-hasard" class="btn btn-ghost btn-xl" type="button">🎲 Au hasard</button>
     </div>
     <p id="record-eleve" class="note-info"></p>
+  </div>
+
+  <div id="ecran-mesures" class="panel hidden">
+    <div class="hud">
+      <div class="hud-item"><span class="hud-label">Élève</span><span id="mes-nom" class="hud-value">—</span></div>
+      <div class="hud-item"><span class="hud-label">Chrono</span><span id="mes-chrono" class="hud-value chrono">00:00</span></div>
+      <div class="hud-item"><span class="hud-label">Figure</span><span id="mes-compte" class="hud-value">1/5</span></div>
+      <button id="btn-mes-valider" class="btn btn-primary" type="button">Valider ✓</button>
+    </div>
+
+    <p class="note-info">Le côté d'un carreau vaut 1. Compte le tour de la figure pour le
+       périmètre, et les carreaux qu'elle couvre pour l'aire.</p>
+
+    <div class="mesures-bloc">
+      <div id="mes-figure" class="quadrillage"></div>
+      <div class="mesures-champs">
+        <div class="field">
+          <label for="mes-perimetre">Périmètre</label>
+          <input type="number" id="mes-perimetre" min="0" max="999" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="mes-aire">Aire</label>
+          <input type="number" id="mes-aire" min="0" max="999" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+
+    <p id="mes-message" class="message"></p>
+    <div class="row hidden" id="mes-apres">
+      <button id="mes-suivante" class="btn btn-primary" type="button">Série suivante</button>
+      <button id="mes-retour" class="btn btn-ghost" type="button">Accueil</button>
+    </div>
   </div>
 
   <div id="ecran-partie" class="panel hidden">

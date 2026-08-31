@@ -17,6 +17,7 @@
   <nav class="tabs" role="tablist">
     <button class="tab is-active" data-view="feuille" role="tab">Feuille</button>
     <button class="tab" data-view="collection" role="tab">Collection</button>
+    <button class="tab" data-view="atelier" role="tab">Atelier</button>
     <button class="tab" data-view="chrono" role="tab">Chrono</button>
   </nav>
 </header>
@@ -121,6 +122,72 @@
     </div>
   </div>
   <div id="liste-pangrammes"></div>
+</section>
+
+<!-- ============ ATELIER ============ -->
+<section id="view-atelier" class="view hidden">
+  <div class="panel">
+    <h2>Écrire son propre pangramme</h2>
+    <p class="lead">Écris une phrase qui contient les 26 lettres de l'alphabet. Chaque lettre
+       employée se barre au fur et à mesure ; quand il n'en reste aucune, la phrase peut
+       rejoindre la collection.</p>
+    <textarea id="saisie-pangramme" rows="2"
+      placeholder="Le vieux yak joyeux…"></textarea>
+    <div id="alphabet" class="alphabet" aria-live="polite"></div>
+    <p id="etat-pangramme" class="etat"></p>
+  </div>
+
+  <div id="atelier-analyse" class="panel hidden">
+    <h2>Analyser la phrase</h2>
+    <p class="lead">Choisis une fonction, puis clique sur les mots qui en font partie.
+       Un clic sur un mot déjà marqué l'efface.</p>
+    <div class="row fonctions">
+      <button class="btn btn-ghost btn-sm is-active" data-f="sujet" type="button">sujet</button>
+      <button class="btn btn-ghost btn-sm" data-f="verbe" type="button">verbe</button>
+      <button class="btn btn-ghost btn-sm" data-f="cod" type="button">objet direct</button>
+      <button class="btn btn-ghost btn-sm" data-f="coi" type="button">objet indirect</button>
+      <button class="btn btn-ghost btn-sm" data-f="cc" type="button">circonstanciel</button>
+    </div>
+    <p id="mots-cliquables" class="mots-cliquables"></p>
+
+    <div class="reglages reglages-listes">
+      <div class="field">
+        <label for="temps-verbe">Temps du verbe</label>
+        <select id="temps-verbe"></select>
+      </div>
+      <div class="field">
+        <label for="quand-verbe">Quand l'employer</label>
+        <input type="text" id="quand-verbe">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="sens-phrase">Explication de texte</label>
+      <input type="text" id="sens-phrase" placeholder="Ce que la phrase raconte, en une ligne">
+    </div>
+
+    <div class="field">
+      <label>Mots rares</label>
+      <ul id="liste-mots-rares" class="mots"></ul>
+      <div class="row">
+        <input type="text" id="mot-rare" placeholder="le mot">
+        <input type="text" id="def-mot-rare" placeholder="sa définition">
+        <button id="btn-ajout-mot" class="btn btn-ghost btn-sm" type="button">Ajouter le mot</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <button id="btn-enregistrer-pangramme" class="btn btn-primary" type="button">
+        Ajouter à la collection</button>
+      <span id="etat-analyse" class="note-info"></span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Mes pangrammes</h2>
+    <p class="lead">Ils rejoignent la collection et les feuilles, et restent dans ce navigateur.</p>
+    <div id="liste-mes-pangrammes"></div>
+  </div>
 </section>
 
 <!-- ============ CHRONO ============ -->

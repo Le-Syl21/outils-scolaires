@@ -213,6 +213,36 @@
 .mots strong{color:var(--encre)}
 .mots span{color:var(--gris)}
 
+/* ---------- Atelier ---------- */
+#saisie-pangramme{
+  width:100%;font:inherit;font-size:1.1rem;padding:12px;
+  border:2px solid var(--peche);border-radius:8px;resize:vertical;
+}
+.alphabet{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 10px}
+.lettre{
+  display:flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:8px;
+  background:var(--peche-clair);color:var(--encre);
+  font-weight:700;font-size:1.05rem;
+}
+.lettre.trouvee{
+  background:var(--vert-clair);color:var(--vert);
+  text-decoration:line-through;text-decoration-thickness:2px;opacity:.75;
+}
+.etat{font-weight:600;margin:0}
+.etat.ok{color:var(--vert)}
+.etat.attente{color:var(--gris)}
+.fonctions{margin-bottom:12px}
+.mots-cliquables{
+  font-size:1.25rem;line-height:2.1;margin:0 0 20px;
+  padding:14px;background:var(--peche-clair);border-radius:8px;
+}
+.mot-cliquable{cursor:pointer;padding:1px 2px;border-radius:4px}
+.mot-cliquable:hover{background:#fff}
+.mot-cliquable.g-neutre{color:var(--encre)}
+#liste-mots-rares .sup{background:none;border:0;color:var(--gris);cursor:pointer}
+#liste-mots-rares .sup:hover{color:var(--rouge)}
+
 /* ---------- Chrono ---------- */
 .phrase-en-cours{margin:4px 0 16px;color:var(--gris)}
 .phrase-en-cours strong{color:var(--encre)}

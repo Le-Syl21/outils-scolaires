@@ -4,6 +4,7 @@
 'use strict';
 
 const CLES = {
+  miens:     'defiEcriture.mesPangrammes',
   eleves:    'defiTables.eleves',        // liste partagée avec le Défi Tables
   resultats: 'defiEcriture.resultats',
   reglages:  'defiEcriture.reglages',
@@ -34,6 +35,15 @@ let resultats = lire(CLES.resultats, []);
 let reglages  = lire(CLES.reglages, {});
 let indexCourant = 0;   // pangramme affiché
 
+/* La collection : les phrases livrées, plus celles écrites à l'atelier */
+let mesPangrammes = lire(CLES.miens, []);
+let COLLECTION = [];
+function majCollection() {
+  COLLECTION = PANGRAMMES.concat(mesPangrammes);
+  if (indexCourant >= COLLECTION.length) indexCourant = 0;
+}
+majCollection();
+
 /* ------------------------------------------------------------------ */
 /* Navigation                                                          */
 /* ------------------------------------------------------------------ */
@@ -49,7 +59,7 @@ const allerA = (vue) => $(`.tab[data-view="${vue}"]`).click();
 /* La feuille                                                          */
 /* ------------------------------------------------------------------ */
 function remplirChoixPangrammes() {
-  $('#choix-pangramme').innerHTML = PANGRAMMES.map((p, i) =>
+  $('#choix-pangramme').innerHTML = COLLECTION.map((p, i) =>
     `<option value="${i}">${echapper(p.texte)}</option>`).join('');
   $('#choix-pangramme').value = String(indexCourant);
 }
@@ -75,7 +85,7 @@ const melanger = (tab) => {
   return t;
 };
 
-const nouveauTirage = () => { tirage = melanger(PANGRAMMES.map((_, i) => i)); };
+const nouveauTirage = () => { tirage = melanger(COLLECTION.map((_, i) => i)); };
 
 /* La phrase avec chaque groupe souligné selon sa fonction */
 const phraseAnalysee = (p) => p.segments.map(s =>
@@ -214,7 +224,7 @@ async function construireFeuille() {
       }
       const i = file.shift();
       zone.insertAdjacentHTML('beforeend',
-        blocHTML(PANGRAMMES[i], repasses, libres, avecMots, avecGrammaire, avecChrono));
+        blocHTML(COLLECTION[i], repasses, libres, avecMots, avecGrammaire, avecChrono));
       completerLignesVides(zone.lastElementChild, libres, mesure);
       if (mesure(zone) > dispo) {
         if (zone.children.length === 1) break;   // même seule, elle déborde
@@ -326,16 +336,198 @@ $('#btn-imprimer').addEventListener('click', () => window.print());
 window.addEventListener('resize', construireFeuille);
 
 /* ------------------------------------------------------------------ */
+/* L'atelier : écrire et analyser ses propres pangrammes               */
+/* ------------------------------------------------------------------ */
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+const TEMPS = {
+  "présent de l'indicatif": "L'action se passe maintenant.",
+  'imparfait': "L'action durait ou se répétait dans le passé : c'était une habitude.",
+  'passé composé': "L'action est finie. Le verbe s'écrit en deux mots : l'auxiliaire "
+    + '« avoir » ou « être », puis le participe passé.',
+  'passé simple': "Le temps du récit : l'action est arrivée une fois, dans le passé.",
+  'plus-que-parfait': "Une action déjà finie avant une autre action du passé.",
+  'futur simple': "L'action n'a pas encore eu lieu. Le verbe garde son infinitif et prend -ra.",
+  'conditionnel présent': "L'action n'est pas sûre : elle dépend d'autre chose.",
+  'impératif présent': "On donne un ordre ou un conseil. Le sujet n'est pas écrit.",
+  'phrase nominale': "Cette phrase n'a pas de verbe principal : elle est construite autour "
+    + "d'un nom.",
+};
+
+/* Les lettres d'un texte, accents ramenés à leur lettre de base */
+const lettresDe = (txt) => new Set(
+  txt.toLowerCase().normalize('NFD').split('').filter(c => c >= 'a' && c <= 'z'));
+
+let jetons = [];        // la phrase découpée : mots et espaces
+let fonctions = [];     // la fonction attribuée à chaque jeton
+let fonctionActive = 'sujet';
+let motsRares = [];
+
+function majAlphabet() {
+  const texte = $('#saisie-pangramme').value;
+  const vues = lettresDe(texte);
+  $('#alphabet').innerHTML = ALPHABET.map(l =>
+    `<span class="lettre${vues.has(l) ? ' trouvee' : ''}">${l.toUpperCase()}</span>`).join('');
+  const manquantes = ALPHABET.filter(l => !vues.has(l));
+  const complet = manquantes.length === 0 && texte.trim().length > 0;
+  $('#etat-pangramme').textContent = !texte.trim()
+    ? ''
+    : (complet
+        ? `C'est un pangramme : les 26 lettres y sont, en ${texte.trim().length} signes.`
+        : `Il manque ${manquantes.length} lettre(s) : ${manquantes.join(' ').toUpperCase()}`);
+  $('#etat-pangramme').className = 'etat ' + (complet ? 'ok' : 'attente');
+  $('#atelier-analyse').classList.toggle('hidden', !complet);
+  if (complet) preparerAnalyse(texte.trim());
+}
+
+/* La phrase est découpée en mots cliquables ; les espaces suivent leurs
+   voisins pour que le découpage se recompose exactement en la phrase. */
+function preparerAnalyse(texte) {
+  const nouveaux = texte.match(/\S+|\s+/g) || [];
+  if (nouveaux.join('') !== jetons.join('')) {
+    jetons = nouveaux;
+    fonctions = jetons.map(() => 'neutre');
+  }
+  $('#mots-cliquables').innerHTML = jetons.map((jeton, i) =>
+    /\s/.test(jeton)
+      ? echapper(jeton)
+      : `<span class="mot-cliquable g-${fonctions[i]}" data-i="${i}">${echapper(jeton)}</span>`
+  ).join('');
+}
+
+$('#saisie-pangramme').addEventListener('input', majAlphabet);
+
+$$('.fonctions .btn').forEach(btn => btn.addEventListener('click', () => {
+  fonctionActive = btn.dataset.f;
+  $$('.fonctions .btn').forEach(b => b.classList.toggle('is-active', b === btn));
+}));
+
+$('#mots-cliquables').addEventListener('click', (e) => {
+  const mot = e.target.closest('.mot-cliquable');
+  if (!mot) return;
+  const i = Number(mot.dataset.i);
+  fonctions[i] = fonctions[i] === fonctionActive ? 'neutre' : fonctionActive;
+  preparerAnalyse($('#saisie-pangramme').value.trim());
+});
+
+/* Regroupe les jetons voisins de même fonction ; un espace entre deux
+   jetons de même fonction lui appartient, sinon il est neutre. */
+function segmentsDepuisJetons() {
+  const par = jetons.map((jeton, i) => {
+    if (!/\s/.test(jeton)) return fonctions[i];
+    const avant = fonctions[i - 1], apres = fonctions[i + 1];
+    return (avant && avant === apres) ? avant : 'neutre';
+  });
+  const segments = [];
+  jetons.forEach((jeton, i) => {
+    const dernier = segments[segments.length - 1];
+    if (dernier && dernier.f === par[i]) dernier.t += jeton;
+    else segments.push({ t: jeton, f: par[i] });
+  });
+  return segments;
+}
+
+function majMotsRares() {
+  $('#liste-mots-rares').innerHTML = motsRares.map((m, i) =>
+    `<li><strong>${echapper(m.mot)}</strong> — ${echapper(m.sens)}
+      <button class="sup" data-mot="${i}" type="button" title="Retirer">✕</button></li>`).join('');
+}
+
+$('#btn-ajout-mot').addEventListener('click', () => {
+  const mot = $('#mot-rare').value.trim();
+  const sens = $('#def-mot-rare').value.trim();
+  if (!mot || !sens) { alert('Il faut le mot et sa définition.'); return; }
+  motsRares.push({ mot, sens });
+  $('#mot-rare').value = ''; $('#def-mot-rare').value = '';
+  majMotsRares();
+});
+
+$('#liste-mots-rares').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-mot]');
+  if (!btn) return;
+  motsRares.splice(Number(btn.dataset.mot), 1);
+  majMotsRares();
+});
+
+$('#temps-verbe').addEventListener('change', (e) => {
+  $('#quand-verbe').value = TEMPS[e.target.value] || '';
+});
+
+$('#btn-enregistrer-pangramme').addEventListener('click', () => {
+  const texte = $('#saisie-pangramme').value.trim();
+  if (lettresDe(texte).size < 26) return;
+  const segments = segmentsDepuisJetons();
+  if (segments.map(x => x.t).join('') !== texte) {
+    $('#etat-analyse').textContent = 'Le découpage ne correspond plus à la phrase.';
+    return;
+  }
+  if (!segments.some(x => x.f === 'verbe') && $('#temps-verbe').value !== 'phrase nominale') {
+    $('#etat-analyse').textContent = 'Marque le verbe, ou choisis « phrase nominale ».';
+    return;
+  }
+  const n = texte.length;
+  mesPangrammes.push({
+    texte, signes: n,
+    niveau: n <= 55 ? 'court' : (n <= 72 ? 'moyen' : 'long'),
+    temps: $('#temps-verbe').value,
+    quand: $('#quand-verbe').value.trim() || TEMPS[$('#temps-verbe').value] || '',
+    sens: $('#sens-phrase').value.trim() || 'À toi de raconter ce que dit la phrase.',
+    mots: [...motsRares],
+    segments,
+    perso: true,
+  });
+  ecrire(CLES.miens, mesPangrammes);
+  majCollection();
+  $('#saisie-pangramme').value = '';
+  motsRares = []; jetons = []; fonctions = [];
+  $('#sens-phrase').value = '';
+  majMotsRares(); majAlphabet();
+  $('#etat-analyse').textContent = '';
+  afficherMesPangrammes();
+  $('#temps-verbe').innerHTML = Object.keys(TEMPS).map(t =>
+  `<option>${t}</option>`).join('');
+$('#quand-verbe').value = TEMPS[Object.keys(TEMPS)[0]];
+majAlphabet();
+afficherMesPangrammes();
+afficherCollection();
+  remplirChoixPangrammes();
+});
+
+function afficherMesPangrammes() {
+  $('#liste-mes-pangrammes').innerHTML = mesPangrammes.length
+    ? mesPangrammes.map((p, i) => `<article class="carte-pangramme">
+        <p class="cursive">${echapper(p.texte)}</p>
+        <p class="infos"><span class="badge">${p.niveau}</span>
+          <span>${p.signes} signes</span><span>${echapper(p.temps)}</span></p>
+        <button class="btn btn-ghost btn-sm btn-danger" data-supprimer="${i}" type="button">
+          Retirer de la collection</button>
+      </article>`).join('')
+    : '<p class="vide">Aucun pangramme écrit pour l’instant.</p>';
+}
+
+$('#liste-mes-pangrammes').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-supprimer]');
+  if (!btn) return;
+  if (!confirm('Retirer ce pangramme de la collection ?')) return;
+  mesPangrammes.splice(Number(btn.dataset.supprimer), 1);
+  ecrire(CLES.miens, mesPangrammes);
+  majCollection();
+  afficherMesPangrammes();
+  afficherCollection();
+  remplirChoixPangrammes();
+});
+
+/* ------------------------------------------------------------------ */
 /* La collection                                                       */
 /* ------------------------------------------------------------------ */
 let filtreNiveau = '';
 
 function afficherCollection() {
-  const liste = PANGRAMMES.filter(p => !filtreNiveau || p.niveau === filtreNiveau);
+  const liste = COLLECTION.filter(p => !filtreNiveau || p.niveau === filtreNiveau);
   $('#compte-collection').textContent =
-    `${PANGRAMMES.length} phrases dans la collection.`;
+    `${COLLECTION.length} phrases dans la collection.`;
   $('#liste-pangrammes').innerHTML = liste.map(p => {
-    const i = PANGRAMMES.indexOf(p);
+    const i = COLLECTION.indexOf(p);
     return `<article class="carte-pangramme">
       <p class="cursive">${echapper(p.texte)}</p>
       <p class="phrase-ref">${phraseAnalysee(p)}</p>
@@ -402,8 +594,8 @@ let depart = null, minuteur = null, tempsFinal = 0;
    de la feuille — utile quand on saisit un temps relevé après coup. */
 function phraseChrono() {
   const choisie = Number($('#phrase-chrono').value);
-  if (Number.isInteger(choisie) && PANGRAMMES[choisie]) return PANGRAMMES[choisie];
-  return PANGRAMMES[indexCourant];
+  if (Number.isInteger(choisie) && COLLECTION[choisie]) return COLLECTION[choisie];
+  return COLLECTION[indexCourant];
 }
 
 /* Cale la liste sur la première phrase de la feuille, tant que l'utilisateur
@@ -412,13 +604,13 @@ let phraseChoisieALaMain = false;
 function majPhraseChrono() {
   const liste = $('#phrase-chrono');
   if (!liste.options || !liste.options.length) {
-    liste.innerHTML = PANGRAMMES.map((p, i) =>
+    liste.innerHTML = COLLECTION.map((p, i) =>
       `<option value="${i}">${echapper(p.texte)}</option>`).join('');
   }
   if (phraseChoisieALaMain) return;
   const premier = $('.zone-ecriture .phrase-ref');
-  const texte = premier ? premier.textContent.trim() : PANGRAMMES[indexCourant].texte;
-  const i = PANGRAMMES.findIndex(p => p.texte === texte);
+  const texte = premier ? premier.textContent.trim() : COLLECTION[indexCourant].texte;
+  const i = COLLECTION.findIndex(p => p.texte === texte);
   liste.value = String(i >= 0 ? i : indexCourant);
 }
 

@@ -33,8 +33,12 @@ Améliorer son écriture — la vitesse et la lisibilité — en découvrant ple
 - **Collection** : 26 pangrammes français, chacun vérifié par programme — les 26 lettres sont bien
   présentes, le découpage grammatical se recompose exactement en la phrase. Les phrases sans queue
   ni tête ont été écartées : un pangramme doit pouvoir se raconter.
+- **Atelier** : écrire ses propres pangrammes. L'alphabet s'affiche et chaque lettre employée se
+  barre ; quand les 26 sont trouvées, la phrase peut être analysée — groupes cliqués un à un,
+  temps du verbe, explication de texte, mots rares — puis rejoindre la collection et les feuilles.
 - **Chrono** : la vitesse d'écriture pondérée par une note de lisibilité donnée par l'adulte,
-  en *signes lisibles par minute*.
+  en *signes lisibles par minute*. Le temps se chronomètre à l'écran ou se saisit après coup,
+  relevé sur la feuille.
 
 La liste des élèves est partagée entre les deux défis.
 

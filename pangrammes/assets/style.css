@@ -60,26 +60,41 @@
 
 /* ---------- Zone d'écriture ---------- */
 .zone-ecriture{position:relative}
+/* La réglure est peinte une seule fois pour tout le groupe de lignes.
+   Peinte ligne par ligne, les arrondis au pixel décalaient les traits d'une
+   ligne à l'autre — jusqu'à 11 % d'écart, mesuré. Un seul motif, un seul
+   arrondi : le pas est rigoureusement constant, comme sur les feuilles de
+   Desmoulins qui tracent toute la page d'un coup.
+   Les cinq traits ont la même épaisseur ; seule la couleur distingue la
+   ligne d'écriture, là encore comme Desmoulins. */
+.lignes{
+  background-image:repeating-linear-gradient(to bottom,
+    transparent 0,
+    transparent 0.24em, var(--interligne-couleur) 0.24em,
+    var(--interligne-couleur) calc(0.24em + var(--ep-reglure)),
+    transparent calc(0.24em + var(--ep-reglure)),
+    transparent 0.72em, var(--interligne-couleur) 0.72em,
+    var(--interligne-couleur) calc(0.72em + var(--ep-reglure)),
+    transparent calc(0.72em + var(--ep-reglure)),
+    transparent 1.2em, var(--interligne-couleur) 1.2em,
+    var(--interligne-couleur) calc(1.2em + var(--ep-reglure)),
+    transparent calc(1.2em + var(--ep-reglure)),
+    transparent 1.68em, var(--ligne-forte) 1.68em,
+    var(--ligne-forte) calc(1.68em + var(--ep-reglure)),
+    transparent calc(1.68em + var(--ep-reglure)),
+    transparent 2.16em, var(--interligne-couleur) 2.16em,
+    var(--interligne-couleur) calc(2.16em + var(--ep-reglure)),
+    transparent calc(2.16em + var(--ep-reglure)),
+    transparent 2.4em);
+  font-size:var(--taille-ecriture);      /* les em du motif suivent l'écriture */
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;
+}
 .ligne{
-  position:relative;
   font-size:var(--taille-ecriture);
   line-height:2.4;                 /* 5 interlignes : la réglure s'enchaîne */
   margin:0;
-  /* La réglure, en deux motifs superposés : la ligne d'écriture, plus
-     soutenue, tous les 2,4 em ; les interlignes tous les 0,48 em. Le fond
-     suit de lui-même les lignes qui reviennent à la ligne. */
-  background-image:
-    repeating-linear-gradient(to bottom,
-      var(--ligne-forte) 0, var(--ligne-forte) var(--ep-reglure),
-      transparent var(--ep-reglure), transparent 2.4em),
-    repeating-linear-gradient(to bottom,
-      var(--interligne-couleur) 0, var(--interligne-couleur) var(--ep-reglure),
-      transparent var(--ep-reglure), transparent .48em);
-  background-position:
-    0 1.68em,
-    0 0.24em;
-  -webkit-print-color-adjust:exact;print-color-adjust:exact;
 }
+
 /* Couleurs opaques, jamais de rgba() : une transparence est tramée à
    l'impression et ressort beaucoup trop pâle. */
 .calque-reglure{

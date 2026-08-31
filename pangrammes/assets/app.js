@@ -104,8 +104,10 @@ function blocHTML(p, repasses, libres, avecMots, avecGrammaire) {
   return `<section class="bloc">
     <p class="phrase-ref">${avecGrammaire ? phraseAnalysee(p) : echapper(p.texte)}</p>
     ${grammaire}${sens}${mots}
-    ${Array.from({ length: repasses }, () => ligneRepasse(echapper(p.texte))).join('')}
-    ${Array.from({ length: libres }, ligneVide).join('')}
+    <div class="lignes">
+      ${Array.from({ length: repasses }, () => ligneRepasse(echapper(p.texte))).join('')}
+      ${Array.from({ length: libres }, ligneVide).join('')}
+    </div>
   </section>`;
 }
 
@@ -183,10 +185,14 @@ async function construireFeuille() {
                      + (consigne ? consigne.getBoundingClientRect().height : 0);
     const dispo = HAUTEUR_PAGE - hautEntete;
 
-    /* Borne dure : si la mesure de hauteur ne dépassait jamais le seuil,
-       cette boucle tournerait sans fin et figerait la page. */
-    let garde = 0;
-    while (garde++ < 40) {
+    /* On remplit la page en essayant les phrases une à une. Celle qui ne
+       tient pas n'arrête pas le remplissage : elle repart en fin de file et
+       l'on tente la suivante, souvent plus courte. Sans cela, une phrase
+       longue laissait un quart de page blanc.
+       Deux bornes évitent toute boucle sans fin : le nombre de blocs posés
+       et le nombre d'essais infructueux d'affilée. */
+    let garde = 0, echecs = 0;
+    while (garde++ < 40 && echecs < 8) {
       if (!file.length) {
         if (uneSeule) break;
         nouveauTirage();                     // la collection est épuisée : on la remélange
@@ -196,12 +202,14 @@ async function construireFeuille() {
       zone.insertAdjacentHTML('beforeend',
         blocHTML(PANGRAMMES[i], repasses, libres, avecMots, avecGrammaire));
       if (zone.getBoundingClientRect().height > dispo) {
-        if (zone.children.length > 1) {      // ce bloc ira sur la page suivante
-          zone.removeChild(zone.lastElementChild);
-          file.unshift(i);
-        }
-        break;
+        if (zone.children.length === 1) break;   // même seule, elle déborde
+        zone.removeChild(zone.lastElementChild);
+        if (uneSeule) break;
+        file.push(i);                        // reportée : on essaie la suivante
+        echecs++;
+        continue;
       }
+      echecs = 0;
       if (uneSeule && !file.length) break;
     }
     parPage.push(zone.children.length);

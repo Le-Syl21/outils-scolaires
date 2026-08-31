@@ -141,7 +141,7 @@ async function construireFeuille() {
     </div>`;
 
   // Les mesures n'ont de sens qu'une fois Marelle chargée
-  if (document.fonts && document.fonts.status !== 'loaded') {
+  if (document.fonts) {
     await document.fonts.ready;
     if (moi !== generation) return;          // un autre rendu a pris la main
   }
@@ -162,6 +162,14 @@ function ajusterALaPage(uneSeule) {
   const posees = zone.children.length;
   const deborde = inner.getBoundingClientRect().height > dispo;
   const jauge = $('#jauge');
+
+  // Sans Marelle, pas de réglure : mieux vaut le dire que laisser deviner
+  if (document.fonts && !document.fonts.check('16px "Marelle Lignes"')) {
+    jauge.textContent = 'La police Marelle ne s’est pas chargée : les lignes Seyes manquent.';
+    jauge.className = 'jauge trop';
+    return;
+  }
+
   if (deborde) {
     jauge.textContent = uneSeule
       ? 'La phrase déborde : réduis la taille ou le nombre de lignes.'

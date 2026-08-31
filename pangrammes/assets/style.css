@@ -5,12 +5,12 @@
 /* ------------------------------------------------------------------ */
 @font-face{
   font-family:"Marelle";
-  src:url("../fonts/Marelle-Regular.woff2") format("woff2");
+  src:url("../../fonts/Marelle-Regular.woff2") format("woff2");
   font-display:swap;
 }
 @font-face{
   font-family:"Marelle Lignes";
-  src:url("../fonts/MarelleLIGNES-Regular.woff2") format("woff2");
+  src:url("../../fonts/MarelleLIGNES-Regular.woff2") format("woff2");
   font-display:swap;
 }
 
@@ -50,13 +50,7 @@
 }
 
 /* ---------- Zone d'écriture ---------- */
-.zone-ecriture{
-  position:relative;padding-left:22mm;
-}
-.zone-ecriture::before{           /* la marge du cahier */
-  content:"";position:absolute;top:0;bottom:0;left:20mm;
-  width:.7mm;background:#e2574c;
-}
+.zone-ecriture{position:relative}
 .ligne{
   font-family:"Marelle Lignes","Marelle",cursive;
   font-size:var(--taille-ecriture);

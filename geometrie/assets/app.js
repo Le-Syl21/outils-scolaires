@@ -138,9 +138,41 @@ const traitSVG = (cle, classe = '') =>
     ${classe === 'manquant' ? 'stroke-dasharray="0.28 0.22"' : ''}/>`)(pointsDeCle(cle));
 
 /* La figure pleine, pour la récompense */
-const polygoneSVG = (figure) => contoursDe(figure).map(pts =>
-  `<polygon class="remplissage" points="${pts.map(p => p.join(',')).join(' ')}"
-    fill="${figure.couleur}"/>`).join('');
+/* Tous les contours réunis en un seul tracé, avec la règle « pair-impair » :
+   un contour posé à l'intérieur d'un autre y creuse un trou. Sans cela, l'œil
+   du poisson et la porte du château se remplissaient de la couleur de la
+   figure et disparaissaient. */
+const polygoneSVG = (figure) =>
+  `<path class="remplissage" fill="${figure.couleur}" fill-rule="evenodd" d="${
+    contoursDe(figure).map(pts =>
+      'M' + pts.map(p => p.join(' ')).join(' L') + ' Z').join(' ')}"/>`;
+
+/* À partir du troisième niveau, la figure ne se reproduit plus en face mais
+   décalée dans le quadrillage : il ne suffit plus de recopiercase par case,
+   il faut compter. Une croix marque le point de départ. */
+function translater(figure, dx, dy) {
+  return { ...figure,
+    contours: contoursDe(figure).map(pts => pts.map(([x, y]) => [x + dx, y + dy])) };
+}
+
+function decalagePour(figure) {
+  if (figure.palier < 3) return [0, 0];
+  const pts = contoursDe(figure).flat();
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  /* on ne sort pas du quadrillage, et on se limite à deux carreaux */
+  const tirer = (avant, apres) => {
+    const choix = [];
+    for (let d = -Math.min(2, avant); d <= Math.min(2, apres); d++) if (d) choix.push(d);
+    return choix.length ? choix[Math.floor(Math.random() * choix.length)] : 0;
+  };
+  return [tirer(Math.min(...xs), figure.grille - Math.max(...xs)),
+          tirer(Math.min(...ys), figure.grille - Math.max(...ys))];
+}
+
+const croixSVG = ([x, y]) =>
+  `<path d="M${x - 0.22} ${y - 0.22} L${x + 0.22} ${y + 0.22}
+            M${x - 0.22} ${y + 0.22} L${x + 0.22} ${y - 0.22}"
+     stroke="#e8501e" stroke-width="0.07" stroke-linecap="round"/>`;
 
 /* ------------------------------------------------------------------ */
 /* Élèves                                                              */
@@ -206,9 +238,11 @@ function demarrer(indexVoulu) {
     ? indexVoulu : Math.floor(Math.random() * liste.length);
   const figure = liste[i];
 
+  const decalage = decalagePour(figure);
+  const cible = translater(figure, decalage[0], decalage[1]);
   partie = {
-    eleve, figure,
-    attendus: segmentsDe(figure),
+    eleve, figure, cible, decalage,
+    attendus: segmentsDe(cible),
     traces: [],
     historique: [],          // pour annuler le dernier geste
     premier: null,
@@ -217,6 +251,9 @@ function demarrer(indexVoulu) {
     finie: false,
   };
 
+  $('#consigne-partie').textContent = (decalage[0] || decalage[1])
+    ? 'La figure est à reproduire décalée : commence à la croix.'
+    : 'Reproduis la figure à la même place, en face.';
   $('#hud-nom').textContent = eleve;
   $('#hud-chrono').textContent = '00:00';
   $('#message-partie').textContent = '';
@@ -247,7 +284,11 @@ function dessinerCopie() {
     ? `<circle class="depart" cx="${partie.premier[0]}" cy="${partie.premier[1]}" r="0.18"
         fill="#e8501e"/>`
     : '';
-  $('#copie').innerHTML = svgQuadrillage(f.grille, traits + attente, { cliquables: true });
+  /* la croix du point de départ, quand la figure est à reproduire décalée */
+  const repere = (partie.decalage[0] || partie.decalage[1])
+    ? croixSVG(contoursDe(partie.cible)[0][0]) : '';
+  $('#copie').innerHTML = svgQuadrillage(f.grille, repere + traits + attente,
+    { cliquables: true });
   $('#hud-traits').textContent = partie.traces.length;
 }
 
@@ -324,7 +365,7 @@ function verifier() {
     + oublies.map(c => traitSVG(c, 'manquant')).join('')
     + enTrop.map(c => traitSVG(c, 'en-trop')).join('');
   $('#copie').innerHTML = svgQuadrillage(partie.figure.grille,
-    (parfait ? polygoneSVG(partie.figure) : '') + correction);
+    (parfait ? polygoneSVG(partie.cible) : '') + correction);
 
   if (parfait) {
     $('#message-partie').innerHTML =
@@ -391,10 +432,12 @@ function genererFeuille() {
     ${tirage.map(f => {
       /* le viewBox fait (côtés + 1) unités : la largeur suit la taille du carreau */
       const large = `style="--cotes:${f.grille + 1}"`;
+      const [dx, dy] = decalagePour(f);
+      const repere = (dx || dy) ? croixSVG(contoursDe(translater(f, dx, dy))[0][0]) : '';
       return `<div class="exercice">
         <div class="quadrillage papier" ${large}>${svgQuadrillage(f.grille,
           cotesDe(f).map(c => traitSVG(c, 'modele')).join(''))}</div>
-        <div class="quadrillage papier" ${large}>${svgQuadrillage(f.grille, '')}</div>
+        <div class="quadrillage papier" ${large}>${svgQuadrillage(f.grille, repere)}</div>
       </div>`;
     }).join('')}
   </section>`;

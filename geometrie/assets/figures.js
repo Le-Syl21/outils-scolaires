@@ -55,4 +55,64 @@ const FIGURES = [
     points: [[4, 1], [6, 3], [5, 3], [7, 5], [5, 5], [5, 6], [3, 6], [3, 5],
              [1, 5], [3, 3], [2, 3]], ferme: true,
   },
+
+  /* ---- Palier 3 : difficile — figures à plusieurs contours ---- */
+  {
+    nom: 'Le poisson', palier: 3, grille: 10, couleur: '#1f7a8c',
+    contours: [[[2, 5], [5, 2], [8, 5], [5, 8]],          // le corps
+               [[8, 5], [10, 3], [10, 7]],                 // la queue
+               [[4, 4], [5, 4], [5, 5], [4, 5]]],          // l'œil
+    ferme: true,
+  },
+  {
+    nom: 'Le camion', palier: 3, grille: 10, couleur: '#c0562b',
+    contours: [[[1, 7], [1, 5], [3, 5], [3, 3], [6, 3], [6, 5], [9, 5], [9, 7]],
+               [[2, 7], [3, 7], [3, 8], [2, 8]],           // roue avant
+               [[7, 7], [8, 7], [8, 8], [7, 8]]],          // roue arrière
+    ferme: true,
+  },
+  {
+    nom: 'Le château', palier: 3, grille: 10, couleur: '#7a5c3f',
+    contours: [[[1, 9], [1, 4], [2, 4], [2, 3], [3, 3], [3, 4], [4, 4], [4, 3],
+                [5, 3], [5, 4], [6, 4], [6, 3], [7, 3], [7, 4], [8, 4], [8, 9]],
+               [[4, 9], [4, 6], [5, 6], [5, 9]]],          // la porte
+    ferme: true,
+  },
+  {
+    nom: 'La clé', palier: 3, grille: 10, couleur: '#a8641a',
+    contours: [[[1, 3], [4, 3], [4, 6], [1, 6]],           // l'anneau
+               [[4, 4], [9, 4], [9, 6], [8, 6], [8, 5], [7, 5], [7, 6],
+                [6, 6], [6, 5], [4, 5]]],                  // la tige et les dents
+    ferme: true,
+  },
+
+  /* ---- Palier 4 : expert — obliques quelconques, grandes figures ---- */
+  {
+    nom: 'La fusée', palier: 4, grille: 12, couleur: '#c62828',
+    contours: [[[6, 0], [8, 4], [8, 8], [6, 10], [4, 8], [4, 4]],   // le corps
+               [[4, 7], [2, 10], [4, 10]],                          // aileron gauche
+               [[8, 7], [10, 10], [8, 10]],                         // aileron droit
+               [[5, 4], [7, 4], [7, 6], [5, 6]]],                   // le hublot
+    ferme: true,
+  },
+  {
+    /* vu de dessus : fuselage vertical, deux ailes en flèche, l'empennage */
+    nom: 'L’avion', palier: 4, grille: 12, couleur: '#1a56b0',
+    contours: [[[6, 1], [7, 3], [7, 10], [6, 11], [5, 10], [5, 3]],  // le fuselage
+               [[5, 4], [1, 8], [1, 9], [5, 7]],                     // aile gauche
+               [[7, 4], [11, 8], [11, 9], [7, 7]],                   // aile droite
+               [[5, 9], [3, 11], [3, 12], [5, 11]],                  // empennage gauche
+               [[7, 9], [9, 11], [9, 12], [7, 11]]],                 // empennage droit
+    ferme: true,
+  },
+  {
+    nom: 'Le vaisseau spatial', palier: 4, grille: 14, couleur: '#5b3fc4',
+    contours: [[[1, 8], [4, 6], [10, 6], [13, 8], [10, 10], [4, 10]],  // la soucoupe
+               [[5, 6], [6, 3], [8, 3], [9, 6]],                       // le dôme
+               [[5, 8], [6, 8], [6, 9], [5, 9]],                       // hublot gauche
+               [[8, 8], [9, 8], [9, 9], [8, 9]],                       // hublot droit
+               [[2, 11], [3, 13], [5, 13]],                            // réacteur gauche
+               [[12, 11], [11, 13], [9, 13]]],                         // réacteur droit
+    ferme: true,
+  },
 ];

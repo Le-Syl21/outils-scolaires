@@ -46,12 +46,42 @@ const cleSegment = (a, b) => {
   return `${p[0]},${p[1]}-${q[0]},${q[1]}`;
 };
 
-function segmentsDe(figure) {
+/* Les côtés de la figure, tels qu'ils sont décrits : pour le dessin. */
+function cotesDe(figure) {
   const pts = figure.points;
   const segs = [];
   for (let i = 0; i < pts.length - 1; i++) segs.push(cleSegment(pts[i], pts[i + 1]));
   if (figure.ferme) segs.push(cleSegment(pts[pts.length - 1], pts[0]));
   return segs;
+}
+
+/* Un côté long se découpe en pas élémentaires. Sans cela, un enfant qui trace
+   un côté de trois carreaux en trois petits traits obtiendrait un dessin
+   identique mais une comparaison fausse. Le pas est le plus petit vecteur de
+   même direction : une case pour un trait droit ou une diagonale à 45°, le
+   vecteur entier pour une oblique du type deux à droite, un en haut. */
+const pgcd = (a, b) => b ? pgcd(b, a % b) : a;
+
+function unitesDuTrait(a, b) {
+  const dx = b[0] - a[0], dy = b[1] - a[1];
+  const pas = pgcd(Math.abs(dx), Math.abs(dy)) || 1;
+  const ux = dx / pas, uy = dy / pas;
+  const unites = [];
+  for (let i = 0; i < pas; i++) {
+    unites.push(cleSegment([a[0] + ux * i, a[1] + uy * i],
+                           [a[0] + ux * (i + 1), a[1] + uy * (i + 1)]));
+  }
+  return unites;
+}
+
+/* La figure ramenée à ses pas élémentaires : c'est là-dessus qu'on compare. */
+function segmentsDe(figure) {
+  const unites = new Set();
+  cotesDe(figure).forEach(c => {
+    const [a, b] = pointsDeCle(c);
+    unitesDuTrait(a, b).forEach(u => unites.add(u));
+  });
+  return [...unites];
 }
 
 const pointsDeCle = (cle) => cle.split('-').map(p => p.split(',').map(Number));
@@ -173,6 +203,7 @@ function demarrer(indexVoulu) {
     eleve, figure,
     attendus: segmentsDe(figure),
     traces: [],
+    historique: [],          // pour annuler le dernier geste
     premier: null,
     debut: Date.now(),
     minuteur: null,
@@ -199,7 +230,7 @@ const tempsEcoule = () => Math.round((Date.now() - partie.debut) / 1000);
 function dessinerModele() {
   const f = partie.figure;
   $('#modele').innerHTML = svgQuadrillage(f.grille,
-    partie.attendus.map(c => traitSVG(c, 'modele')).join(''));
+    cotesDe(f).map(c => traitSVG(c, 'modele')).join(''));
 }
 
 function dessinerCopie() {
@@ -222,9 +253,11 @@ $('#copie').addEventListener('click', (e) => {
   if (partie.premier[0] === point[0] && partie.premier[1] === point[1]) {
     partie.premier = null; dessinerCopie(); return;        // deux fois le même point : on annule
   }
-  const cle = cleSegment(partie.premier, point);
-  if (partie.traces.includes(cle)) partie.traces = partie.traces.filter(c => c !== cle);
-  else partie.traces.push(cle);
+  const unites = unitesDuTrait(partie.premier, point);
+  partie.historique.push([...partie.traces]);
+  const dejaLa = unites.every(u => partie.traces.includes(u));
+  if (dejaLa) partie.traces = partie.traces.filter(u => !unites.includes(u));
+  else unites.forEach(u => { if (!partie.traces.includes(u)) partie.traces.push(u); });
   partie.premier = null;
   dessinerCopie();
 });
@@ -232,12 +265,13 @@ $('#copie').addEventListener('click', (e) => {
 $('#btn-annuler').addEventListener('click', () => {
   if (!partie || partie.finie) return;
   if (partie.premier) partie.premier = null;
-  else partie.traces.pop();
+  else if (partie.historique.length) partie.traces = partie.historique.pop();
   dessinerCopie();
 });
 
 $('#btn-effacer-tout').addEventListener('click', () => {
   if (!partie || partie.finie) return;
+  partie.historique.push([...partie.traces]);
   partie.traces = []; partie.premier = null;
   dessinerCopie();
 });
@@ -294,7 +328,7 @@ function verifier() {
     if (oublies.length) details.push(`${oublies.length} oublié(s), en pointillé`);
     if (enTrop.length) details.push(`${enTrop.length} en trop, en rouge`);
     $('#message-partie').innerHTML =
-      `<strong>${note}/100</strong> — ${justes.length} trait(s) sur ${partie.attendus.length} : `
+      `<strong>${note}/100</strong> — ${justes.length} segment(s) sur ${partie.attendus.length} : `
       + `${details.join(', ')}. Temps ${formatTemps(temps)}, corrigé ${formatTemps(corrige)}.`;
     $('#message-partie').className = 'message erreur';
   }
@@ -344,7 +378,7 @@ function genererFeuille() {
       const large = `style="--cotes:${f.grille + 1}"`;
       return `<div class="exercice">
         <div class="quadrillage papier" ${large}>${svgQuadrillage(f.grille,
-          segmentsDe(f).map(c => traitSVG(c, 'modele')).join(''))}</div>
+          cotesDe(f).map(c => traitSVG(c, 'modele')).join(''))}</div>
         <div class="quadrillage papier" ${large}>${svgQuadrillage(f.grille, '')}</div>
       </div>`;
     }).join('')}

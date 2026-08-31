@@ -11,10 +11,11 @@ Apprendre les tables de multiplication par la concurrence et la répétition —
 autres opérations sur le même principe.
 
 - **Jouer** : grille mélangée à chaque partie, chrono, note ramenée sur 100, correction case par case.
-- **Opérations** : multiplication, addition, soustraction, division, ou mélangé — chaque case
-  tire alors sa propre opération. En soustraction, les lignes sont décalées vers le haut pour
-  que le résultat reste positif ; en division, ce sont des dividendes choisis pour tomber juste,
-  et les cases qui ne tombent pas juste sont barrées.
+- **Les quatre tables** : addition, soustraction, multiplication, division — ou mélangées,
+  chaque case tirant alors sa propre opération. Toutes se jouent sur le même tableau croisé.
+  En soustraction, les lignes sont décalées vers le haut pour que le résultat reste positif ;
+  en division, ce sont des dividendes choisis pour tomber juste, et les cases qui ne tombent
+  pas juste sont barrées.
 - **Niveaux** : par cœur (1 à 10, 3 à 12, 5 à 15) et calcul mental (5 à 15, 13 à 18, 9 à 19),
   ou n'importe quelle sélection de tables, y compris une table personnalisée (16 pour l'hexadécimal).
 - **Scores** : classement au *temps corrigé* — chaque erreur coûte le temps de 5 cases justes,

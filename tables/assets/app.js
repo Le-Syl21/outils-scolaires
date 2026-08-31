@@ -201,14 +201,17 @@ function majInfoTables() {
     (barrees ? ` (${barrees} cases barrées, sans réponse entière)` : '') +
     '. La note est ramenée sur 100.';
   $('#info-operation').textContent = {
-    'x': 'Le tableau croisé des tables de multiplication.',
-    '+': 'Chaque case additionne son nombre de ligne et celui de colonne.',
-    '-': 'Les lignes sont décalées vers le haut pour que la soustraction reste positive.',
-    '/': 'Les lignes sont des dividendes ; les cases qui ne tombent pas juste sont barrées.',
-    'mixte': 'Chaque case porte sa propre opération, tirée au sort.',
+    'x': 'Les tables de multiplication : chaque case est le produit de sa ligne '
+       + 'et de sa colonne.',
+    '+': 'Les tables d’addition : chaque case est la somme de sa ligne et de sa colonne.',
+    '-': 'Les tables de soustraction : les lignes sont décalées vers le haut pour que le '
+       + 'résultat reste positif, ce qui fait travailler le passage de la dizaine.',
+    '/': 'Les tables de division : les lignes sont des dividendes, les colonnes des '
+       + 'diviseurs. Les cases qui ne tombent pas juste sont barrées.',
+    'mixte': 'Les quatre tables mélangées : chaque case porte son opération, tirée au sort.',
   }[operation];
   $('#label-tables').textContent =
-    operation === '/' ? 'Diviseurs travaillés' : 'Nombres travaillés';
+    operation === '/' ? 'Diviseurs travaillés' : 'Nombres des tables';
   $('#rappel-tables').textContent = tables.length ? tables.join(', ') : 'aucune';
 }
 

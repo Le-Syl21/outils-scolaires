@@ -1,65 +1,51 @@
-/* Base de pangrammes français. Chaque phrase a été vérifiée : elle contient
-   bien les 26 lettres de l'alphabet. Les mots peu courants sont expliqués. */
+/* Base de pangrammes français.
+   Chaque phrase est vérifiée : elle contient les 26 lettres de l'alphabet, elle a un sens,
+   son découpage grammatical se recompose exactement en la phrase d'origine.
+   Fonctions : sujet, verbe, cod (complément d'objet direct), coi (indirect),
+   cc (complément circonstanciel), neutre (liaisons et ponctuation). */
 const PANGRAMMES = [
-  {
-    "texte": "Whisky vert : jugez cinq fox d'aplomb.",
-    "signes": 38,
-    "niveau": "court",
-    "mots": [
-      {
-        "mot": "fox",
-        "sens": "Un fox-terrier : petit chien de chasse au poil dur."
-      },
-      {
-        "mot": "d'aplomb",
-        "sens": "Bien droit, en équilibre, d'aplomb sur ses pattes."
-      }
-    ]
-  },
-  {
-    "texte": "Vif juge, trempez ce blond whisky aqueux.",
-    "signes": 41,
-    "niveau": "court",
-    "mots": [
-      {
-        "mot": "aqueux",
-        "sens": "Qui contient beaucoup d'eau."
-      }
-    ]
-  },
-  {
-    "texte": "Grimpez quand ce whisky flatte vos bijoux.",
-    "signes": 42,
-    "niveau": "court",
-    "mots": []
-  },
-  {
-    "texte": "Buvez de ce whisky que le patron juge fameux.",
-    "signes": 45,
-    "niveau": "court",
-    "mots": []
-  },
   {
     "texte": "Portez ce vieux whisky au juge blond qui fume.",
     "signes": 46,
     "niveau": "court",
-    "mots": [
+    "temps": "impératif présent",
+    "quand": "On donne un ordre ou un conseil. Le sujet n'est pas écrit : c'est « tu » ou « vous ».",
+    "sens": "On demande d'apporter un verre au juge. C'est le pangramme français le plus célèbre : aucune de ses consonnes n'est répétée.",
+    "mots": [],
+    "segments": [
       {
-        "mot": "hétéroconsonantique",
-        "sens": "Le plus célèbre des pangrammes français : aucune de ses consonnes n'est répétée."
+        "t": "Portez",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "ce vieux whisky",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "au juge blond qui fume",
+        "f": "coi"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
       }
     ]
   },
   {
-    "texte": "Portez au juge cinq bols de vos fameux whisky.",
-    "signes": 46,
-    "niveau": "court",
-    "mots": []
-  },
-  {
     "texte": "Voyez le brick géant que j'examine près du wharf.",
     "signes": 49,
-    "niveau": "moyen",
+    "niveau": "court",
+    "temps": "impératif présent",
+    "quand": "On donne un ordre ou on attire l'attention. Le sujet n'est pas écrit.",
+    "sens": "Quelqu'un montre un grand voilier qu'il observe depuis le quai.",
     "mots": [
       {
         "mot": "brick",
@@ -69,39 +55,39 @@ const PANGRAMMES = [
         "mot": "wharf",
         "sens": "Quai sur pilotis qui avance dans la mer pour accoster."
       }
-    ]
-  },
-  {
-    "texte": "Bâchez la queue du wagon-taxi avec les pyjamas du fakir.",
-    "signes": 56,
-    "niveau": "moyen",
-    "mots": [
+    ],
+    "segments": [
       {
-        "mot": "bâcher",
-        "sens": "Couvrir avec une bâche, une grande toile."
+        "t": "Voyez",
+        "f": "verbe"
       },
       {
-        "mot": "fakir",
-        "sens": "En Inde, un ascète ; dans les spectacles, celui qui s'allonge sur des clous."
-      }
-    ]
-  },
-  {
-    "texte": "Le vif zéphyr jubile sur les kumquats du clown gracieux.",
-    "signes": 56,
-    "niveau": "moyen",
-    "mots": [
-      {
-        "mot": "zéphyr",
-        "sens": "Vent doux et tiède qui vient de l'ouest ; du nom du dieu grec Zéphyr."
+        "t": " ",
+        "f": "neutre"
       },
       {
-        "mot": "kumquat",
-        "sens": "Petit agrume orange, long comme une olive, qui se mange avec la peau."
+        "t": "le brick géant",
+        "f": "cod"
       },
       {
-        "mot": "jubiler",
-        "sens": "Se réjouir très fort."
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "que j'examine",
+        "f": "neutre"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "près du wharf",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
       }
     ]
   },
@@ -109,25 +95,43 @@ const PANGRAMMES = [
     "texte": "Monsieur Jack, vous dactylographiez bien mieux que Wolf.",
     "signes": 56,
     "niveau": "moyen",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant.",
+    "sens": "On félicite monsieur Jack : il tape à la machine mieux que son ami Wolf.",
     "mots": [
       {
         "mot": "dactylographier",
         "sens": "Taper un texte à la machine à écrire."
       }
-    ]
-  },
-  {
-    "texte": "Mon pauvre zébu ankylosé choque deux fois ton wagon jaune.",
-    "signes": 58,
-    "niveau": "moyen",
-    "mots": [
+    ],
+    "segments": [
       {
-        "mot": "zébu",
-        "sens": "Grand bœuf d'Asie et d'Afrique, reconnaissable à sa bosse."
+        "t": "Monsieur Jack, ",
+        "f": "neutre"
       },
       {
-        "mot": "ankylosé",
-        "sens": "Engourdi, raide, qui n'arrive plus à bouger."
+        "t": "vous",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dactylographiez",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "bien mieux que Wolf",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
       }
     ]
   },
@@ -135,6 +139,9 @@ const PANGRAMMES = [
     "texte": "Un quetzal réfugié en kimono achète dix pyjamas verts sur le Web.",
     "signes": 65,
     "niveau": "moyen",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant.",
+    "sens": "Un oiseau habillé en kimono fait ses courses sur Internet.",
     "mots": [
       {
         "mot": "quetzal",
@@ -144,24 +151,357 @@ const PANGRAMMES = [
         "mot": "kimono",
         "sens": "Vêtement traditionnel japonais, à longues manches."
       }
+    ],
+    "segments": [
+      {
+        "t": "Un quetzal réfugié en kimono",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "achète",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dix pyjamas verts",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "sur le Web",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
     ]
   },
   {
     "texte": "Voix ambiguë d'un cœur qui, au zéphyr, préfère les jattes de kiwis.",
     "signes": 67,
-    "niveau": "long",
+    "niveau": "moyen",
+    "temps": "phrase nominale",
+    "quand": "Cette phrase n'a pas de verbe principal : elle est construite autour d'un nom. Le seul verbe, « préfère », appartient à la partie qui commence par « qui ».",
+    "sens": "Un cœur hésitant préfère les fruits au vent doux. Cette phrase contient aussi les accents et la ligature du français.",
     "mots": [
       {
         "mot": "ambiguë",
         "sens": "Qui peut se comprendre de deux façons."
       },
       {
-        "mot": "jatte",
-        "sens": "Large récipient rond et sans anse."
+        "mot": "zéphyr",
+        "sens": "Vent doux et tiède qui vient de l'ouest ; du nom du dieu grec Zéphyr."
       },
       {
-        "mot": "zéphyr",
-        "sens": "Vent doux et tiède qui vient de l'ouest."
+        "mot": "jatte",
+        "sens": "Large récipient rond et sans anse."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Voix ambiguë d'un cœur",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "qui, au zéphyr, ",
+        "f": "neutre"
+      },
+      {
+        "t": "préfère",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "les jattes de kiwis",
+        "f": "cod"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Jacques le kiwi voyageur emporte dix bonbons zébrés au phoque affamé.",
+    "signes": 69,
+    "niveau": "moyen",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant.",
+    "sens": "Un oiseau apporte des friandises à un phoque qui a faim.",
+    "mots": [
+      {
+        "mot": "kiwi",
+        "sens": "Ici, l'oiseau de Nouvelle-Zélande, qui ne vole pas — et non le fruit."
+      },
+      {
+        "mot": "zébré",
+        "sens": "Rayé, comme la robe d'un zèbre."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Jacques le kiwi voyageur",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "emporte",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dix bonbons zébrés",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "au phoque affamé",
+        "f": "coi"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Zoé a joyeusement croqué dix kiwis frais et grimpé vers le beau chêne.",
+    "signes": 70,
+    "niveau": "moyen",
+    "temps": "passé composé",
+    "quand": "L'action est finie. Le verbe s'écrit en deux mots ; ici, un seul auxiliaire pour deux participes.",
+    "sens": "Zoé a mangé des fruits, puis elle est montée dans l'arbre.",
+    "mots": [],
+    "segments": [
+      {
+        "t": "Zoé",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "a joyeusement croqué",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dix kiwis frais",
+        "f": "cod"
+      },
+      {
+        "t": " et ",
+        "f": "neutre"
+      },
+      {
+        "t": "grimpé",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "vers le beau chêne",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Zoé, le wombat joyeux, croque dix kiwis frais et grimpe vers le chêne.",
+    "signes": 70,
+    "niveau": "moyen",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant. Deux verbes se suivent, reliés par « et ».",
+    "sens": "La même scène, mais racontée pendant qu'elle se produit. Zoé est un wombat.",
+    "mots": [
+      {
+        "mot": "wombat",
+        "sens": "Petit marsupial australien, trapu, qui creuse des terriers."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Zoé, le wombat joyeux,",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "croque",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dix kiwis frais",
+        "f": "cod"
+      },
+      {
+        "t": " et ",
+        "f": "neutre"
+      },
+      {
+        "t": "grimpe",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "vers le chêne",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Ce fakir joyeux dompte quinze wombats pygmées avec un bol de chocolat.",
+    "signes": 70,
+    "niveau": "moyen",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant.",
+    "sens": "Un fakir apprivoise des animaux — non pas avec des clous, mais avec du chocolat.",
+    "mots": [
+      {
+        "mot": "fakir",
+        "sens": "En Inde, un ascète ; dans les spectacles, celui qui s'allonge sur des clous."
+      },
+      {
+        "mot": "dompter",
+        "sens": "Apprivoiser un animal sauvage et lui apprendre à obéir."
+      },
+      {
+        "mot": "wombat",
+        "sens": "Petit marsupial australien, trapu, qui creuse des terriers."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Ce fakir joyeux",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dompte",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "quinze wombats pygmées",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "avec un bol de chocolat",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Demain, ce wombat joyeux fabriquera quinze kiwis géants pour la chèvre.",
+    "signes": 71,
+    "niveau": "moyen",
+    "temps": "futur simple",
+    "quand": "L'action n'a pas encore eu lieu. Le verbe garde son infinitif et prend -ra.",
+    "sens": "Le wombat prévoit de bricoler de faux fruits pour offrir à la chèvre.",
+    "mots": [],
+    "segments": [
+      {
+        "t": "Demain",
+        "f": "cc"
+      },
+      {
+        "t": ", ",
+        "f": "neutre"
+      },
+      {
+        "t": "ce wombat joyeux",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "fabriquera",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "quinze kiwis géants",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "pour la chèvre",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
       }
     ]
   },
@@ -169,54 +509,314 @@ const PANGRAMMES = [
     "texte": "Voyez ce koala fou qui mange des journaux et des photos dans un bungalow.",
     "signes": 73,
     "niveau": "long",
+    "temps": "impératif présent",
+    "quand": "On donne un ordre ou on attire l'attention.",
+    "sens": "Un koala complètement fou dévore des papiers dans sa petite maison.",
     "mots": [
       {
         "mot": "bungalow",
         "sens": "Petite maison de plain-pied, souvent en bois."
       }
+    ],
+    "segments": [
+      {
+        "t": "Voyez",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "ce koala fou",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "qui mange des journaux et des photos",
+        "f": "neutre"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dans un bungalow",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
     ]
   },
   {
-    "texte": "Joyeux, ivre, fatigué, le nez qui pique, le clown Harry skie dans l'ombre.",
+    "texte": "Mon zèbre joyeux a fabriqué dix kiwis géants avec du papier washi violet.",
+    "signes": 73,
+    "niveau": "long",
+    "temps": "passé composé",
+    "quand": "L'action est finie. Il faut deux mots : l'auxiliaire « avoir » ou « être », puis le participe passé.",
+    "sens": "Un zèbre bricoleur a fabriqué de faux fruits en papier japonais.",
+    "mots": [
+      {
+        "mot": "washi",
+        "sens": "Papier japonais fabriqué à la main, très solide."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Mon zèbre joyeux",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "a fabriqué",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dix kiwis géants",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "avec du papier washi violet",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Douze wagons chargés de kiwis exquis filent joyeusement vers le beau parc.",
     "signes": 74,
     "niveau": "long",
-    "mots": []
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant.",
+    "sens": "Un train entier de fruits fonce vers le parc.",
+    "mots": [],
+    "segments": [
+      {
+        "t": "Douze wagons chargés de kiwis exquis",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "filent",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "joyeusement",
+        "f": "cc"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "vers le beau parc",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
+  },
+  {
+    "texte": "Chaque jeudi, le wombat pygmée dévorait quinze kiwis exquis chez son frère.",
+    "signes": 75,
+    "niveau": "long",
+    "temps": "imparfait",
+    "quand": "L'action se répétait dans le passé : c'était une habitude.",
+    "sens": "Toutes les semaines, le petit wombat allait se régaler chez son frère.",
+    "mots": [
+      {
+        "mot": "wombat",
+        "sens": "Petit marsupial australien, trapu, qui creuse des terriers."
+      },
+      {
+        "mot": "pygmée",
+        "sens": "De très petite taille, pour son espèce."
+      },
+      {
+        "mot": "exquis",
+        "sens": "Délicieux."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Chaque jeudi",
+        "f": "cc"
+      },
+      {
+        "t": ", ",
+        "f": "neutre"
+      },
+      {
+        "t": "le wombat pygmée",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "dévorait",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "quinze kiwis exquis",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "chez son frère",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
+    ]
   },
   {
     "texte": "Dans un wagon bleu, tout en mangeant cinq kiwis frais, vous jouez du xylophone.",
     "signes": 79,
     "niveau": "long",
+    "temps": "présent de l'indicatif",
+    "quand": "L'action se passe maintenant.",
+    "sens": "Dans un train, quelqu'un joue de la musique tout en mangeant des fruits.",
     "mots": [
       {
         "mot": "xylophone",
         "sens": "Instrument à lames de bois que l'on frappe avec des baguettes."
       }
+    ],
+    "segments": [
+      {
+        "t": "Dans un wagon bleu",
+        "f": "cc"
+      },
+      {
+        "t": ", ",
+        "f": "neutre"
+      },
+      {
+        "t": "tout en mangeant cinq kiwis frais",
+        "f": "cc"
+      },
+      {
+        "t": ", ",
+        "f": "neutre"
+      },
+      {
+        "t": "vous",
+        "f": "sujet"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "jouez",
+        "f": "verbe"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "du xylophone",
+        "f": "coi"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
+      }
     ]
   },
   {
-    "texte": "Dès Noël, où un zéphyr haï me vêt de glaçons würmiens, je dîne d'exquis rôtis de bœuf au kir, à l'aÿ d'âge mûr, et cætera.",
-    "signes": 122,
+    "texte": "Le grand Kevin emportera bientôt douze kiwis exquis chez le fameux phoque joyeux.",
+    "signes": 81,
     "niveau": "long",
+    "temps": "futur simple",
+    "quand": "L'action n'a pas encore eu lieu. Le verbe garde son infinitif et prend -ra.",
+    "sens": "Kevin ira bientôt porter des fruits au phoque, qui est célèbre.",
     "mots": [
       {
-        "mot": "würmien",
-        "sens": "De la glaciation de Würm, la dernière grande période glaciaire."
+        "mot": "exquis",
+        "sens": "Délicieux."
+      }
+    ],
+    "segments": [
+      {
+        "t": "Le grand Kevin",
+        "f": "sujet"
       },
       {
-        "mot": "kir",
-        "sens": "Apéritif fait de vin blanc et de crème de cassis."
+        "t": " ",
+        "f": "neutre"
       },
       {
-        "mot": "aÿ",
-        "sens": "Vin de Champagne du village d'Aÿ."
+        "t": "emportera",
+        "f": "verbe"
       },
       {
-        "mot": "et cætera",
-        "sens": "« Et le reste », en latin."
+        "t": " ",
+        "f": "neutre"
       },
       {
-        "mot": "record",
-        "sens": "Ce pangramme contient aussi tous les accents et ligatures du français."
+        "t": "bientôt",
+        "f": "cc"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "douze kiwis exquis",
+        "f": "cod"
+      },
+      {
+        "t": " ",
+        "f": "neutre"
+      },
+      {
+        "t": "chez le fameux phoque joyeux",
+        "f": "cc"
+      },
+      {
+        "t": ".",
+        "f": "neutre"
       }
     ]
   }

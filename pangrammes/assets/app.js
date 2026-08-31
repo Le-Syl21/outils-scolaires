@@ -57,31 +57,75 @@ function remplirChoixPangrammes() {
 /* Une ligne vierge : des espaces insécables, qui portent la réglure. */
 const ligneVide = () => '<p class="ligne libre">' + '&nbsp;'.repeat(120) + '</p>';
 
-function construireFeuille() {
-  const p = PANGRAMMES[indexCourant];
+let tirage = [];        // ordre de passage des phrases sur la feuille
+let generation = 0;     // annule un remplissage encore en cours
+
+const melanger = (tab) => {
+  const t = [...tab];
+  for (let i = t.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [t[i], t[j]] = [t[j], t[i]];
+  }
+  return t;
+};
+
+const nouveauTirage = () => { tirage = melanger(PANGRAMMES.map((_, i) => i)); };
+
+/* La phrase avec chaque groupe souligné selon sa fonction */
+const phraseAnalysee = (p) => p.segments.map(s =>
+  s.f === 'neutre' ? echapper(s.t) : `<span class="g-${s.f}">${echapper(s.t)}</span>`).join('');
+
+const FONCTIONS = {
+  sujet:'sujet', verbe:'verbe', cod:"complément d'objet direct",
+  coi:"complément d'objet indirect", cc:'complément circonstanciel',
+};
+const legendeHTML = () => Object.entries(FONCTIONS)
+  .map(([cle, nom]) => `<span class="g-${cle}">${nom}</span>`).join(' · ');
+
+/* Un bloc : la phrase analysée, ce qu'elle raconte, puis les lignes à écrire */
+function blocHTML(p, repasses, libres, avecMots, avecGrammaire) {
+  const grammaire = avecGrammaire
+    ? `<p class="analyse"><strong>${echapper(p.temps)}</strong> — ${echapper(p.quand)}</p>`
+    : '';
+  const sens = avecMots ? `<p class="sens">${echapper(p.sens)}</p>` : '';
+  const mots = (avecMots && p.mots.length)
+    ? `<p class="explication">${p.mots.map(m =>
+        `<strong>${echapper(m.mot)}</strong> : ${echapper(m.sens)}`).join(' · ')}</p>`
+    : '';
+  return `<section class="bloc">
+    <p class="phrase-ref">${avecGrammaire ? phraseAnalysee(p) : echapper(p.texte)}</p>
+    ${grammaire}${sens}${mots}
+    ${Array.from({ length: repasses }, () =>
+        `<p class="ligne repasse">${echapper(p.texte)}</p>`).join('')}
+    ${Array.from({ length: libres }, ligneVide).join('')}
+  </section>`;
+}
+
+async function construireFeuille() {
+  const moi = ++generation;
   const interligne = $('#taille').value;
   const repasses = Math.max(0, Math.min(10, Number($('#nb-repasse').value) || 0));
-  const libres   = Math.max(0, Math.min(30, Number($('#nb-libres').value) || 0));
-  const avecMots = $('#opt-mots').checked && p.mots.length > 0;
-  const avecChrono = $('#opt-chrono').checked;
+  const libres   = Math.max(0, Math.min(10, Number($('#nb-libres').value) || 0));
+  const avecMots = $('#opt-mots').checked;
+  const avecGrammaire = $('#opt-grammaire').checked;
+  const uneSeule = $('#mode-phrases').value === 'une';
+
+  $('#champ-choix').classList.toggle('hidden', !uneSeule);
 
   const feuille = $('#feuille');
   feuille.style.setProperty('--interligne', interligne + 'mm');
 
-  const champs = avecChrono ? `
+  const indices = uneSeule ? [indexCourant] : tirage;
+  const blocs = indices.map(i =>
+    blocHTML(PANGRAMMES[i], repasses, libres, avecMots, avecGrammaire));
+
+  const champs = $('#opt-chrono').checked ? `
     <div class="feuille-champs">
       <div class="champ-boite"><span>Début</span></div>
       <div class="champ-boite"><span>Fin</span></div>
       <div class="champ-boite"><span>Temps</span></div>
       <div class="champ-boite"><span>Lisibilité — /10</span></div>
     </div>` : '';
-
-  const lexique = avecMots ? `
-    <section class="lexique">
-      <h3>Les mots de la phrase</h3>
-      <dl>${p.mots.map(m =>
-        `<dt>${echapper(m.mot)}</dt><dd>${echapper(m.sens)}</dd>`).join('')}</dl>
-    </section>` : '';
 
   feuille.innerHTML = `
     <div class="feuille-inner">
@@ -90,74 +134,93 @@ function construireFeuille() {
           <small>Nom : ______________________  Date : ____________</small></p>
         ${champs}
       </header>
-      <p class="consigne">Cette phrase contient les 26 lettres de l'alphabet.
-         Repasse sur le modèle pâle, puis recopie-la seul, en soignant le tracé.</p>
-      <div class="zone-ecriture">
-        <p class="ligne modele">${echapper(p.texte)}</p>
-        ${Array.from({ length: repasses }, () =>
-            `<p class="ligne repasse">${echapper(p.texte)}</p>`).join('')}
-        ${Array.from({ length: libres }, ligneVide).join('')}
-      </div>
-      ${lexique}
+      <p class="consigne">Chaque phrase contient les 26 lettres de l'alphabet.
+         Lis-la, puis repasse dessus en soignant le tracé.
+         ${avecGrammaire ? '<span class="legende">' + legendeHTML() + '</span>' : ''}</p>
+      <div class="zone-ecriture">${blocs.join('')}</div>
     </div>`;
 
-  majJauge();
+  // Les mesures n'ont de sens qu'une fois Marelle chargée
+  if (document.fonts && document.fonts.status !== 'loaded') {
+    await document.fonts.ready;
+    if (moi !== generation) return;          // un autre rendu a pris la main
+  }
+  ajusterALaPage(uneSeule);
 }
 
-/* Prévient quand la feuille déborde d'une page A4 (297 mm moins 2 × 15 mm) */
-function majJauge() {
+/* Retire les blocs qui débordent, pour que la feuille tienne sur une page A4 */
+function ajusterALaPage(uneSeule) {
   const inner = $('.feuille-inner');
+  const zone = $('.zone-ecriture');
+  if (!inner || !zone) return;
+  const dispo = (297 - 30) * (96 / 25.4);    // hauteur utile en pixels CSS
+
+  while (zone.children.length > 1 && inner.getBoundingClientRect().height > dispo) {
+    zone.removeChild(zone.lastElementChild);
+  }
+
+  const posees = zone.children.length;
+  const deborde = inner.getBoundingClientRect().height > dispo;
   const jauge = $('#jauge');
-  if (!inner) return;
-  const mm = 96 / 25.4;                       // 1 mm en pixels CSS
-  const dispo = (297 - 30) * mm;
-  const pages = Math.max(1, Math.ceil(inner.getBoundingClientRect().height / dispo - 0.02));
-  jauge.textContent = pages === 1
-    ? 'Tient sur une page ✓'
-    : `Déborde sur ${pages} pages — enlève des lignes ou réduis la taille.`;
-  jauge.className = 'jauge ' + (pages === 1 ? 'ok' : 'trop');
+  if (deborde) {
+    jauge.textContent = uneSeule
+      ? 'La phrase déborde : réduis la taille ou le nombre de lignes.'
+      : 'Une seule phrase, et elle déborde déjà : réduis la taille ou le nombre de lignes.';
+    jauge.className = 'jauge trop';
+  } else {
+    jauge.textContent = posees > 1
+      ? `${posees} phrases sur la page ✓`
+      : 'Une phrase sur la page ✓';
+    jauge.className = 'jauge ok';
+  }
+  majPhraseChrono();
 }
 
 function memoriserReglages() {
   reglages = {
+    mode: $('#mode-phrases').value,
     taille: $('#taille').value,
     repasse: $('#nb-repasse').value,
     libres: $('#nb-libres').value,
     mots: $('#opt-mots').checked,
+    grammaire: $('#opt-grammaire').checked,
     chrono: $('#opt-chrono').checked,
   };
   ecrire(CLES.reglages, reglages);
 }
 
 function appliquerReglages() {
-  if (reglages.taille)  $('#taille').value      = reglages.taille;
-  if (reglages.repasse) $('#nb-repasse').value  = reglages.repasse;
-  if (reglages.libres)  $('#nb-libres').value   = reglages.libres;
-  if ('mots' in reglages)   $('#opt-mots').checked   = reglages.mots;
-  if ('chrono' in reglages) $('#opt-chrono').checked = reglages.chrono;
+  if (reglages.mode)    $('#mode-phrases').value = reglages.mode;
+  if (reglages.taille)  $('#taille').value       = reglages.taille;
+  if (reglages.repasse) $('#nb-repasse').value   = reglages.repasse;
+  if (reglages.libres)  $('#nb-libres').value    = reglages.libres;
+  if ('mots' in reglages)      $('#opt-mots').checked      = reglages.mots;
+  if ('grammaire' in reglages) $('#opt-grammaire').checked = reglages.grammaire;
+  if ('chrono' in reglages)    $('#opt-chrono').checked    = reglages.chrono;
 }
 
-$$('#taille, #nb-repasse, #nb-libres, #opt-mots, #opt-chrono').forEach(el =>
-  el.addEventListener('change', () => { memoriserReglages(); construireFeuille(); }));
+$$('#mode-phrases, #taille, #nb-repasse, #nb-libres, #opt-mots, #opt-grammaire, #opt-chrono')
+  .forEach(el => el.addEventListener('change', () => {
+    memoriserReglages();
+    construireFeuille();
+  }));
 
 $('#choix-pangramme').addEventListener('change', (e) => {
   indexCourant = Number(e.target.value);
   construireFeuille();
-  majPhraseChrono();
 });
 
-$('#btn-hasard').addEventListener('click', () => {
-  if (PANGRAMMES.length < 2) return;
-  let n;
-  do { n = Math.floor(Math.random() * PANGRAMMES.length); } while (n === indexCourant);
-  indexCourant = n;
-  $('#choix-pangramme').value = String(indexCourant);
+$('#btn-tirage').addEventListener('click', () => {
+  nouveauTirage();
+  if ($('#mode-phrases').value === 'une') {
+    indexCourant = tirage[0];
+    $('#choix-pangramme').value = String(indexCourant);
+  }
   construireFeuille();
-  majPhraseChrono();
 });
 
 $('#btn-imprimer').addEventListener('click', () => window.print());
-window.addEventListener('resize', majJauge);
+window.addEventListener('resize', () => ajusterALaPage($('#mode-phrases').value === 'une'));
 
 /* ------------------------------------------------------------------ */
 /* La collection                                                       */
@@ -172,11 +235,14 @@ function afficherCollection() {
     const i = PANGRAMMES.indexOf(p);
     return `<article class="carte-pangramme">
       <p class="cursive">${echapper(p.texte)}</p>
+      <p class="phrase-ref">${phraseAnalysee(p)}</p>
       <p class="infos">
         <span class="badge">${p.niveau}</span>
+        <span class="badge badge-temps">${echapper(p.temps)}</span>
         <span>${p.signes} signes</span>
-        ${p.mots.length ? `<span>${p.mots.length} mot(s) expliqué(s)</span>` : ''}
       </p>
+      <p class="sens">${echapper(p.sens)}</p>
+      <p class="analyse">${echapper(p.quand)}</p>
       ${p.mots.length ? `<ul class="mots">${p.mots.map(m =>
         `<li><strong>${echapper(m.mot)}</strong> — <span>${echapper(m.sens)}</span></li>`).join('')}</ul>` : ''}
       <button class="btn btn-ghost btn-sm" data-utiliser="${i}" type="button">
@@ -189,6 +255,7 @@ $$('.filtres .btn').forEach(btn => btn.addEventListener('click', () => {
   filtreNiveau = btn.dataset.niveau;
   $$('.filtres .btn').forEach(b => b.classList.toggle('is-active', b === btn));
   afficherCollection();
+$('#legende').innerHTML = 'Soulignés : ' + legendeHTML();
 }));
 
 $('#liste-pangrammes').addEventListener('click', (e) => {
@@ -228,9 +295,13 @@ $('#btn-ajout-eleve').addEventListener('click', () => {
 /* ------------------------------------------------------------------ */
 let depart = null, minuteur = null, tempsFinal = 0;
 
-const majPhraseChrono = () => {
-  $('#chrono-phrase').textContent = PANGRAMMES[indexCourant].texte;
-};
+/* Le chrono porte sur la première phrase de la feuille */
+function phraseChrono() {
+  const premier = $('.zone-ecriture .phrase-ref');
+  const texte = premier ? premier.textContent.trim() : PANGRAMMES[indexCourant].texte;
+  return PANGRAMMES.find(p => p.texte === texte) || PANGRAMMES[indexCourant];
+}
+const majPhraseChrono = () => { $('#chrono-phrase').textContent = phraseChrono().texte; };
 
 $('#btn-chrono').addEventListener('click', () => {
   if (minuteur) {                                   // arrêt
@@ -279,7 +350,7 @@ const vitesse = (r) => Math.round(r.signes * r.copies / (r.temps / 60));
 $('#btn-enregistrer').addEventListener('click', () => {
   const eleve = $('#select-eleve').value;
   if (!eleve || !tempsFinal) return;
-  const p = PANGRAMMES[indexCourant];
+  const p = phraseChrono();
   resultats.push({
     id: Date.now(),
     date: new Date().toISOString(),
@@ -347,7 +418,8 @@ $('#btn-effacer').addEventListener('click', () => {
 });
 
 /* ------------------------------------------------------------------ */
-indexCourant = Math.floor(Math.random() * PANGRAMMES.length);   // une phrase au hasard
+nouveauTirage();
+indexCourant = tirage[0];
 appliquerReglages();
 remplirChoixPangrammes();
 construireFeuille();
@@ -355,5 +427,5 @@ afficherCollection();
 majPhraseChrono();
 rafraichirEleves();
 $('#lisibilite-texte').textContent = MOTS_LISIBILITE[Number($('#lisibilite').value)];
-document.fonts?.ready.then(majJauge);      // la jauge attend le chargement de Marelle
+/* le remplissage définitif attend le chargement de Marelle (voir construireFeuille) */
 })();

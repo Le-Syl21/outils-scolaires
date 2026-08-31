@@ -20,10 +20,13 @@ Apprendre les tables de multiplication par la concurrence et la répétition.
 
 Améliorer son écriture — la vitesse et la lisibilité — en découvrant plein de pangrammes.
 
-- **Feuille** : modèle en cursive, lignes à repasser en transparence, lignes libres, sur réglure
-  Seyes. Taille d'écriture réglable de 2 mm (cahier Seyes) à 4 mm (grande section).
-- **Collection** : 17 pangrammes français vérifiés — chacun contient bien les 26 lettres — avec
-  l'explication des mots rares (zéphyr, kumquat, quetzal, wharf…).
+- **Feuille** : la page enchaîne les phrases tirées au sort. Pour chacune : la phrase en petit avec
+  les groupes soulignés selon leur fonction (sujet, verbe, compléments), le temps du verbe, ce que
+  la phrase raconte, les mots rares, puis les lignes à repasser en transparence sur réglure Seyes.
+  Taille d'écriture réglable de 2 mm (cahier Seyes) à 4 mm (grande section).
+- **Collection** : 16 pangrammes français, chacun vérifié par programme — les 26 lettres sont bien
+  présentes, le découpage grammatical se recompose exactement en la phrase. Les phrases sans queue
+  ni tête ont été écartées : un pangramme doit pouvoir se raconter.
 - **Chrono** : la vitesse d'écriture pondérée par une note de lisibilité donnée par l'adulte,
   en *signes lisibles par minute*.
 

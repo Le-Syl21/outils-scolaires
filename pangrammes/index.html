@@ -28,16 +28,21 @@
 
   <div class="panel no-print">
     <h2>La feuille d'écriture</h2>
-    <p class="lead">Le modèle en cursive, trois lignes à repasser en transparence, puis des lignes
-       libres pour recopier. La réglure Seyes est dessinée par la police elle-même.</p>
+    <p class="lead">Chaque phrase est écrite en petit, expliquée, puis proposée en transparence
+       sur des lignes Seyes à repasser. La page en enchaîne autant qu'elle peut en contenir.</p>
 
     <div class="reglages">
       <div class="field">
-        <label for="choix-pangramme">Pangramme</label>
-        <div class="row">
-          <select id="choix-pangramme"></select>
-          <button id="btn-hasard" class="btn btn-ghost btn-sm" type="button">🎲 Au hasard</button>
-        </div>
+        <label for="mode-phrases">Phrases de la feuille</label>
+        <select id="mode-phrases">
+          <option value="hasard" selected>Au hasard, jusqu'à remplir la page</option>
+          <option value="une">Une seule phrase, choisie</option>
+        </select>
+      </div>
+
+      <div class="field" id="champ-choix">
+        <label for="choix-pangramme">Laquelle</label>
+        <select id="choix-pangramme"></select>
       </div>
 
       <div class="field">
@@ -51,22 +56,24 @@
       </div>
 
       <div class="field">
-        <label for="nb-repasse">Lignes à repasser</label>
+        <label for="nb-repasse">Lignes à repasser, par phrase</label>
         <input type="number" id="nb-repasse" min="0" max="10" value="3">
       </div>
 
       <div class="field">
-        <label for="nb-libres">Lignes libres</label>
-        <input type="number" id="nb-libres" min="0" max="30" value="6">
+        <label for="nb-libres">Lignes vides, par phrase</label>
+        <input type="number" id="nb-libres" min="0" max="10" value="0">
       </div>
     </div>
 
     <div class="row">
-      <label class="check"><input type="checkbox" id="opt-mots" checked> Expliquer les mots rares</label>
+      <label class="check"><input type="checkbox" id="opt-grammaire" checked> Analyse grammaticale</label>
+      <label class="check"><input type="checkbox" id="opt-mots" checked> Sens et mots rares</label>
       <label class="check"><input type="checkbox" id="opt-chrono" checked> Cases début / fin / temps</label>
     </div>
 
     <div class="row row-actions">
+      <button id="btn-tirage" class="btn btn-ghost btn-xl" type="button">🎲 Nouveau tirage</button>
       <button id="btn-imprimer" class="btn btn-primary btn-xl" type="button">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
           <path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"
@@ -86,7 +93,9 @@
   <div class="panel">
     <h2>La collection</h2>
     <p class="lead">Un pangramme est une phrase qui contient les 26 lettres de l'alphabet.
-       Chacune de celles-ci a été vérifiée. <span id="compte-collection"></span></p>
+       Chacune a été vérifiée par programme, et les phrases sans queue ni tête ont été écartées :
+       il faut pouvoir raconter ce qu'elles disent. <span id="compte-collection"></span></p>
+    <p class="legende" id="legende"></p>
     <div class="row filtres">
       <button class="btn btn-ghost btn-sm is-active" data-niveau="" type="button">Tous</button>
       <button class="btn btn-ghost btn-sm" data-niveau="court" type="button">Courts</button>

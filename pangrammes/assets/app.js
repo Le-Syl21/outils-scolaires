@@ -59,10 +59,9 @@ const ligneVide = () =>
   '<p class="ligne libre"><span class="calque-reglure">' +
   '&nbsp;'.repeat(120) + '</span></p>';
 
-/* Une ligne à repasser : la réglure dessous, le modèle par-dessus. */
+/* Une ligne à repasser : la police porte à la fois la réglure et le modèle. */
 const ligneRepasse = (txt) =>
-  `<p class="ligne repasse"><span class="calque-reglure">${txt}</span>` +
-  `<span class="calque-modele">${txt}</span></p>`;
+  `<p class="ligne repasse"><span class="calque-reglure">${txt}</span></p>`;
 
 const MARGE_MM = 10;    // marges de la feuille, identiques à l'écran et à l'impression
 let tirage = [];        // ordre de passage des phrases sur la feuille
@@ -161,7 +160,7 @@ async function construireFeuille() {
   if (document.fonts) {
     try {
       await Promise.all([
-        document.fonts.load(`${interligne}mm "Marelle Lignes N"`),
+        document.fonts.load(`${interligne}mm "Marelle Lignes"`),
         document.fonts.load(`${interligne}mm "Marelle"`),
       ]);
     } catch { /* ignore */ }
@@ -215,7 +214,7 @@ async function construireFeuille() {
 
 function majJauge(parPage) {
   const jauge = $('#jauge');
-  if (document.fonts && !document.fonts.check('16px "Marelle Lignes N"')) {
+  if (document.fonts && !document.fonts.check('16px "Marelle Lignes"')) {
     jauge.textContent = 'La police Marelle ne s’est pas chargée : les lignes Seyes manquent.';
     jauge.className = 'jauge trop';
     return;

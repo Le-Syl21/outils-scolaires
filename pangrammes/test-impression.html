@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test d'impression de la réglure</title>
+<style>
+@font-face{font-family:"Marelle";src:url("../fonts/Marelle-Regular.woff2") format("woff2")}
+@font-face{font-family:"Marelle Lignes";src:url("../fonts/MarelleLIGNES-Regular.woff2") format("woff2")}
+@font-face{font-family:"Marelle Lignes N";src:url("../fonts/MarelleLIGNESN-Regular.woff2") format("woff2")}
+
+/* Palettes : la réglure d'une police en couleurs se redéfinit en CSS */
+@font-palette-values --violet{font-family:"Marelle Lignes";override-colors:0 #896CE5,1 #B0A7F7}
+@font-palette-values --gris{font-family:"Marelle Lignes";override-colors:0 #3f3f3f,1 #5f5f5f}
+@font-palette-values --noir{font-family:"Marelle Lignes";override-colors:0 #000,1 #000}
+
+body{font-family:system-ui,sans-serif;margin:0;padding:10mm;color:#000;background:#fff}
+h1{font-size:13pt;margin:0 0 2mm}
+.mode{font-size:9pt;color:#333;margin:0 0 6mm}
+.essai{margin:0 0 7mm;break-inside:avoid}
+.titre{font-size:10pt;font-weight:700;margin:0 0 1mm}
+.titre span{font-weight:400;color:#444}
+.coche{
+  display:inline-block;border:1pt solid #000;width:5mm;height:5mm;
+  vertical-align:-1mm;margin-right:3mm;
+}
+
+/* Géométrie commune : hauteur d'x = 0,48 em, 5 interlignes par ligne */
+.ligne{
+  --interligne:2mm;
+  font-size:calc(var(--interligne) / 0.48);
+  line-height:2.4;
+  margin:0;position:relative;
+}
+.police{font-family:"Marelle Lignes","Marelle",cursive;color:rgba(0,0,0,.70)}
+.mono {font-family:"Marelle Lignes N","Marelle",cursive;color:#6a6a6a}
+.nue  {font-family:"Marelle",cursive;color:rgba(0,0,0,.70)}
+
+.a .police{font-palette:--violet}
+.b .police{font-palette:--gris}
+.c .police{font-palette:--noir}
+
+/* D : réglure dessinée en CSS, épaisseur maîtrisée, en fond */
+.d .ligne{
+  background-image:repeating-linear-gradient(to bottom,
+    #4a4a4a 0 .12mm, transparent .12mm calc(var(--interligne)));
+  background-position:0 calc(0.24em - .06mm);
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;
+}
+/* E : réglure en bordures — les bordures s'impriment toujours */
+.e .cadre{position:relative}
+.e .trait{
+  position:absolute;left:0;right:0;border-top:.12mm solid #4a4a4a;
+}
+</style>
+</head>
+<body>
+
+<h1>Test d'impression de la réglure Seyes</h1>
+<p class="mode">Imprime cette page sur la HP Color LaserJet, puis coche les cases où les lignes
+   horizontales sont bien visibles. Interligne 2 mm partout. Les lettres, elles, sortent dans
+   tous les cas : c'est la réglure qui est en cause.</p>
+
+<div class="essai a">
+  <p class="titre"><span class="coche"></span>A — police en couleurs, violet d'origine
+    <span>(la version actuelle du site)</span></p>
+  <p class="ligne police">Le grand Kevin emportera douze kiwis exquis.</p>
+  <p class="ligne police">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</div>
+
+<div class="essai b">
+  <p class="titre"><span class="coche"></span>B — même police, réglure forcée en gris foncé</p>
+  <p class="ligne police">Le grand Kevin emportera douze kiwis exquis.</p>
+  <p class="ligne police">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</div>
+
+<div class="essai c">
+  <p class="titre"><span class="coche"></span>C — même police, réglure forcée en noir</p>
+  <p class="ligne police">Le grand Kevin emportera douze kiwis exquis.</p>
+  <p class="ligne police">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</div>
+
+<div class="essai">
+  <p class="titre"><span class="coche"></span>C bis — variante monochrome de la police</p>
+  <p class="ligne mono">Le grand Kevin emportera douze kiwis exquis.</p>
+  <p class="ligne mono">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</div>
+
+<div class="essai d">
+  <p class="titre"><span class="coche"></span>D — réglure dessinée en CSS (fond), trait de 0,12 mm</p>
+  <p class="ligne nue">Le grand Kevin emportera douze kiwis exquis.</p>
+  <p class="ligne nue">&nbsp;</p>
+</div>
+
+<div class="essai e">
+  <p class="titre"><span class="coche"></span>E — réglure dessinée en CSS (bordures), trait de 0,12 mm</p>
+  <div class="cadre" style="height:20mm">
+    <div class="trait" style="top:2mm"></div>
+    <div class="trait" style="top:4mm"></div>
+    <div class="trait" style="top:6mm"></div>
+    <div class="trait" style="top:8mm"></div>
+    <div class="trait" style="top:10mm"></div>
+    <div class="trait" style="top:12mm"></div>
+    <div class="trait" style="top:14mm"></div>
+    <div class="trait" style="top:16mm"></div>
+  </div>
+</div>
+
+<p class="mode">Si aucune ligne ne sort en A, B et C mais que D ou E fonctionnent, la réglure de la
+   police est trop fine pour l'imprimante et je la remplacerai par un tracé CSS. Vérifie aussi que
+   le mode économie de toner (EconoMode) est désactivé dans le pilote : il supprime les traits fins.</p>
+
+</body>
+</html>

@@ -8,13 +8,27 @@
   src:url("../../fonts/Marelle-Regular.woff2") format("woff2");
   font-display:swap;
 }
-/* Variante monochrome : ses traits sont des tracés ordinaires, donc ils
-   s'impriment, là où les couches de couleur de « Marelle LIGNES » se
-   perdent sur le chemin d'impression et virent au gris invisible. */
 @font-face{
+  font-family:"Marelle Lignes";
+  src:url("../../fonts/MarelleLIGNES-Regular.woff2") format("woff2");
+  font-display:swap;
+}
+@font-face{                        /* variante monochrome, en réserve */
   font-family:"Marelle Lignes N";
   src:url("../../fonts/MarelleLIGNESN-Regular.woff2") format("woff2");
   font-display:swap;
+}
+
+/* La réglure vient de la palette interne de la police : on peut la
+   redéfinir. À l'impression, le violet clair d'origine est trop pâle
+   pour un trait de 0,06 mm — on le remplace par un gris soutenu. */
+@font-palette-values --seyes-ecran{
+  font-family:"Marelle Lignes";
+  override-colors:0 #7d5fd8, 1 #a79ef2;
+}
+@font-palette-values --seyes-impression{
+  font-family:"Marelle Lignes";
+  override-colors:0 #3f3f3f, 1 #5f5f5f;
 }
 
 /* ---------- Réglages ---------- */
@@ -68,18 +82,14 @@
   line-height:2.4;                 /* 5 interlignes : la réglure s'enchaîne */
   margin:0;
 }
-/* Deux calques exactement superposés : les deux polices ont les mêmes
-   métriques, donc le même retour à la ligne. Dessous, la réglure ;
-   dessus, le modèle à repasser. */
+/* La police porte sa réglure : les lettres prennent la couleur CSS,
+   les lignes gardent celle de la palette. Un seul calque suffit. */
 .calque-reglure{
-  font-family:"Marelle Lignes N",cursive;
-  color:#a8a8a8;                   /* la réglure, assez soutenue pour le laser */
+  font-family:"Marelle Lignes","Marelle",cursive;
+  font-palette:--seyes-ecran;
+  color:rgba(0,0,0,.70);           /* le modèle à repasser, 70 % */
 }
-.calque-modele{
-  position:absolute;top:0;left:0;right:0;
-  font-family:"Marelle",cursive;
-  color:rgba(0,0,0,.75);           /* le modèle à repasser, 75 % */
-}
+.ligne.libre .calque-reglure{color:transparent}   /* la réglure seule */
 .ligne.libre{white-space:nowrap;overflow:hidden}
 
 /* ---------- Un bloc par phrase ---------- */
@@ -186,6 +196,7 @@
   #view-collection,#view-chrono{display:none !important}
   #view-feuille{display:block !important}
   .feuille{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .calque-reglure{font-palette:--seyes-impression}   /* réglure grise, pas violette */
   .page{
     width:auto;min-height:0;padding:0;margin:0;box-shadow:none;border-radius:0;
     break-after:page;page-break-after:always;

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Défi Tables de multiplication</title>
-<meta name="description" content="Grille de tables de multiplication chronométrée, notée sur 100, et générateur de grilles à imprimer.">
+<title>Défi calcul</title>
+<meta name="description" content="Grilles de calcul chronométrées — multiplications, additions, soustractions, divisions — notées sur 100, et grilles à imprimer.">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✖️</text></svg>">
 </head>
@@ -12,7 +12,7 @@
 
 <header class="topbar no-print">
   <a class="retour" href="../">← Outils</a>
-  <h1>✖️ Défi Tables</h1>
+  <h1>✖️ Défi calcul</h1>
   <nav class="tabs" role="tablist">
     <button class="tab is-active" data-view="jeu" role="tab">Jouer</button>
     <button class="tab" data-view="scores" role="tab">Scores</button>
@@ -28,7 +28,7 @@
   <!-- Accueil -->
   <div id="ecran-accueil" class="panel">
     <h2>Prêt pour le défi ?</h2>
-    <p class="lead">Remplis la grille des tables de 1 à 10 le plus vite possible, sans faute.
+    <p class="lead">Remplis la grille le plus vite possible, sans faute.
        Le chrono démarre quand tu cliques sur <strong>Démarrer</strong>.</p>
 
     <div class="field">
@@ -40,7 +40,19 @@
     </div>
 
     <div class="field">
-      <label>Tables travaillées</label>
+      <label for="operation">Opération</label>
+      <div class="row operations">
+        <button class="btn btn-ghost btn-sm is-active" data-op="x" type="button">× <small>multiplier</small></button>
+        <button class="btn btn-ghost btn-sm" data-op="+" type="button">+ <small>additionner</small></button>
+        <button class="btn btn-ghost btn-sm" data-op="-" type="button">− <small>soustraire</small></button>
+        <button class="btn btn-ghost btn-sm" data-op="/" type="button">÷ <small>diviser</small></button>
+        <button class="btn btn-ghost btn-sm" data-op="mixte" type="button">? <small>mélangé</small></button>
+      </div>
+      <p id="info-operation" class="info-grille"></p>
+    </div>
+
+    <div class="field">
+      <label id="label-tables">Tables travaillées</label>
       <div id="choix-tables" class="tables-choix"></div>
       <div class="ajout-table">
         <label for="table-perso">Autre table :</label>

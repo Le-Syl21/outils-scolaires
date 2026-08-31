@@ -5,6 +5,7 @@
 
 const CLES = {
   miens:     'defiEcriture.mesPangrammes',
+  masquees:  'defiEcriture.masquees',
   eleves:    'defiTables.eleves',        // liste partagée avec le Défi Tables
   resultats: 'defiEcriture.resultats',
   reglages:  'defiEcriture.reglages',
@@ -37,13 +38,17 @@ let indexCourant = 0;   // pangramme affiché
 
 /* La collection : les phrases livrées, plus celles écrites à l'atelier */
 let mesPangrammes = lire(CLES.miens, []);
+let masquees = lire(CLES.masquees, []);   // phrases mises de côté, par leur texte
 /* les premières versions inscrivaient un texte de remplacement ; on l'oublie */
 mesPangrammes.forEach(p => {
   if (p.sens === 'À toi de raconter ce que dit la phrase.') p.sens = '';
 });
-let COLLECTION = [];
+let COLLECTION = [];   // celles qui servent aux tirages et aux feuilles
+let TOUTES = [];       // toutes, y compris les mises de côté
 function majCollection() {
-  COLLECTION = PANGRAMMES.concat(mesPangrammes);
+  TOUTES = PANGRAMMES.concat(mesPangrammes);
+  COLLECTION = TOUTES.filter(p => !masquees.includes(p.texte));
+  if (!COLLECTION.length) COLLECTION = TOUTES;   // on ne peut pas tout mettre de côté
   if (indexCourant >= COLLECTION.length) indexCourant = 0;
 }
 majCollection();
@@ -625,12 +630,14 @@ $('#liste-mes-pangrammes').addEventListener('click', (e) => {
 let filtreNiveau = '';
 
 function afficherCollection() {
-  const liste = COLLECTION.filter(p => !filtreNiveau || p.niveau === filtreNiveau);
+  const liste = TOUTES.filter(p => !filtreNiveau || p.niveau === filtreNiveau);
+  const cachees = TOUTES.length - COLLECTION.length;
   $('#compte-collection').textContent =
-    `${COLLECTION.length} phrases dans la collection.`;
+    `${COLLECTION.length} phrases en jeu` + (cachees ? `, ${cachees} mise(s) de côté.` : '.');
   $('#liste-pangrammes').innerHTML = liste.map(p => {
     const i = COLLECTION.indexOf(p);
-    return `<article class="carte-pangramme">
+    const cachee = masquees.includes(p.texte);
+    return `<article class="carte-pangramme${cachee ? ' mise-de-cote' : ''}">
       <p class="cursive">${echapper(p.texte)}</p>
       <p class="phrase-ref">${phraseAnalysee(p)}</p>
       <p class="infos">
@@ -643,8 +650,12 @@ function afficherCollection() {
         ${echapper(p.quand)}</p>
       ${p.mots.length ? `<ul class="mots">${p.mots.map(m =>
         `<li><strong>${echapper(m.mot)}</strong> — <span>${echapper(m.sens)}</span></li>`).join('')}</ul>` : ''}
-      <button class="btn btn-ghost btn-sm" data-utiliser="${i}" type="button">
-        Faire la feuille avec celui-ci</button>
+      <div class="row">
+        ${cachee ? '' : `<button class="btn btn-ghost btn-sm" data-utiliser="${i}" type="button">
+          Faire la feuille avec celui-ci</button>`}
+        <button class="btn btn-ghost btn-sm" data-cacher="${echapper(p.texte)}" type="button">
+          ${cachee ? 'Remettre en jeu' : 'Mettre de côté'}</button>
+      </div>
     </article>`;
   }).join('') || '<p class="vide">Aucune phrase à ce niveau.</p>';
 }
@@ -657,6 +668,19 @@ $('#legende').innerHTML = 'Soulignés : ' + legendeHTML();
 }));
 
 $('#liste-pangrammes').addEventListener('click', (e) => {
+  const bascule = e.target.closest('[data-cacher]');
+  if (bascule) {
+    const texte = bascule.dataset.cacher;
+    if (masquees.includes(texte)) masquees = masquees.filter(t => t !== texte);
+    else if (COLLECTION.length <= 1) { alert('Il faut garder au moins une phrase en jeu.'); return; }
+    else masquees.push(texte);
+    ecrire(CLES.masquees, masquees);
+    majCollection();
+    afficherCollection();
+    remplirChoixPangrammes();
+    construireFeuille();
+    return;
+  }
   const btn = e.target.closest('[data-utiliser]');
   if (!btn) return;
   indexCourant = Number(btn.dataset.utiliser);

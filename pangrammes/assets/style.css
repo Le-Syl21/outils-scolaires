@@ -218,6 +218,11 @@
 .mots strong{color:var(--encre)}
 .mots span{color:var(--gris)}
 
+/* Une phrase mise de côté : visible dans la collection, hors des tirages */
+.carte-pangramme.mise-de-cote{opacity:.55;border-left:6px solid var(--peche)}
+.partage{border-left:6px solid var(--orange)}
+.partage a.btn{display:inline-block;text-decoration:none}
+
 /* ---------- Cours ---------- */
 table.cours{width:100%;border-collapse:collapse;font-size:.98rem;min-width:640px}
 table.cours th,table.cours td{

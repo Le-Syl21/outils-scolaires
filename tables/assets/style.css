@@ -24,7 +24,7 @@ body{
   color:var(--encre);
   line-height:1.5;
 }
-main{max-width:1000px;margin:0 auto;padding:16px}
+main{max-width:1120px;margin:0 auto;padding:16px}
 h1,h2{margin:0 0 8px}
 h2{font-size:1.35rem}
 .lead{color:var(--gris);margin:0 0 16px}
@@ -145,14 +145,14 @@ select{min-width:180px}
 .grille th,.grille td{
   position:relative;
   border:2px solid var(--trait);
-  width:var(--case-w,56px);height:calc(var(--case-w,56px) * .82);
+  width:var(--case-w,76px);height:calc(var(--case-w,76px) * .8);
   text-align:center;padding:0;
 }
-.grille th{font-size:var(--case-fs,1.25rem);font-weight:700}
+.grille th{font-size:var(--case-fs,1.4rem);font-weight:700}
 .grille .coin{background:var(--peche);font-size:1.4rem}
 .grille input{
   width:100%;height:100%;border:0;background:transparent;
-  text-align:center;font:inherit;font-size:var(--case-fs,1.15rem);font-weight:600;
+  text-align:center;font:inherit;font-size:var(--case-fs,1.4rem);font-weight:600;
   color:var(--encre);padding:0;
 }
 .grille input:focus{outline:0;background:#fff7b0}

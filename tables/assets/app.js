@@ -372,11 +372,12 @@ const arreterChrono = () => { if (partie?.minuteur) clearInterval(partie.minuteu
 
 function construireGrille() {
   const t = $('#grille-jeu');
-  // au-delà d'une douzaine de tables, on rétrécit les cases plutôt que
-  // d'imposer un long défilement horizontal
-  const cote = Math.max(30, Math.min(56, Math.round(940 / (partie.colonnes.length + 1))));
+  // les cases prennent toute la largeur disponible, jusqu'à 76 px ; au-delà
+  // d'une douzaine de tables elles se resserrent plutôt que d'imposer un
+  // long défilement horizontal
+  const cote = Math.max(30, Math.min(76, Math.round(1060 / (partie.colonnes.length + 1))));
   t.style.setProperty('--case-w', cote + 'px');
-  t.style.setProperty('--case-fs', Math.max(.8, Math.min(1.15, cote / 48)) + 'rem');
+  t.style.setProperty('--case-fs', Math.max(.85, Math.min(1.55, cote / 46)) + 'rem');
   const signe = OPERATIONS[partie.operation].signe;
   let html = `<tr><th class="coin">${signe}</th>` +
     partie.colonnes.map(c => `<th>${c}</th>`).join('') + '</tr>';

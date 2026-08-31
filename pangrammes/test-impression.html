@@ -22,7 +22,7 @@ h1{font-size:13pt;margin:0 0 2mm}
    Un trait tous les 0,48 em, la ligne d'écriture tous les 2,4 em. */
 .ligne{
   --interligne:2mm;
-  --ep:.12mm;
+  --ep:1px;            /* 0,265 mm sur papier */
   --forte:#896CE5;
   --fine:#B0A7F7;
   font-family:"Marelle",cursive;
@@ -30,11 +30,13 @@ h1{font-size:13pt;margin:0 0 2mm}
   line-height:2.4;
   margin:0;
   background-image:
-    repeating-linear-gradient(to bottom, var(--forte) 0 var(--ep), transparent var(--ep) 2.4em),
-    repeating-linear-gradient(to bottom, var(--fine) 0 var(--ep), transparent var(--ep) .48em);
+    repeating-linear-gradient(to bottom,
+      var(--forte) 0, var(--forte) var(--ep), transparent var(--ep), transparent 2.4em),
+    repeating-linear-gradient(to bottom,
+      var(--fine) 0, var(--fine) var(--ep), transparent var(--ep), transparent .48em);
   background-position:
-    0 calc(1.68em - var(--ep) / 2),
-    0 calc(0.24em - var(--ep) / 2);
+    0 1.68em,
+    0 0.24em;
   -webkit-print-color-adjust:exact;print-color-adjust:exact;
 }
 
@@ -54,7 +56,7 @@ h1{font-size:13pt;margin:0 0 2mm}
 <body>
 
 <h1>Test 2 — quelle intensité pour le modèle à repasser ?</h1>
-<p class="mode">Réglure identique partout : tracé en fond, trait de 0,12 mm, violet de Marelle,
+<p class="mode">Réglure identique partout : tracé en fond, trait de 1 px (0,265 mm sur papier), violet de Marelle,
    interligne 2 mm. Seule change l'intensité du modèle. Coche celle qui se repasse le mieux :
    assez visible pour être suivie, assez pâle pour que le crayon de l'enfant se distingue.</p>
 

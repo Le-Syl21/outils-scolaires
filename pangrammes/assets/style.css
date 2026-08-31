@@ -70,12 +70,14 @@
      suit de lui-même les lignes qui reviennent à la ligne. */
   background-image:
     repeating-linear-gradient(to bottom,
-      var(--ligne-forte) 0 var(--ep-reglure), transparent var(--ep-reglure) 2.4em),
+      var(--ligne-forte) 0, var(--ligne-forte) var(--ep-reglure),
+      transparent var(--ep-reglure), transparent 2.4em),
     repeating-linear-gradient(to bottom,
-      var(--interligne-couleur) 0 var(--ep-reglure), transparent var(--ep-reglure) .48em);
+      var(--interligne-couleur) 0, var(--interligne-couleur) var(--ep-reglure),
+      transparent var(--ep-reglure), transparent .48em);
   background-position:
-    0 calc(1.68em - var(--ep-reglure) / 2),
-    0 calc(0.24em - var(--ep-reglure) / 2);
+    0 1.68em,
+    0 0.24em;
   -webkit-print-color-adjust:exact;print-color-adjust:exact;
 }
 /* Couleurs opaques, jamais de rgba() : une transparence est tramée à
@@ -87,11 +89,14 @@
 .ligne.libre{white-space:nowrap;overflow:hidden}
 .ligne.libre .calque-reglure{color:transparent}
 
-/* Réglure : couleurs et épaisseur, réglées ici */
+/* Réglure : couleurs et épaisseur, réglées ici.
+   1 px vaut 0,265 mm à l'impression — plus épais que les 0,12 mm validés au
+   test, donc largement imprimable — et reste visible à l'écran, là où une
+   valeur en millimètres tomberait sous le demi-pixel et disparaîtrait. */
 .feuille{
   --ligne-forte:#896CE5;
   --interligne-couleur:#B0A7F7;
-  --ep-reglure:.12mm;
+  --ep-reglure:1px;
 }
 
 /* ---------- Un bloc par phrase ---------- */

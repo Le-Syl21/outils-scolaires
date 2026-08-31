@@ -114,7 +114,8 @@
      rouge pour retomber sur du violet une fois sur le papier. */
   --ligne-forte:#8B4BD0;
   --interligne-couleur:#AE8AE6;
-  --ep-reglure:1px;                /* à l'écran ; 2 px à l'impression */
+  --ep-reglure:1px;                /* 0,265 mm : proche des 0,20 mm de
+                                      Desmoulins, et visible à l'écran */
 }
 .feuille.reglure-mauve{--ligne-forte:#A64BC0;--interligne-couleur:#C489DA}
 .feuille.reglure-bleu {--ligne-forte:#1F5FA8;--interligne-couleur:#4B87C4}
@@ -223,10 +224,7 @@
   main{padding:0;max-width:none}
   #view-collection,#view-chrono{display:none !important}
   #view-feuille{display:block !important}
-  .feuille{
-    -webkit-print-color-adjust:exact;print-color-adjust:exact;
-    --ep-reglure:2px;              /* l'épaisseur retenue sur papier */
-  }
+  .feuille{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .page{
     width:auto;min-height:0;padding:0;margin:0;box-shadow:none;border-radius:0;
     break-after:page;page-break-after:always;

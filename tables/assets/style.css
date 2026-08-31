@@ -36,7 +36,9 @@ kbd{background:var(--peche);border:1px solid var(--trait);border-radius:4px;padd
   background:var(--orange);color:#fff;padding:10px 16px;
   display:flex;align-items:center;gap:16px;flex-wrap:wrap;
 }
-.topbar h1{font-size:1.25rem;margin:0}
+.topbar h1{font-size:1.25rem;margin:0;display:flex;align-items:center;gap:8px}
+.topbar .logo-grille{width:1.15em;height:1.15em;flex:none}
+.topbar .logo-grille rect,.topbar .logo-grille path{stroke:#fff}
 .retour{
   color:#fff;text-decoration:none;font-size:.95rem;
   background:rgba(255,255,255,.15);padding:6px 14px;border-radius:999px;

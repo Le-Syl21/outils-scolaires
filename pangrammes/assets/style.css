@@ -94,12 +94,16 @@
    test, donc largement imprimable — et reste visible à l'écran, là où une
    valeur en millimètres tomberait sous le demi-pixel et disparaîtrait. */
 .feuille{
-  --ligne-forte:#4F35C4;           /* couleur pleine : les teintes claires */
-  --interligne-couleur:#6B52DC;    /* se délavent au tramage de l'imprimante */
-  --ep-reglure:1px;
+  /* Le violet ressort bleu à l'impression : la conversion RVB vers CMJN de
+     l'imprimante perd du magenta. Ces teintes sont donc poussées vers le
+     rouge pour retomber sur du violet une fois sur le papier. */
+  --ligne-forte:#8B4BD0;
+  --interligne-couleur:#AE8AE6;
+  --ep-reglure:1px;                /* à l'écran ; 2 px à l'impression */
 }
-.feuille.reglure-bleu{--ligne-forte:#1F5FA8;--interligne-couleur:#4B87C4}
-.feuille.reglure-gris{--ligne-forte:#3F3F3F;--interligne-couleur:#6E6E6E}
+.feuille.reglure-mauve{--ligne-forte:#A64BC0;--interligne-couleur:#C489DA}
+.feuille.reglure-bleu {--ligne-forte:#1F5FA8;--interligne-couleur:#4B87C4}
+.feuille.reglure-gris {--ligne-forte:#3F3F3F;--interligne-couleur:#6E6E6E}
 
 /* ---------- Un bloc par phrase ---------- */
 .bloc{break-inside:avoid;page-break-inside:avoid;margin-bottom:4mm}
@@ -204,7 +208,10 @@
   main{padding:0;max-width:none}
   #view-collection,#view-chrono{display:none !important}
   #view-feuille{display:block !important}
-  .feuille{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .feuille{
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+    --ep-reglure:2px;              /* l'épaisseur retenue sur papier */
+  }
   .page{
     width:auto;min-height:0;padding:0;margin:0;box-shadow:none;border-radius:0;
     break-after:page;page-break-after:always;

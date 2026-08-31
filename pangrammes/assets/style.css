@@ -198,6 +198,7 @@
 .carte-pangramme .phrase-ref{font-size:1.05rem;margin-bottom:12px}
 .carte-pangramme .sens{font-size:1rem;color:var(--encre);margin-bottom:6px}
 .carte-pangramme .analyse{font-size:.95rem;color:var(--gris);margin-bottom:12px}
+.carte-pangramme .analyse strong,.carte-pangramme .sens strong{color:var(--encre)}
 .badge-temps{background:var(--vert-clair);color:var(--vert)}
 .legende{margin:8px 0 0;font-size:.95rem;color:var(--gris)}
 .carte-pangramme .infos{

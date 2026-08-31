@@ -91,7 +91,8 @@ const legendeHTML = () => Object.entries(FONCTIONS)
 /* Un bloc : la phrase analysée, ce qu'elle raconte, puis les lignes à écrire */
 function blocHTML(p, repasses, libres, avecMots, avecGrammaire, avecChrono) {
   const grammaire = avecGrammaire
-    ? `<p class="analyse"><strong>${echapper(p.temps)}</strong> — ${echapper(p.quand)}</p>`
+    ? `<p class="analyse"><strong>Temps du verbe :</strong> ${echapper(p.temps)} — `
+      + `${echapper(p.quand)}</p>`
     : '';
   const sens = avecMots
     ? `<p class="sens"><strong>Explication de texte :</strong> ${echapper(p.sens)}</p>`
@@ -321,11 +322,11 @@ function afficherCollection() {
       <p class="phrase-ref">${phraseAnalysee(p)}</p>
       <p class="infos">
         <span class="badge">${p.niveau}</span>
-        <span class="badge badge-temps">${echapper(p.temps)}</span>
         <span>${p.signes} signes</span>
       </p>
-      <p class="sens">${echapper(p.sens)}</p>
-      <p class="analyse">${echapper(p.quand)}</p>
+      <p class="sens"><strong>Explication de texte :</strong> ${echapper(p.sens)}</p>
+      <p class="analyse"><strong>Temps du verbe :</strong> ${echapper(p.temps)} —
+        ${echapper(p.quand)}</p>
       ${p.mots.length ? `<ul class="mots">${p.mots.map(m =>
         `<li><strong>${echapper(m.mot)}</strong> — <span>${echapper(m.sens)}</span></li>`).join('')}</ul>` : ''}
       <button class="btn btn-ghost btn-sm" data-utiliser="${i}" type="button">

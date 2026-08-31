@@ -37,7 +37,7 @@
 }
 .page{
   background:#fff;
-  width:210mm;min-height:297mm;margin:0 auto 24px;padding:10mm;
+  width:210mm;min-height:297mm;margin:0 auto 24px;padding:7mm;
   box-shadow:var(--ombre);border-radius:2px;
 }
 .feuille-entete{
@@ -203,7 +203,7 @@
 
 /* ---------- Impression ---------- */
 @media print{
-  @page{size:A4 portrait;margin:10mm}
+  @page{size:A4 portrait;margin:7mm}   /* la zone non imprimable de la HP ne fait que 4,2 mm */
   body{background:#fff}
   main{padding:0;max-width:none}
   #view-collection,#view-chrono{display:none !important}

@@ -62,7 +62,7 @@ const ligneVide = () =>
 const ligneRepasse = (txt) =>
   `<p class="ligne repasse"><span class="calque-reglure">${txt}</span></p>`;
 
-const MARGE_MM = 10;    // marges de la feuille, identiques à l'écran et à l'impression
+const MARGE_MM = 7;     // marges de la feuille, identiques à l'écran et à l'impression
 let tirage = [];        // ordre de passage des phrases sur la feuille
 let generation = 0;     // annule un remplissage encore en cours
 

@@ -372,12 +372,7 @@ const arreterChrono = () => { if (partie?.minuteur) clearInterval(partie.minuteu
 
 function construireGrille() {
   const t = $('#grille-jeu');
-  // les cases prennent toute la largeur disponible, jusqu'à 76 px ; au-delà
-  // d'une douzaine de tables elles se resserrent plutôt que d'imposer un
-  // long défilement horizontal
-  const cote = Math.max(30, Math.min(76, Math.round(1060 / (partie.colonnes.length + 1))));
-  t.style.setProperty('--case-w', cote + 'px');
-  t.style.setProperty('--case-fs', Math.max(.85, Math.min(1.55, cote / 46)) + 'rem');
+  dimensionnerGrille();
   const signe = OPERATIONS[partie.operation].signe;
   let html = `<tr><th class="coin">${signe}</th>` +
     partie.colonnes.map(c => `<th>${c}</th>`).join('') + '</tr>';
@@ -397,6 +392,22 @@ function construireGrille() {
   });
   t.innerHTML = html;
 }
+
+/* Les cases occupent toute la largeur de la fenêtre, jusqu'à 114 px ;
+   au-delà d'une douzaine de tables elles se resserrent d'elles-mêmes
+   plutôt que d'imposer un long défilement horizontal. */
+function dimensionnerGrille() {
+  if (!partie) return;
+  const t = $('#grille-jeu');
+  /* on retranche les marges de la page et du panneau, et on ne dépasse
+     pas la largeur maximale du contenu */
+  const dispo = Math.max(320, Math.min(window.innerWidth, 1400) - 90);
+  const cote = Math.max(30,
+    Math.min(114, Math.floor(dispo / (partie.colonnes.length + 1))));
+  t.style.setProperty('--case-w', cote + 'px');
+  t.style.setProperty('--case-fs', Math.max(.85, Math.min(2.2, cote / 46)) + 'rem');
+}
+window.addEventListener('resize', dimensionnerGrille);
 
 /* Écouteurs posés une seule fois sur le tableau (délégation) */
 $('#grille-jeu').addEventListener('input', (e) => {

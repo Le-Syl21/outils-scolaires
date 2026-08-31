@@ -24,7 +24,7 @@ body{
   color:var(--encre);
   line-height:1.5;
 }
-main{max-width:1120px;margin:0 auto;padding:16px}
+main{max-width:1400px;margin:0 auto;padding:16px}
 h1,h2{margin:0 0 8px}
 h2{font-size:1.35rem}
 .lead{color:var(--gris);margin:0 0 16px}
@@ -149,7 +149,7 @@ select{min-width:180px}
 .grille th,.grille td{
   position:relative;
   border:2px solid var(--trait);
-  width:var(--case-w,76px);height:calc(var(--case-w,76px) * .8);
+  width:var(--case-w,114px);height:calc(var(--case-w,114px) * .78);
   text-align:center;padding:0;
 }
 .grille th{font-size:var(--case-fs,1.4rem);font-weight:700}

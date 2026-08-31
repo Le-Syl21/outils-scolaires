@@ -215,6 +215,7 @@ async function construireFeuille() {
       const i = file.shift();
       zone.insertAdjacentHTML('beforeend',
         blocHTML(PANGRAMMES[i], repasses, libres, avecMots, avecGrammaire, avecChrono));
+      completerLignesVides(zone.lastElementChild, libres, mesure);
       if (mesure(zone) > dispo) {
         if (zone.children.length === 1) break;   // même seule, elle déborde
         zone.removeChild(zone.lastElementChild);
@@ -232,6 +233,23 @@ async function construireFeuille() {
   compenserAgrandissement(zoom);
   majJauge(parPage);
   majPhraseChrono();
+}
+
+/* Une phrase longue s'écrit sur deux lignes de réglure : il faut alors deux
+   lignes vides pour la recopier, pas une. On mesure ce que la phrase occupe
+   vraiment et l'on complète en conséquence. */
+function completerLignesVides(bloc, libres, mesure) {
+  if (!bloc || !libres) return;
+  const modele = bloc.querySelector('.ligne.repasse');
+  const conteneur = bloc.querySelector('.lignes');
+  if (!modele || !conteneur) return;
+  const hauteurLigne = parseFloat(getComputedStyle(modele).lineHeight);
+  if (!hauteurLigne) return;
+  const occupees = Math.max(1, Math.round(mesure(modele) / hauteurLigne));
+  const manquantes = libres * (occupees - 1);
+  for (let k = 0; k < manquantes; k++) {
+    conteneur.insertAdjacentHTML('beforeend', ligneVide());
+  }
 }
 
 /* transform ne pousse pas ce qui suit : on rend à chaque page la hauteur

@@ -40,6 +40,10 @@
   width:210mm;min-height:297mm;margin:0 auto 24px;padding:7mm;
   box-shadow:var(--ombre);border-radius:2px;
 }
+/* La page garde ses 210 mm — sinon les retours à la ligne et le nombre de
+   phrases par page changeraient — mais on l'agrandit à l'écran pour
+   qu'elle occupe la largeur du panneau de réglages. */
+@media screen{ .page{zoom:var(--zoom,1)} }
 .feuille-entete{
   display:flex;flex-wrap:wrap;gap:10px 24px;align-items:flex-end;
   margin-bottom:6mm;font-family:system-ui,sans-serif;

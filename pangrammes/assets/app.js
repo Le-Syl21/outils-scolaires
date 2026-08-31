@@ -153,6 +153,11 @@ async function construireFeuille() {
   const feuille = $('#feuille');
   feuille.style.setProperty('--interligne', interligne + 'mm');
   feuille.className = 'feuille reglure-' + $('#couleur-reglure').value;
+  /* agrandissement d'affichage : la page reste une A4, elle est seulement
+     montrée plus grande, jusqu'à la largeur disponible */
+  const largeurA4 = 210 * MM;
+  const zoom = Math.min(1.6, Math.max(1, (feuille.clientWidth || largeurA4) / largeurA4));
+  feuille.style.setProperty('--zoom', zoom.toFixed(3));
   feuille.innerHTML = '';
 
   /* Les mesures n'ont de sens qu'une fois Marelle chargée. `ready` seul ne
@@ -181,8 +186,12 @@ async function construireFeuille() {
     const zone = page.querySelector('.zone-ecriture');
     const entete = page.querySelector('.feuille-entete');
     const consigne = page.querySelector('.consigne');
-    const hautEntete = entete.getBoundingClientRect().height
-                     + (consigne ? consigne.getBoundingClientRect().height : 0);
+    /* les mesures sont prises à l'écran, donc agrandies : on les ramène à
+       l'échelle réelle de la page. Le facteur est mesuré plutôt que supposé,
+       ce qui reste juste si le navigateur ignore l'agrandissement. */
+    const echelle = page.getBoundingClientRect().width / (210 * MM);
+    const mesure = (el) => el.getBoundingClientRect().height / echelle;
+    const hautEntete = mesure(entete) + (consigne ? mesure(consigne) : 0);
     const dispo = HAUTEUR_PAGE - hautEntete;
 
     /* On remplit la page en essayant les phrases une à une. Celle qui ne
@@ -201,7 +210,7 @@ async function construireFeuille() {
       const i = file.shift();
       zone.insertAdjacentHTML('beforeend',
         blocHTML(PANGRAMMES[i], repasses, libres, avecMots, avecGrammaire));
-      if (zone.getBoundingClientRect().height > dispo) {
+      if (mesure(zone) > dispo) {
         if (zone.children.length === 1) break;   // même seule, elle déborde
         zone.removeChild(zone.lastElementChild);
         if (uneSeule) break;

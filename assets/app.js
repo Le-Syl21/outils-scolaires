@@ -6,7 +6,8 @@
 const TOUTES  = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
 const DEFAUT  = [1,2,3,4,5,6,7,8,9,10];   // niveau facile
 const CLES = { eleves:'defiTables.eleves', resultats:'defiTables.resultats',
-               tables:'defiTables.tables', cout:'defiTables.coutErreur' };
+               tables:'defiTables.tables', cout:'defiTables.coutErreur',
+               extras:'defiTables.extras' };
 const $  = (sel, ctx=document) => ctx.querySelector(sel);
 const $$ = (sel, ctx=document) => [...ctx.querySelectorAll(sel)];
 
@@ -25,6 +26,7 @@ let eleves    = lire(CLES.eleves, []);
 let resultats = lire(CLES.resultats, []);
 let tables    = lire(CLES.tables, DEFAUT);   // tables travaillées
 let coutErreur = lire(CLES.cout, 5);   // une erreur coûte le temps de N cases justes
+let extras    = lire(CLES.extras, []);       // tables ajoutées à la main (16 pour l'hexa…)
 
 /* ------------------------------------------------------------------ */
 /* Utilitaires                                                         */
@@ -59,12 +61,61 @@ $$('.tab').forEach(tab => tab.addEventListener('click', () => {
 /* ------------------------------------------------------------------ */
 /* Choix des tables                                                    */
 /* ------------------------------------------------------------------ */
+/* Cases proposées : les tables usuelles + celles ajoutées par l'utilisateur */
+const tablesProposees = () =>
+  [...new Set([...TOUTES, ...extras, ...tables])].sort((a, b) => a - b);
+
 function construireChoixTables() {
-  $('#choix-tables').innerHTML = TOUTES.map(n =>
-    `<label class="table-case"><input type="checkbox" value="${n}"
-       ${tables.includes(n) ? 'checked' : ''}>${n}</label>`).join('');
+  $('#choix-tables').innerHTML = tablesProposees().map(n => {
+    const perso = !TOUTES.includes(n);
+    return `<span class="table-case${perso ? ' perso' : ''}">
+      <label><input type="checkbox" value="${n}"
+        ${tables.includes(n) ? 'checked' : ''}>${n}</label>` +
+      (perso ? `<button class="retirer" data-n="${n}" type="button"
+                  title="Retirer la table de ${n}">×</button>` : '') +
+      `</span>`;
+  }).join('');
   majInfoTables();
 }
+
+/* Ajout d'une table personnalisée */
+function ajouterTable() {
+  const champ = $('#table-perso');
+  const n = Number(champ.value);
+  if (!Number.isInteger(n) || n < 1 || n > 50) {
+    alert('Indique un nombre entier entre 1 et 50.');
+    return;
+  }
+  if (!TOUTES.includes(n) && !extras.includes(n)) {
+    extras.push(n);
+    ecrire(CLES.extras, extras);
+  }
+  if (!tables.includes(n)) {
+    tables = [...tables, n].sort((a, b) => a - b);
+    ecrire(CLES.tables, tables);
+  }
+  champ.value = '';
+  construireChoixTables();
+  $('#feuilles').innerHTML = '';
+}
+
+$('#btn-ajout-table').addEventListener('click', ajouterTable);
+$('#table-perso').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); ajouterTable(); }
+});
+
+/* Retrait d'une table personnalisée */
+$('#choix-tables').addEventListener('click', (e) => {
+  const btn = e.target.closest('.retirer');
+  if (!btn) return;
+  const n = Number(btn.dataset.n);
+  extras = extras.filter(x => x !== n);
+  tables = tables.filter(x => x !== n);
+  ecrire(CLES.extras, extras);
+  ecrire(CLES.tables, tables);
+  construireChoixTables();
+  $('#feuilles').innerHTML = '';
+});
 
 function majInfoTables() {
   const n = tables.length;
@@ -221,7 +272,7 @@ function construireGrille() {
     partie.colonnes.map(c => `<th>${c}</th>`).join('') + '</tr>';
   partie.lignes.forEach((l, i) => {
     html += `<tr><th>${l}</th>` + partie.colonnes.map((c, j) =>
-      `<td><input type="text" inputmode="numeric" autocomplete="off" maxlength="3"
+      `<td><input type="text" inputmode="numeric" autocomplete="off" maxlength="4"
         aria-label="${l} fois ${c}" data-r="${i}" data-c="${j}"></td>`).join('') + '</tr>';
   });
   t.innerHTML = html;

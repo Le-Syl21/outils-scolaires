@@ -57,6 +57,7 @@ function remplirChoixPangrammes() {
 /* Une ligne vierge : des espaces insécables, qui portent la réglure. */
 const ligneVide = () => '<p class="ligne libre">' + '&nbsp;'.repeat(120) + '</p>';
 
+const MARGE_MM = 10;    // marges de la feuille, identiques à l'écran et à l'impression
 let tirage = [];        // ordre de passage des phrases sur la feuille
 let generation = 0;     // annule un remplissage encore en cours
 
@@ -162,7 +163,7 @@ function ajusterALaPage(uneSeule) {
   const inner = $('.feuille-inner');
   const zone = $('.zone-ecriture');
   if (!inner || !zone) return;
-  const dispo = (297 - 30) * (96 / 25.4);    // hauteur utile en pixels CSS
+  const dispo = (297 - 2 * MARGE_MM) * (96 / 25.4);   // hauteur utile en pixels CSS
 
   while (zone.children.length > 1 && inner.getBoundingClientRect().height > dispo) {
     zone.removeChild(zone.lastElementChild);

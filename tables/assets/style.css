@@ -221,7 +221,7 @@ footer a{color:var(--orange)}
   .grille,.entete td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 
-@media (max-width:600px){
+@media screen and (max-width:600px){
   .grille th,.grille td{width:40px;height:38px}
   .grille input{font-size:1rem}
   .btn-xl{width:100%}

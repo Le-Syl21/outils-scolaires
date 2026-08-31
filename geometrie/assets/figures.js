@@ -116,3 +116,37 @@ const FIGURES = [
     ferme: true,
   },
 ];
+
+/* Les figures à reconnaître : ici le nom n'est plus une récompense, c'est la
+   réponse. Toutes sont posées sur les nœuds du quadrillage, ce qui exclut le
+   triangle équilatéral et les polygones réguliers, qui n'y tombent pas juste. */
+const FORMES = [
+  { nom: 'Le carré', grille: 6, couleur: '#e8501e',
+    points: [[1, 1], [4, 1], [4, 4], [1, 4]],
+    indice: 'Quatre côtés égaux, quatre angles droits.' },
+  { nom: 'Le rectangle', grille: 6, couleur: '#b06a1a',
+    points: [[1, 1], [5, 1], [5, 3], [1, 3]],
+    indice: 'Quatre angles droits, mais les côtés vont deux par deux.' },
+  { nom: 'Le triangle rectangle', grille: 6, couleur: '#1f8a4c',
+    points: [[1, 1], [1, 5], [5, 5]],
+    indice: 'Trois côtés, et un angle droit.' },
+  { nom: 'Le triangle isocèle', grille: 6, couleur: '#1a56b0',
+    points: [[3, 1], [5, 5], [1, 5]],
+    indice: 'Trois côtés, dont deux de même longueur.' },
+  { /* diagonales inégales : sinon ce serait un carré posé sur la pointe */
+    nom: 'Le losange', grille: 6, couleur: '#7a3fa8',
+    points: [[3, 0], [5, 3], [3, 6], [1, 3]],
+    indice: 'Quatre côtés égaux, mais pas d’angle droit.' },
+  { nom: 'Le parallélogramme', grille: 7, couleur: '#c62828',
+    points: [[1, 4], [3, 1], [6, 1], [4, 4]],
+    indice: 'Les côtés opposés sont parallèles, deux à deux.' },
+  { nom: 'Le trapèze', grille: 7, couleur: '#1f7a8c',
+    points: [[1, 4], [2, 1], [5, 1], [6, 4]],
+    indice: 'Deux côtés parallèles seulement.' },
+  { nom: 'Le pentagone', grille: 6, couleur: '#a8641a',
+    points: [[3, 1], [5, 2], [4, 5], [2, 5], [1, 2]],
+    indice: 'Cinq côtés.' },
+  { nom: 'L’hexagone', grille: 6, couleur: '#5b3fc4',
+    points: [[2, 1], [4, 1], [5, 3], [4, 5], [2, 5], [1, 3]],
+    indice: 'Six côtés.' },
+];

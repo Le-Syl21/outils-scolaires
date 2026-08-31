@@ -47,6 +47,7 @@
           <option value="reproduire" selected>Reproduire la figure</option>
           <option value="symetrie">Tracer le symétrique</option>
           <option value="mesures">Compter le périmètre et l'aire</option>
+          <option value="nommer">Reconnaître les figures</option>
         </select>
       </div>
       <div class="field">
@@ -69,6 +70,29 @@
       <button id="btn-hasard" class="btn btn-ghost btn-xl" type="button">🎲 Au hasard</button>
     </div>
     <p id="record-eleve" class="note-info"></p>
+  </div>
+
+  <div id="ecran-nommer" class="panel hidden">
+    <div class="hud">
+      <div class="hud-item"><span class="hud-label">Élève</span><span id="nom-eleve" class="hud-value">—</span></div>
+      <div class="hud-item"><span class="hud-label">Chrono</span><span id="nom-chrono" class="hud-value chrono">00:00</span></div>
+      <div class="hud-item"><span class="hud-label">Figure</span><span id="nom-compte" class="hud-value">1/8</span></div>
+    </div>
+
+    <div class="nommer-bloc">
+      <div id="nom-figure" class="quadrillage"></div>
+      <div>
+        <p class="lead">Comment s'appelle cette figure ?</p>
+        <div id="nom-choix" class="nom-choix"></div>
+        <p id="nom-indice" class="note-info"></p>
+      </div>
+    </div>
+
+    <p id="nom-message" class="message"></p>
+    <div class="row hidden" id="nom-apres">
+      <button id="nom-suivante" class="btn btn-primary" type="button">Série suivante</button>
+      <button id="nom-retour" class="btn btn-ghost" type="button">Accueil</button>
+    </div>
   </div>
 
   <div id="ecran-mesures" class="panel hidden">

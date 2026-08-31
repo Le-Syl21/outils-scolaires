@@ -584,19 +584,134 @@ $('#mes-retour').addEventListener('click', () => {
   rafraichirEleves();
 });
 
+/* ------------------------------------------------------------------ */
+/* Reconnaître les figures                                             */
+/* ------------------------------------------------------------------ */
+const FIGURES_A_NOMMER = 8;
+let quiz = null;
+
+const melanger = (tab) => {
+  const t = [...tab];
+  for (let i = t.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [t[i], t[j]] = [t[j], t[i]];
+  }
+  return t;
+};
+
+function demarrerQuiz() {
+  const eleve = $('#select-eleve').value;
+  if (!eleve) { alert('Choisis d’abord un élève (bouton « + Nouveau »).'); return; }
+  quiz = {
+    eleve, index: 0, justes: 0, repondu: false,
+    formes: melanger(FORMES).slice(0, Math.min(FIGURES_A_NOMMER, FORMES.length)),
+    debut: Date.now(), minuteur: null, finie: false,
+  };
+  while (quiz.formes.length < FIGURES_A_NOMMER) {
+    quiz.formes.push(FORMES[Math.floor(Math.random() * FORMES.length)]);
+  }
+  $('#nom-eleve').textContent = eleve;
+  $('#nom-message').textContent = '';
+  $('#nom-message').className = 'message';
+  $('#nom-apres').classList.add('hidden');
+  $('#ecran-accueil').classList.add('hidden');
+  $('#ecran-nommer').classList.remove('hidden');
+  quiz.minuteur = setInterval(() => {
+    $('#nom-chrono').textContent = formatTemps((Date.now() - quiz.debut) / 1000);
+  }, 250);
+  afficherQuestion();
+}
+
+function afficherQuestion() {
+  const f = quiz.formes[quiz.index];
+  quiz.repondu = false;
+  $('#nom-compte').textContent = `${quiz.index + 1}/${FIGURES_A_NOMMER}`;
+  $('#nom-figure').innerHTML = svgQuadrillage(f.grille,
+    polygoneSVG({ ...f, couleur: '#f6d9cd' })
+    + cotesDe(f).map(c => traitSVG(c, 'modele')).join(''));
+  /* trois noms au hasard parmi les autres formes, plus le bon */
+  const autres = melanger(FORMES.filter(x => x.nom !== f.nom)).slice(0, 3);
+  const choix = melanger([f, ...autres]);
+  $('#nom-choix').innerHTML = choix.map(x =>
+    `<button class="btn btn-ghost" data-nom="${echapper(x.nom)}" type="button">${
+      echapper(x.nom)}</button>`).join('');
+  $('#nom-indice').textContent = '';
+}
+
+$('#nom-choix').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-nom]');
+  if (!btn || !quiz || quiz.repondu) return;
+  quiz.repondu = true;
+  const f = quiz.formes[quiz.index];
+  const juste = btn.dataset.nom === f.nom;
+  if (juste) quiz.justes++;
+  $$('#nom-choix .btn').forEach(b => {
+    if (b.dataset.nom === f.nom) b.classList.add('juste');
+    else if (b === btn) b.classList.add('faux');
+  });
+  $('#nom-indice').textContent = f.indice;
+  $('#nom-message').textContent = juste ? 'Oui !' : `C'était ${f.nom.toLowerCase()}.`;
+  $('#nom-message').className = 'message ' + (juste ? 'reussite' : 'erreur');
+
+  setTimeout(() => {
+    quiz.index++;
+    if (quiz.index < FIGURES_A_NOMMER) { afficherQuestion(); $('#nom-message').textContent = ''; return; }
+    terminerQuiz();
+  }, juste ? 700 : 1800);
+});
+
+function terminerQuiz() {
+  clearInterval(quiz.minuteur);
+  quiz.finie = true;
+  const temps = Math.max(1, Math.round((Date.now() - quiz.debut) / 1000));
+  const erreurs = FIGURES_A_NOMMER - quiz.justes;
+  const note = Math.round(quiz.justes / FIGURES_A_NOMMER * 100);
+  const corrige = quiz.justes
+    ? Math.round(temps * (1 + COUT_ERREUR * erreurs / quiz.justes))
+    : temps * 10;
+  resultats.push({
+    id: Date.now(), date: new Date().toISOString(), eleve: quiz.eleve,
+    figure: 'Reconnaissance', palier: 0,
+    traits: FIGURES_A_NOMMER, justes: quiz.justes, erreurs, note, temps, corrige,
+  });
+  ecrire(CLES.resultats, resultats);
+  $('#nom-choix').innerHTML = '';
+  $('#nom-indice').textContent = '';
+  $('#nom-message').innerHTML = `<strong>${note}/100</strong> — ${quiz.justes} figures `
+    + `reconnues sur ${FIGURES_A_NOMMER}, en ${formatTemps(temps)}.`;
+  $('#nom-message').className = 'message ' + (note === 100 ? 'reussite' : 'erreur');
+  $('#nom-apres').classList.remove('hidden');
+  afficherScores();
+}
+
+$('#nom-suivante').addEventListener('click', demarrerQuiz);
+$('#nom-retour').addEventListener('click', () => {
+  if (quiz) clearInterval(quiz.minuteur);
+  $('#ecran-nommer').classList.add('hidden');
+  $('#ecran-accueil').classList.remove('hidden');
+  rafraichirEleves();
+});
+
 $('#btn-demarrer').addEventListener('click', () => {
-  if ($('#exercice').value === 'mesures') { demarrerMesures(); return; }
+  const quoi = $('#exercice').value;
+  if (quoi === 'mesures') { demarrerMesures(); return; }
+  if (quoi === 'nommer') { demarrerQuiz(); return; }
   demarrer(Number($('#choix-figure').value));
 });
 $('#btn-hasard').addEventListener('click', () => {
-  if ($('#exercice').value === 'mesures') { demarrerMesures(); return; }
+  const quoi = $('#exercice').value;
+  if (quoi === 'mesures') { demarrerMesures(); return; }
+  if (quoi === 'nommer') { demarrerQuiz(); return; }
   demarrer(-1);
 });
 
 /* le choix d'une figure précise n'a pas de sens pour une série de mesures */
 $('#exercice').addEventListener('change', () => {
-  const mesures = $('#exercice').value === 'mesures';
-  $('#choix-figure').closest('.field').classList.toggle('hidden', mesures);
+  const quoi = $('#exercice').value;
+  $('#choix-figure').closest('.field')
+    .classList.toggle('hidden', quoi === 'mesures' || quoi === 'nommer');
+  $('#palier').closest('.field')
+    .classList.toggle('hidden', quoi === 'mesures' || quoi === 'nommer');
   genererFeuille();
 });
 $('#btn-suivante').addEventListener('click', () => demarrer(-1));
@@ -627,11 +742,14 @@ $('#palier').addEventListener('change', () => {
 function genererFeuille() {
   const combien = Math.max(1, Math.min(4, Number($('#nb-exercices').value) || 1));
   const carreau = $('#carreau').value;
-  const mesures = $('#exercice').value === 'mesures';
-  const liste = mesures ? [] : figuresDuPalier();
+  const quoi = $('#exercice').value;
+  const mesures = quoi === 'mesures';
+  const liste = (mesures || quoi === 'nommer') ? [] : figuresDuPalier();
   const tirage = mesures
     ? Array.from({ length: combien }, tirerFigureMesurable)
-    : [...liste].sort(() => Math.random() - 0.5).slice(0, combien);
+    : quoi === 'nommer'
+      ? melanger(FORMES).slice(0, combien)
+      : [...liste].sort(() => Math.random() - 0.5).slice(0, combien);
   while (tirage.length < combien) tirage.push(liste[Math.floor(Math.random() * liste.length)]);
 
   $('#feuille').innerHTML = `<section class="page" style="--carreau:${carreau}mm">
@@ -643,7 +761,10 @@ function genererFeuille() {
         <div class="champ-boite"><span>Fin</span></div>
       </div>
     </header>
-    <p class="consigne">${mesures
+    <p class="consigne">${quoi === 'nommer'
+      ? 'Écris le nom de chaque figure : carré, rectangle, losange, trapèze, '
+        + 'parallélogramme, triangle rectangle, triangle isocèle, pentagone, hexagone.'
+      : mesures
       ? 'Le côté d’un carreau vaut 1. Écris le périmètre et l’aire de chaque figure.'
       : $('#exercice').value === 'symetrie'
       ? 'Trace le symétrique de chaque figure, de l’autre côté de l’axe pointillé, à la règle '
@@ -653,6 +774,15 @@ function genererFeuille() {
     ${tirage.map(f => {
       /* le viewBox fait (côtés + 1) unités : la largeur suit la taille du carreau */
       const large = `style="--cotes:${f.grille + 1}"`;
+      if ($('#exercice').value === 'nommer') {
+        return `<div class="exercice mesure-papier">
+          <div class="quadrillage papier" style="--cotes:${f.grille + 1}">${
+            svgQuadrillage(f.grille, cotesDe(f).map(c => traitSVG(c, 'modele')).join(''))}</div>
+          <div class="cases-mesure">
+            <div class="champ-boite large"><span>Nom de la figure</span></div>
+          </div>
+        </div>`;
+      }
       if ($('#exercice').value === 'mesures') {
         return `<div class="exercice mesure-papier">
           <div class="quadrillage papier" style="--cotes:${f.grille + 1}">${

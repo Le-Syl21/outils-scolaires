@@ -55,6 +55,17 @@
 
 .mesure-papier{align-items:center;gap:8mm}
 .cases-mesure{display:flex;flex-direction:column;gap:4mm}
+.champ-boite.large{min-width:60mm}
+
+/* ---------- Reconnaître les figures ---------- */
+.nommer-bloc{
+  display:grid;gap:28px;grid-template-columns:minmax(240px,340px) 1fr;align-items:start;
+}
+.nom-choix{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.nom-choix .btn{width:100%;text-align:left;font-size:1.05rem;padding:14px 18px}
+.nom-choix .btn.juste{background:var(--vert-clair);border-color:var(--vert);color:var(--vert)}
+.nom-choix .btn.faux{background:var(--rouge-clair);border-color:var(--rouge);color:var(--rouge)}
+@media (max-width:760px){ .nommer-bloc{grid-template-columns:1fr} }
 
 /* ---------- Périmètre et aire ---------- */
 .mesures-bloc{

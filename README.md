@@ -24,7 +24,7 @@ autres opérations sur le même principe.
 
 ## Le défi géométrique
 
-Deux exercices sur quadrillage : reproduire une figure, ou tracer son symétrique.
+Quatre exercices sur quadrillage.
 
 - **Tracer** : le modèle à gauche, un quadrillage cliquable à droite ; on relie les points, on
   vérifie, et la figure réussie se colorie en révélant son nom. Chronométré, avec classement.
@@ -33,6 +33,9 @@ Deux exercices sur quadrillage : reproduire une figure, ou tracer son symétriqu
 - **Périmètre et aire** : une série de cinq figures à angles droits, tirées d'une banque ou
   engendrées à la volée ; on écrit le tour et la surface, comptés en carreaux. L'aire se calcule
   par la formule du lacet, ce qui vaut aussi pour les figures en escalier.
+- **Reconnaître les figures** : huit figures à nommer parmi quatre propositions — carré,
+  rectangle, losange, trapèze, parallélogramme, triangles, pentagone, hexagone — avec l'indice
+  qui explique la réponse après coup.
 - **Imprimer** : la même chose sur feuille A4, carreaux de 5, 7 ou 10 mm, à faire à la règle.
 - **Quatre niveaux** : facile (traits droits, carreaux de 10 mm), moyen (diagonales à 45°),
   difficile (plusieurs contours et figure à reproduire décalée), expert (grandes figures,

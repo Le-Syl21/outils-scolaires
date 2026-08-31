@@ -54,10 +54,9 @@ function remplirChoixPangrammes() {
   $('#choix-pangramme').value = String(indexCourant);
 }
 
-/* Une ligne vierge : des espaces insécables, qui portent la réglure. */
+/* Une ligne vierge : une ligne de hauteur normale, sans texte. */
 const ligneVide = () =>
-  '<p class="ligne libre"><span class="calque-reglure">' +
-  '&nbsp;'.repeat(120) + '</span></p>';
+  '<p class="ligne libre"><span class="calque-reglure">&nbsp;</span></p>';
 
 /* Une ligne à repasser : la police porte à la fois la réglure et le modèle. */
 const ligneRepasse = (txt) =>
@@ -160,7 +159,6 @@ async function construireFeuille() {
   if (document.fonts) {
     try {
       await Promise.all([
-        document.fonts.load(`${interligne}mm "Marelle Lignes"`),
         document.fonts.load(`${interligne}mm "Marelle"`),
       ]);
     } catch { /* ignore */ }
@@ -214,7 +212,7 @@ async function construireFeuille() {
 
 function majJauge(parPage) {
   const jauge = $('#jauge');
-  if (document.fonts && !document.fonts.check('16px "Marelle Lignes"')) {
+  if (document.fonts && !document.fonts.check('16px "Marelle"')) {
     jauge.textContent = 'La police Marelle ne s’est pas chargée : les lignes Seyes manquent.';
     jauge.className = 'jauge trop';
     return;

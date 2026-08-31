@@ -8,28 +8,12 @@
   src:url("../../fonts/Marelle-Regular.woff2") format("woff2");
   font-display:swap;
 }
-@font-face{
-  font-family:"Marelle Lignes";
-  src:url("../../fonts/MarelleLIGNES-Regular.woff2") format("woff2");
-  font-display:swap;
-}
-@font-face{                        /* variante monochrome, en réserve */
-  font-family:"Marelle Lignes N";
-  src:url("../../fonts/MarelleLIGNESN-Regular.woff2") format("woff2");
-  font-display:swap;
-}
-
-/* La réglure vient de la palette interne de la police : on peut la
-   redéfinir. À l'impression, le violet clair d'origine est trop pâle
-   pour un trait de 0,06 mm — on le remplace par un gris soutenu. */
-@font-palette-values --seyes-ecran{
-  font-family:"Marelle Lignes";
-  override-colors:0 #7d5fd8, 1 #a79ef2;
-}
-@font-palette-values --seyes-impression{
-  font-family:"Marelle Lignes";
-  override-colors:0 #3f3f3f, 1 #5f5f5f;
-}
+/* La réglure n'est plus celle de la police : ses traits de 0,062 mm ne
+   sortent pas d'une imprimante laser, alors qu'ils s'affichent à l'écran
+   et dans le PDF. On la trace en bordures CSS, à l'épaisseur voulue —
+   test à l'appui, les bordures s'impriment franchement là où un fond est
+   tramé. La géométrie reprend exactement celle de Marelle : un trait
+   tous les 0,48 em, cinq par ligne d'écriture. */
 
 /* ---------- Réglages ---------- */
 .reglages{display:grid;gap:16px;margin-bottom:16px}
@@ -81,16 +65,34 @@
   font-size:var(--taille-ecriture);
   line-height:2.4;                 /* 5 interlignes : la réglure s'enchaîne */
   margin:0;
+  /* La réglure, en deux motifs superposés : la ligne d'écriture, plus
+     soutenue, tous les 2,4 em ; les interlignes tous les 0,48 em. Le fond
+     suit de lui-même les lignes qui reviennent à la ligne. */
+  background-image:
+    repeating-linear-gradient(to bottom,
+      var(--ligne-forte) 0 var(--ep-reglure), transparent var(--ep-reglure) 2.4em),
+    repeating-linear-gradient(to bottom,
+      var(--interligne-couleur) 0 var(--ep-reglure), transparent var(--ep-reglure) .48em);
+  background-position:
+    0 calc(1.68em - var(--ep-reglure) / 2),
+    0 calc(0.24em - var(--ep-reglure) / 2);
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;
 }
-/* La police porte sa réglure : les lettres prennent la couleur CSS,
-   les lignes gardent celle de la palette. Un seul calque suffit. */
+/* Couleurs opaques, jamais de rgba() : une transparence est tramée à
+   l'impression et ressort beaucoup trop pâle. */
 .calque-reglure{
-  font-family:"Marelle Lignes","Marelle",cursive;
-  font-palette:--seyes-ecran;
-  color:rgba(0,0,0,.70);           /* le modèle à repasser, 70 % */
+  font-family:"Marelle",cursive;
+  color:#4d4d4d;                   /* le modèle à repasser, 70 % de noir */
 }
-.ligne.libre .calque-reglure{color:transparent}   /* la réglure seule */
 .ligne.libre{white-space:nowrap;overflow:hidden}
+.ligne.libre .calque-reglure{color:transparent}
+
+/* Réglure : couleurs et épaisseur, réglées ici */
+.feuille{
+  --ligne-forte:#896CE5;
+  --interligne-couleur:#B0A7F7;
+  --ep-reglure:.12mm;
+}
 
 /* ---------- Un bloc par phrase ---------- */
 .bloc{break-inside:avoid;page-break-inside:avoid;margin-bottom:4mm}
@@ -196,7 +198,6 @@
   #view-collection,#view-chrono{display:none !important}
   #view-feuille{display:block !important}
   .feuille{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .calque-reglure{font-palette:--seyes-impression}   /* réglure grise, pas violette */
   .page{
     width:auto;min-height:0;padding:0;margin:0;box-shadow:none;border-radius:0;
     break-after:page;page-break-after:always;

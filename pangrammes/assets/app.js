@@ -546,8 +546,17 @@ function afficherMesPangrammes() {
   $('#liste-mes-pangrammes').innerHTML = mesPangrammes.length
     ? mesPangrammes.map((p, i) => `<article class="carte-pangramme">
         <p class="cursive">${echapper(p.texte)}</p>
+        <p class="phrase-ref">${phraseAnalysee(p)}</p>
         <p class="infos"><span class="badge">${p.niveau}</span>
-          <span>${p.signes} signes</span><span>${echapper(p.temps)}</span></p>
+          <span>${p.signes} signes</span></p>
+        <p class="analyse"><strong>Temps du verbe :</strong> ${echapper(p.temps)} —
+          ${echapper(p.quand)}</p>
+        ${p.sens ? `<p class="sens"><strong>Explication de texte :</strong>
+          ${echapper(p.sens)}</p>` : ''}
+        ${p.mots.length ? `<ul class="mots">${p.mots.map(m =>
+          `<li><strong>${echapper(m.mot)}</strong> — <span>${echapper(m.sens)}</span></li>`
+        ).join('')}</ul>` : ''}
+        <p class="legende">${legendeHTML()}</p>
         <button class="btn btn-ghost btn-sm btn-danger" data-supprimer="${i}" type="button">
           Retirer de la collection</button>
       </article>`).join('')

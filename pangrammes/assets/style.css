@@ -86,10 +86,16 @@
     var(--interligne-couleur) calc(2.16em + var(--ep-reglure)),
     transparent calc(2.16em + var(--ep-reglure)),
     transparent 2.4em);
+  font-family:"Marelle",cursive;
   font-size:var(--taille-ecriture);      /* les em du motif suivent l'écriture */
   -webkit-print-color-adjust:exact;print-color-adjust:exact;
 }
 .ligne{
+  /* La police doit être posée ici : c'est elle qui fixe la position de la
+     ligne de base dans la boîte, et donc l'alignement des lettres sur la
+     réglure. Héritée de l'interface, la ligne de base remontait d'un quart
+     d'interligne et les lettres flottaient au-dessus des traits. */
+  font-family:"Marelle",cursive;
   font-size:var(--taille-ecriture);
   line-height:2.4;                 /* 5 interlignes : la réglure s'enchaîne */
   margin:0;

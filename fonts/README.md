@@ -4,7 +4,13 @@
 version 1.005.
 
 - `Marelle-Regular.woff2` — cursive seule
-- `MarelleLIGNES-Regular.woff2` — cursive avec la réglure Seyes intégrée aux glyphes
+- `MarelleLIGNESN-Regular.woff2` — cursive avec la réglure Seyes intégrée aux glyphes,
+  en version monochrome
+
+La variante en couleurs (`MarelleLIGNES`) dessine sa réglure avec des couches COLR/CPAL en
+violet : jolie à l'écran, mais elle disparaît à l'impression. La variante « N » trace les mêmes
+lignes en monochrome, donc elles sortent toujours. Les deux ont exactement les mêmes métriques,
+ce qui permet de superposer la réglure et le modèle sans le moindre décalage.
 
 Copyright 2026 Ministère de l'Éducation nationale, de l'Enseignement supérieur et de la
 Recherche, Laurent Bourcellier, Jonathan Fabreguettes et Rosalie Wagner, nom de fonte

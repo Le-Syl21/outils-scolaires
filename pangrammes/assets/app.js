@@ -55,7 +55,14 @@ function remplirChoixPangrammes() {
 }
 
 /* Une ligne vierge : des espaces insécables, qui portent la réglure. */
-const ligneVide = () => '<p class="ligne libre">' + '&nbsp;'.repeat(120) + '</p>';
+const ligneVide = () =>
+  '<p class="ligne libre"><span class="calque-reglure">' +
+  '&nbsp;'.repeat(120) + '</span></p>';
+
+/* Une ligne à repasser : la réglure dessous, le modèle par-dessus. */
+const ligneRepasse = (txt) =>
+  `<p class="ligne repasse"><span class="calque-reglure">${txt}</span>` +
+  `<span class="calque-modele">${txt}</span></p>`;
 
 const MARGE_MM = 10;    // marges de la feuille, identiques à l'écran et à l'impression
 let tirage = [];        // ordre de passage des phrases sur la feuille
@@ -99,8 +106,7 @@ function blocHTML(p, repasses, libres, avecMots, avecGrammaire) {
   return `<section class="bloc">
     <p class="phrase-ref">${avecGrammaire ? phraseAnalysee(p) : echapper(p.texte)}</p>
     ${grammaire}${sens}${mots}
-    ${Array.from({ length: repasses }, () =>
-        `<p class="ligne repasse">${echapper(p.texte)}</p>`).join('')}
+    ${Array.from({ length: repasses }, () => ligneRepasse(echapper(p.texte))).join('')}
     ${Array.from({ length: libres }, ligneVide).join('')}
   </section>`;
 }
@@ -153,7 +159,12 @@ async function construireFeuille() {
      police du contenu inséré, et l'on mesurerait les lignes de la police de
      repli, bien plus larges. */
   if (document.fonts) {
-    try { await document.fonts.load(`${interligne}mm "Marelle Lignes"`); } catch { /* ignore */ }
+    try {
+      await Promise.all([
+        document.fonts.load(`${interligne}mm "Marelle Lignes N"`),
+        document.fonts.load(`${interligne}mm "Marelle"`),
+      ]);
+    } catch { /* ignore */ }
     await document.fonts.ready;
     if (moi !== generation) return;
   }
@@ -204,7 +215,7 @@ async function construireFeuille() {
 
 function majJauge(parPage) {
   const jauge = $('#jauge');
-  if (document.fonts && !document.fonts.check('16px "Marelle Lignes"')) {
+  if (document.fonts && !document.fonts.check('16px "Marelle Lignes N"')) {
     jauge.textContent = 'La police Marelle ne s’est pas chargée : les lignes Seyes manquent.';
     jauge.className = 'jauge trop';
     return;

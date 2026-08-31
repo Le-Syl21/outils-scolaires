@@ -8,9 +8,12 @@
   src:url("../../fonts/Marelle-Regular.woff2") format("woff2");
   font-display:swap;
 }
+/* Variante monochrome : ses traits sont des tracés ordinaires, donc ils
+   s'impriment, là où les couches de couleur de « Marelle LIGNES » se
+   perdent sur le chemin d'impression et virent au gris invisible. */
 @font-face{
-  font-family:"Marelle Lignes";
-  src:url("../../fonts/MarelleLIGNES-Regular.woff2") format("woff2");
+  font-family:"Marelle Lignes N";
+  src:url("../../fonts/MarelleLIGNESN-Regular.woff2") format("woff2");
   font-display:swap;
 }
 
@@ -60,14 +63,24 @@
 /* ---------- Zone d'écriture ---------- */
 .zone-ecriture{position:relative}
 .ligne{
-  font-family:"Marelle Lignes","Marelle",cursive;
+  position:relative;
   font-size:var(--taille-ecriture);
   line-height:2.4;                 /* 5 interlignes : la réglure s'enchaîne */
-  margin:0;color:#111;
+  margin:0;
 }
-.ligne.modele{color:#111}
-.ligne.repasse{color:rgba(17,17,17,.5)}   /* modèle à repasser, 50 % */
-.ligne.libre{white-space:nowrap;overflow:hidden;color:transparent}
+/* Deux calques exactement superposés : les deux polices ont les mêmes
+   métriques, donc le même retour à la ligne. Dessous, la réglure ;
+   dessus, le modèle à repasser. */
+.calque-reglure{
+  font-family:"Marelle Lignes N",cursive;
+  color:#a8a8a8;                   /* la réglure, assez soutenue pour le laser */
+}
+.calque-modele{
+  position:absolute;top:0;left:0;right:0;
+  font-family:"Marelle",cursive;
+  color:rgba(0,0,0,.75);           /* le modèle à repasser, 75 % */
+}
+.ligne.libre{white-space:nowrap;overflow:hidden}
 
 /* ---------- Un bloc par phrase ---------- */
 .bloc{break-inside:avoid;page-break-inside:avoid;margin-bottom:4mm}

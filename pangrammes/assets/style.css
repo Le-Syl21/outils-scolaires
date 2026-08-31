@@ -84,7 +84,7 @@
    l'impression et ressort beaucoup trop pâle. */
 .calque-reglure{
   font-family:"Marelle",cursive;
-  color:#4d4d4d;                   /* le modèle à repasser, 70 % de noir */
+  color:#666666;                   /* le modèle à repasser, 60 % de noir */
 }
 .ligne.libre{white-space:nowrap;overflow:hidden}
 .ligne.libre .calque-reglure{color:transparent}
@@ -94,8 +94,8 @@
    test, donc largement imprimable — et reste visible à l'écran, là où une
    valeur en millimètres tomberait sous le demi-pixel et disparaîtrait. */
 .feuille{
-  --ligne-forte:#896CE5;
-  --interligne-couleur:#B0A7F7;
+  --ligne-forte:#6B4FD0;           /* le violet clair d'origine sortait trop pâle */
+  --interligne-couleur:#9186E8;
   --ep-reglure:1px;
 }
 

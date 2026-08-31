@@ -375,13 +375,31 @@ $('#btn-ajout-eleve').addEventListener('click', () => {
 /* ------------------------------------------------------------------ */
 let depart = null, minuteur = null, tempsFinal = 0;
 
-/* Le chrono porte sur la première phrase de la feuille */
+/* La phrase chronométrée : celle choisie dans la liste, sinon la première
+   de la feuille — utile quand on saisit un temps relevé après coup. */
 function phraseChrono() {
+  const choisie = Number($('#phrase-chrono').value);
+  if (Number.isInteger(choisie) && PANGRAMMES[choisie]) return PANGRAMMES[choisie];
+  return PANGRAMMES[indexCourant];
+}
+
+/* Cale la liste sur la première phrase de la feuille, tant que l'utilisateur
+   n'en a pas choisi une autre lui-même */
+let phraseChoisieALaMain = false;
+function majPhraseChrono() {
+  const liste = $('#phrase-chrono');
+  if (!liste.options || !liste.options.length) {
+    liste.innerHTML = PANGRAMMES.map((p, i) =>
+      `<option value="${i}">${echapper(p.texte)}</option>`).join('');
+  }
+  if (phraseChoisieALaMain) return;
   const premier = $('.zone-ecriture .phrase-ref');
   const texte = premier ? premier.textContent.trim() : PANGRAMMES[indexCourant].texte;
-  return PANGRAMMES.find(p => p.texte === texte) || PANGRAMMES[indexCourant];
+  const i = PANGRAMMES.findIndex(p => p.texte === texte);
+  liste.value = String(i >= 0 ? i : indexCourant);
 }
-const majPhraseChrono = () => { $('#chrono-phrase').textContent = phraseChrono().texte; };
+
+$('#phrase-chrono').addEventListener('change', () => { phraseChoisieALaMain = true; });
 
 $('#btn-chrono').addEventListener('click', () => {
   if (minuteur) {                                   // arrêt
@@ -402,6 +420,21 @@ $('#btn-chrono').addEventListener('click', () => {
   minuteur = setInterval(() => {
     $('#chrono-affichage').textContent = formatTemps((Date.now() - depart) / 1000);
   }, 200);
+});
+
+/* Temps relevé sur la feuille, saisi après coup */
+$('#btn-temps-manuel').addEventListener('click', () => {
+  if (!$('#select-eleve').value) {
+    alert('Choisis d’abord un élève (bouton « + Nouveau »).');
+    return;
+  }
+  const secondes = Math.max(1,
+    (Number($('#temps-min').value) || 0) * 60 + (Number($('#temps-sec').value) || 0));
+  clearInterval(minuteur); minuteur = null;
+  tempsFinal = secondes;
+  $('#chrono-affichage').textContent = formatTemps(secondes);
+  $('#btn-chrono').textContent = 'Démarrer ▶';
+  $('#bloc-lisibilite').classList.remove('hidden');
 });
 
 $('#btn-raz').addEventListener('click', () => {

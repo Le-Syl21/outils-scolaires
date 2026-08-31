@@ -211,6 +211,12 @@
   font-size:3.4rem;font-weight:800;font-variant-numeric:tabular-nums;
   color:var(--orange);line-height:1;
 }
+.saisie-temps{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  margin:0 0 18px;padding-top:14px;border-top:1px solid var(--peche);
+}
+.saisie-temps .ou{color:var(--gris);font-style:italic}
+.saisie-temps input{width:80px}
 .curseur{width:min(360px,100%);accent-color:var(--orange)}
 .podium{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
 .podium-place{

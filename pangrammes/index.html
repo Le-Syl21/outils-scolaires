@@ -127,8 +127,10 @@
 <section id="view-chrono" class="view hidden">
   <div class="panel">
     <h2>Le défi : vite et lisible</h2>
-    <p class="lead">On lance le chrono, l'enfant recopie la phrase sur sa feuille, on arrête.
-       Un adulte note ensuite la lisibilité : le score final récompense les deux à la fois.</p>
+    <p class="lead">Deux façons de faire : lancer le chrono ici pendant que l'enfant écrit, ou
+       saisir après coup le temps relevé sur la feuille — pratique quand on écrit au salon,
+       loin de l'ordinateur. Un adulte note ensuite la lisibilité : le score récompense
+       la vitesse et le soin à la fois.</p>
 
     <div class="reglages">
       <div class="field">
@@ -144,12 +146,26 @@
       </div>
     </div>
 
-    <p class="phrase-en-cours">Phrase : <strong id="chrono-phrase">—</strong></p>
+    <div class="field">
+      <label for="phrase-chrono">Phrase recopiée</label>
+      <select id="phrase-chrono"></select>
+    </div>
 
     <div class="chrono-bloc">
       <span id="chrono-affichage" class="chrono-affichage">00:00</span>
       <button id="btn-chrono" class="btn btn-primary btn-xl" type="button">Démarrer ▶</button>
       <button id="btn-raz" class="btn btn-ghost" type="button">Remettre à zéro</button>
+    </div>
+
+    <div class="saisie-temps">
+      <span class="ou">ou</span>
+      <label class="field-inline" for="temps-min">Temps relevé
+        <input type="number" id="temps-min" min="0" max="180" value="0"> min
+      </label>
+      <label class="field-inline" for="temps-sec">
+        <input type="number" id="temps-sec" min="0" max="59" value="0"> s
+      </label>
+      <button id="btn-temps-manuel" class="btn btn-ghost" type="button">Utiliser ce temps</button>
     </div>
 
     <div id="bloc-lisibilite" class="hidden">

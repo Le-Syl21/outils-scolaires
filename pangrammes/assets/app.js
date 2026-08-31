@@ -105,11 +105,39 @@ function blocHTML(p, repasses, libres, avecMots, avecGrammaire) {
   </section>`;
 }
 
+const MM = 96 / 25.4;                       // 1 mm en pixels CSS
+const HAUTEUR_PAGE = (297 - 2 * MARGE_MM) * MM;
+
+function enteteHTML(numero, total) {
+  if (numero > 0) {
+    return `<header class="feuille-entete suite">
+      <p class="feuille-titre">Le défi des pangrammes
+        <small>page ${numero + 1} sur ${total}</small></p></header>`;
+  }
+  const champs = $('#opt-chrono').checked ? `
+    <div class="feuille-champs">
+      <div class="champ-boite"><span>Début</span></div>
+      <div class="champ-boite"><span>Fin</span></div>
+      <div class="champ-boite"><span>Temps</span></div>
+      <div class="champ-boite"><span>Lisibilité — /10</span></div>
+    </div>` : '';
+  const legende = $('#opt-grammaire').checked
+    ? `<span class="legende">${legendeHTML()}</span>` : '';
+  return `<header class="feuille-entete">
+      <p class="feuille-titre">Le défi des pangrammes
+        <small>Nom : ______________________  Date : ____________</small></p>
+      ${champs}
+    </header>
+    <p class="consigne">Chaque phrase contient les 26 lettres de l'alphabet.
+       Lis-la, puis repasse dessus en soignant le tracé. ${legende}</p>`;
+}
+
 async function construireFeuille() {
   const moi = ++generation;
   const interligne = $('#taille').value;
   const repasses = Math.max(0, Math.min(10, Number($('#nb-repasse').value) || 0));
   const libres   = Math.max(0, Math.min(10, Number($('#nb-libres').value) || 0));
+  const pages    = Math.max(1, Math.min(5, Number($('#nb-pages').value) || 1));
   const avecMots = $('#opt-mots').checked;
   const avecGrammaire = $('#opt-grammaire').checked;
   const uneSeule = $('#mode-phrases').value === 'une';
@@ -118,85 +146,80 @@ async function construireFeuille() {
 
   const feuille = $('#feuille');
   feuille.style.setProperty('--interligne', interligne + 'mm');
-
-  const indices = uneSeule ? [indexCourant] : tirage;
-  const blocs = indices.map(i =>
-    blocHTML(PANGRAMMES[i], repasses, libres, avecMots, avecGrammaire));
-
-  const champs = $('#opt-chrono').checked ? `
-    <div class="feuille-champs">
-      <div class="champ-boite"><span>Début</span></div>
-      <div class="champ-boite"><span>Fin</span></div>
-      <div class="champ-boite"><span>Temps</span></div>
-      <div class="champ-boite"><span>Lisibilité — /10</span></div>
-    </div>` : '';
-
-  feuille.innerHTML = `
-    <div class="feuille-inner">
-      <header class="feuille-entete">
-        <p class="feuille-titre">Le défi des pangrammes
-          <small>Nom : ______________________  Date : ____________</small></p>
-        ${champs}
-      </header>
-      <p class="consigne">Chaque phrase contient les 26 lettres de l'alphabet.
-         Lis-la, puis repasse dessus en soignant le tracé.
-         ${avecGrammaire ? '<span class="legende">' + legendeHTML() + '</span>' : ''}</p>
-      <div class="zone-ecriture">${blocs.join('')}</div>
-    </div>`;
+  feuille.innerHTML = '';
 
   /* Les mesures n'ont de sens qu'une fois Marelle chargée. `ready` seul ne
      suffit pas : il peut se résoudre avant que le navigateur n'ait réclamé la
-     police du contenu qu'on vient d'insérer, et l'on mesurerait alors les
-     lignes de la police de repli, bien plus larges. */
+     police du contenu inséré, et l'on mesurerait les lignes de la police de
+     repli, bien plus larges. */
   if (document.fonts) {
     try { await document.fonts.load(`${interligne}mm "Marelle Lignes"`); } catch { /* ignore */ }
     await document.fonts.ready;
-    if (moi !== generation) return;          // un autre rendu a pris la main
+    if (moi !== generation) return;
   }
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-  if (moi !== generation) return;
-  ajusterALaPage(uneSeule);
+
+  let file = [...tirage];
+  const parPage = [];
+
+  for (let n = 0; n < pages; n++) {
+    if (uneSeule) file = [indexCourant];     // la même phrase sur chaque page
+    const page = document.createElement('section');
+    page.className = 'page';
+    page.innerHTML = enteteHTML(n, pages) + '<div class="zone-ecriture"></div>';
+    feuille.appendChild(page);
+    const zone = page.querySelector('.zone-ecriture');
+    const entete = page.querySelector('.feuille-entete');
+    const consigne = page.querySelector('.consigne');
+    const hautEntete = entete.getBoundingClientRect().height
+                     + (consigne ? consigne.getBoundingClientRect().height : 0);
+    const dispo = HAUTEUR_PAGE - hautEntete;
+
+    /* Borne dure : si la mesure de hauteur ne dépassait jamais le seuil,
+       cette boucle tournerait sans fin et figerait la page. */
+    let garde = 0;
+    while (garde++ < 40) {
+      if (!file.length) {
+        if (uneSeule) break;
+        nouveauTirage();                     // la collection est épuisée : on la remélange
+        file = [...tirage];
+      }
+      const i = file.shift();
+      zone.insertAdjacentHTML('beforeend',
+        blocHTML(PANGRAMMES[i], repasses, libres, avecMots, avecGrammaire));
+      if (zone.getBoundingClientRect().height > dispo) {
+        if (zone.children.length > 1) {      // ce bloc ira sur la page suivante
+          zone.removeChild(zone.lastElementChild);
+          file.unshift(i);
+        }
+        break;
+      }
+      if (uneSeule && !file.length) break;
+    }
+    parPage.push(zone.children.length);
+  }
+
+  majJauge(parPage);
+  majPhraseChrono();
 }
 
-/* Retire les blocs qui débordent, pour que la feuille tienne sur une page A4 */
-function ajusterALaPage(uneSeule) {
-  const inner = $('.feuille-inner');
-  const zone = $('.zone-ecriture');
-  if (!inner || !zone) return;
-  const dispo = (297 - 2 * MARGE_MM) * (96 / 25.4);   // hauteur utile en pixels CSS
-
-  while (zone.children.length > 1 && inner.getBoundingClientRect().height > dispo) {
-    zone.removeChild(zone.lastElementChild);
-  }
-
-  const posees = zone.children.length;
-  const deborde = inner.getBoundingClientRect().height > dispo;
+function majJauge(parPage) {
   const jauge = $('#jauge');
-
-  // Sans Marelle, pas de réglure : mieux vaut le dire que laisser deviner
   if (document.fonts && !document.fonts.check('16px "Marelle Lignes"')) {
     jauge.textContent = 'La police Marelle ne s’est pas chargée : les lignes Seyes manquent.';
     jauge.className = 'jauge trop';
     return;
   }
-
-  if (deborde) {
-    jauge.textContent = uneSeule
-      ? 'La phrase déborde : réduis la taille ou le nombre de lignes.'
-      : 'Une seule phrase, et elle déborde déjà : réduis la taille ou le nombre de lignes.';
-    jauge.className = 'jauge trop';
-  } else {
-    jauge.textContent = posees > 1
-      ? `${posees} phrases sur la page ✓`
-      : 'Une phrase sur la page ✓';
-    jauge.className = 'jauge ok';
-  }
-  majPhraseChrono();
+  const total = parPage.reduce((a, b) => a + b, 0);
+  jauge.textContent = parPage.length > 1
+    ? `${total} phrases sur ${parPage.length} pages (${parPage.join(' + ')}) ✓`
+    : `${total} phrase${total > 1 ? 's' : ''} sur la page ✓`;
+  jauge.className = 'jauge ok';
 }
 
 function memoriserReglages() {
   reglages = {
     mode: $('#mode-phrases').value,
+    pages: $('#nb-pages').value,
     taille: $('#taille').value,
     repasse: $('#nb-repasse').value,
     libres: $('#nb-libres').value,
@@ -209,6 +232,7 @@ function memoriserReglages() {
 
 function appliquerReglages() {
   if (reglages.mode)    $('#mode-phrases').value = reglages.mode;
+  if (reglages.pages)   $('#nb-pages').value     = reglages.pages;
   if (reglages.taille)  $('#taille').value       = reglages.taille;
   if (reglages.repasse) $('#nb-repasse').value   = reglages.repasse;
   if (reglages.libres)  $('#nb-libres').value    = reglages.libres;
@@ -217,7 +241,7 @@ function appliquerReglages() {
   if ('chrono' in reglages)    $('#opt-chrono').checked    = reglages.chrono;
 }
 
-$$('#mode-phrases, #taille, #nb-repasse, #nb-libres, #opt-mots, #opt-grammaire, #opt-chrono')
+$$('#mode-phrases, #nb-pages, #taille, #nb-repasse, #nb-libres, #opt-mots, #opt-grammaire, #opt-chrono')
   .forEach(el => el.addEventListener('change', () => {
     memoriserReglages();
     construireFeuille();
@@ -238,7 +262,7 @@ $('#btn-tirage').addEventListener('click', () => {
 });
 
 $('#btn-imprimer').addEventListener('click', () => window.print());
-window.addEventListener('resize', () => ajusterALaPage($('#mode-phrases').value === 'une'));
+window.addEventListener('resize', construireFeuille);
 
 /* ------------------------------------------------------------------ */
 /* La collection                                                       */

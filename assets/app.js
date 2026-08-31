@@ -3,8 +3,8 @@
 (() => {
 'use strict';
 
-const TOUTES  = [1,2,3,4,5,6,7,8,9,10,11,12];
-const DEFAUT  = [2,3,4,5,6,7,8,9,10];
+const TOUTES  = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+const DEFAUT  = [1,2,3,4,5,6,7,8,9,10];   // niveau facile
 const CLES = { eleves:'defiTables.eleves', resultats:'defiTables.resultats',
                tables:'defiTables.tables', cout:'defiTables.coutErreur' };
 const $  = (sel, ctx=document) => ctx.querySelector(sel);

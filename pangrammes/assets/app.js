@@ -484,12 +484,7 @@ $('#btn-enregistrer-pangramme').addEventListener('click', () => {
   majMotsRares(); majAlphabet();
   $('#etat-analyse').textContent = '';
   afficherMesPangrammes();
-  $('#temps-verbe').innerHTML = Object.keys(TEMPS).map(t =>
-  `<option>${t}</option>`).join('');
-$('#quand-verbe').value = TEMPS[Object.keys(TEMPS)[0]];
-majAlphabet();
-afficherMesPangrammes();
-afficherCollection();
+  afficherCollection();
   remplirChoixPangrammes();
 });
 
@@ -751,6 +746,13 @@ indexCourant = tirage[0];
 appliquerReglages();
 remplirChoixPangrammes();
 construireFeuille();
+
+/* l'atelier : la liste des temps et l'explication qui l'accompagne */
+$('#temps-verbe').innerHTML = Object.keys(TEMPS).map(t => `<option>${t}</option>`).join('');
+$('#quand-verbe').value = TEMPS[$('#temps-verbe').value];
+majAlphabet();
+afficherMesPangrammes();
+
 afficherCollection();
 majPhraseChrono();
 rafraichirEleves();

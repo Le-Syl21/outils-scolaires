@@ -1313,8 +1313,8 @@ const PANGRAMMES = [
     ]
   },
   {
-    "texte": "La voiture Xantia a roulé sur les zébras du Y, klaxonné cinq fois, puis foncé chez mon jeune garagiste wallon.",
-    "signes": 110,
+    "texte": "La voiture Xantia a franchi les zébras du Y, klaxonné cinq fois, puis foncé chez mon jeune garagiste wallon.",
+    "signes": 108,
     "niveau": "long",
     "temps": "passé composé",
     "quand": "L'action est finie. Le verbe s'écrit en deux mots ; ici, un seul auxiliaire « a » commande trois participes passés.",
@@ -1343,7 +1343,7 @@ const PANGRAMMES = [
         "f": "neutre"
       },
       {
-        "t": "a roulé",
+        "t": "a franchi",
         "f": "verbe"
       },
       {
@@ -1351,8 +1351,8 @@ const PANGRAMMES = [
         "f": "neutre"
       },
       {
-        "t": "sur les zébras du Y",
-        "f": "cc"
+        "t": "les zébras du Y",
+        "f": "cod"
       },
       {
         "t": ", ",

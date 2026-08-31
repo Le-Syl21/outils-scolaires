@@ -62,6 +62,19 @@ select,input[type=number]{
 input[type=number]{width:80px}
 select{min-width:180px}
 
+/* ---------- Choix des tables ---------- */
+.tables-choix{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.table-case{
+  display:flex;align-items:center;gap:6px;font-weight:700;
+  background:var(--peche-clair);border:2px solid var(--peche);
+  border-radius:10px;padding:8px 14px;cursor:pointer;user-select:none;
+}
+.table-case:hover{border-color:var(--orange)}
+.table-case:has(input:checked){background:var(--peche);border-color:var(--orange)}
+.table-case input{width:18px;height:18px;accent-color:var(--orange);cursor:pointer}
+.presets{margin-bottom:8px}
+.info-grille{color:var(--gris);margin:0}
+
 /* ---------- Boutons ---------- */
 .btn{font:inherit;cursor:pointer;border-radius:999px;padding:10px 20px;border:2px solid transparent}
 .btn-primary{background:var(--orange);color:#fff}
@@ -70,6 +83,7 @@ select{min-width:180px}
 .btn-ghost:hover{border-color:var(--orange)}
 .btn-danger{color:var(--rouge)}
 .btn-xl{font-size:1.3rem;padding:14px 40px}
+.btn-sm{padding:6px 14px;font-size:.9rem}
 
 /* ---------- HUD ---------- */
 .hud{
@@ -150,6 +164,8 @@ select{min-width:180px}
 .entete .champ{min-width:110px;background:#fff}
 .entete .note-case{min-width:120px;text-align:right;font-weight:400;font-size:.8rem;vertical-align:bottom}
 .nom-ligne{font-weight:700;font-size:1.05rem;margin-bottom:10px}
+.feuille .grille{width:100%;table-layout:fixed;background:transparent}
+.feuille .grille th,.feuille .grille td{width:auto;height:52px;font-size:1.4rem}
 
 footer{text-align:center;color:var(--gris);font-size:.9rem;padding:16px}
 footer a{color:var(--orange)}
@@ -165,8 +181,11 @@ footer a{color:var(--orange)}
     break-after:page;page-break-after:always;
   }
   .feuille:last-child{break-after:auto;page-break-after:auto}
-  .grille{background:transparent}
-  .grille th,.grille td{width:auto;height:40px;padding:0 6px}
+  .feuille .grille{width:100%;table-layout:fixed;background:transparent}
+  .feuille .grille th,.feuille .grille td{width:auto;height:var(--case-h,17mm);padding:0;font-size:15pt}
+  .feuille .grille th{font-size:17pt}
+  .entete{margin-bottom:8mm}
+  .entete td{height:11mm;font-size:12pt}
   .grille,.entete td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 

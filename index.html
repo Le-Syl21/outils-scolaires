@@ -39,6 +39,18 @@
     </div>
 
     <div class="field">
+      <label>Tables travaillées</label>
+      <div id="choix-tables" class="tables-choix"></div>
+      <div class="row presets">
+        <button class="btn btn-ghost btn-sm" data-preset="2,3,4,5,6,7,8,9,10" type="button">2 à 10</button>
+        <button class="btn btn-ghost btn-sm" data-preset="1,2,3,4,5,6,7,8,9,10" type="button">1 à 10</button>
+        <button class="btn btn-ghost btn-sm" data-preset="2,3,4,5,6,7,8,9,10,11,12" type="button">2 à 12</button>
+        <button class="btn btn-ghost btn-sm" data-preset="6,7,8,9" type="button">Les difficiles</button>
+      </div>
+      <p id="info-grille" class="info-grille"></p>
+    </div>
+
+    <div class="field">
       <label class="check">
         <input type="checkbox" id="opt-melange" checked>
         Mélanger l'ordre des lignes et des colonnes
@@ -70,6 +82,7 @@
     <h2 id="res-titre">Résultat</h2>
     <div class="resultat-cartes">
       <div class="carte"><span class="carte-label">Note</span><span id="res-note" class="carte-value">—</span><span class="carte-unit">/100</span></div>
+      <div class="carte"><span class="carte-label">Cases justes</span><span id="res-justes" class="carte-value">—</span></div>
       <div class="carte"><span class="carte-label">Temps</span><span id="res-temps" class="carte-value">—</span></div>
       <div class="carte"><span class="carte-label">Erreurs</span><span id="res-erreurs" class="carte-value">—</span></div>
     </div>
@@ -98,7 +111,7 @@
     </div>
     <div class="table-wrap">
       <table id="table-historique" class="historique">
-        <thead><tr><th>Date</th><th>Élève</th><th>Note</th><th>Temps</th><th></th></tr></thead>
+        <thead><tr><th>Date</th><th>Élève</th><th>Note</th><th>Cases</th><th>Temps</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -110,7 +123,8 @@
 <section id="view-impression" class="view hidden">
   <div class="panel no-print">
     <h2>🖨️ Grilles à imprimer</h2>
-    <p class="lead">Génère des grilles vierges, dans un ordre différent à chaque fois, à remplir au stylo.</p>
+    <p class="lead">Génère des grilles vierges, dans un ordre différent à chaque fois, à remplir au stylo.
+       Les tables imprimées sont celles choisies dans l'onglet <strong>Jouer</strong> (<span id="rappel-tables">—</span>).</p>
     <div class="row">
       <label class="field-inline">Nombre de grilles
         <input type="number" id="nb-grilles" min="1" max="10" value="2">

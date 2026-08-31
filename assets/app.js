@@ -3,8 +3,10 @@
 (() => {
 'use strict';
 
-const TABLES = [1,2,3,4,5,6,7,8,9,10];
-const CLES = { eleves:'defiTables.eleves', resultats:'defiTables.resultats' };
+const TOUTES  = [1,2,3,4,5,6,7,8,9,10,11,12];
+const DEFAUT  = [2,3,4,5,6,7,8,9,10];
+const CLES = { eleves:'defiTables.eleves', resultats:'defiTables.resultats',
+               tables:'defiTables.tables' };
 const $  = (sel, ctx=document) => ctx.querySelector(sel);
 const $$ = (sel, ctx=document) => [...ctx.querySelectorAll(sel)];
 
@@ -21,6 +23,7 @@ const ecrire = (cle, valeur) => {
 
 let eleves    = lire(CLES.eleves, []);
 let resultats = lire(CLES.resultats, []);
+let tables    = lire(CLES.tables, DEFAUT);   // tables travaillées
 
 /* ------------------------------------------------------------------ */
 /* Utilitaires                                                         */
@@ -50,6 +53,37 @@ $$('.tab').forEach(tab => tab.addEventListener('click', () => {
   $$('.view').forEach(v => v.classList.toggle('hidden', v.id !== 'view-' + tab.dataset.view));
   if (tab.dataset.view === 'scores') afficherScores();
   if (tab.dataset.view === 'impression' && !$('#feuilles').children.length) genererFeuilles();
+}));
+
+/* ------------------------------------------------------------------ */
+/* Choix des tables                                                    */
+/* ------------------------------------------------------------------ */
+function construireChoixTables() {
+  $('#choix-tables').innerHTML = TOUTES.map(n =>
+    `<label class="table-case"><input type="checkbox" value="${n}"
+       ${tables.includes(n) ? 'checked' : ''}>${n}</label>`).join('');
+  majInfoTables();
+}
+
+function majInfoTables() {
+  const n = tables.length;
+  $('#info-grille').textContent =
+    `Grille ${n} × ${n} = ${n * n} multiplications. La note est ramenée sur 100.`;
+  $('#rappel-tables').textContent = tables.length ? tables.join(', ') : 'aucune';
+}
+
+$('#choix-tables').addEventListener('change', () => {
+  tables = $$('#choix-tables input:checked').map(i => Number(i.value)).sort((a,b) => a-b);
+  ecrire(CLES.tables, tables);
+  majInfoTables();
+  $('#feuilles').innerHTML = '';   // les feuilles seront régénérées
+});
+
+$$('.presets .btn').forEach(btn => btn.addEventListener('click', () => {
+  tables = btn.dataset.preset.split(',').map(Number);
+  ecrire(CLES.tables, tables);
+  construireChoixTables();
+  $('#feuilles').innerHTML = '';
 }));
 
 /* ------------------------------------------------------------------ */
@@ -122,11 +156,14 @@ function demarrer() {
   const eleve = $('#select-eleve').value;
   if (!eleve) { alert('Choisis d’abord un élève (bouton « + Nouveau »).'); return; }
 
+  if (tables.length < 2) { alert('Choisis au moins deux tables.'); return; }
+
   const melange = $('#opt-melange').checked;
   partie = {
     eleve,
-    lignes:   melange ? melanger(TABLES) : [...TABLES],
-    colonnes: melange ? melanger(TABLES) : [...TABLES],
+    tables:   [...tables],
+    lignes:   melange ? melanger(tables) : [...tables],
+    colonnes: melange ? melanger(tables) : [...tables],
     debut: Date.now(),
     minuteur: null
   };
@@ -167,7 +204,7 @@ $('#grille-jeu').addEventListener('input', (e) => {
 $('#grille-jeu').addEventListener('keydown', clavier);
 
 function majCompteur() {
-  const total = TABLES.length * TABLES.length;
+  const total = partie.lignes.length * partie.colonnes.length;
   const remplies = $$('#grille-jeu input').filter(i => i.value.trim() !== '').length;
   $('#hud-remplies').textContent = `${remplies}/${total}`;
 }
@@ -176,7 +213,7 @@ function clavier(e) {
   const inp = e.target;
   if (inp.tagName !== 'INPUT') return;
   const r = +inp.dataset.r, c = +inp.dataset.c;
-  const n = TABLES.length;
+  const n = partie.lignes.length;
   const aller = (dr, dc) => {
     const cible = $(`#grille-jeu input[data-r="${(r+dr+n)%n}"][data-c="${(c+dc+n)%n}"]`);
     if (cible) { cible.focus(); cible.select(); }
@@ -198,7 +235,7 @@ function terminer(force) {
 
   arreterChrono();
   const temps = tempsEcoule();
-  let note = 0;
+  let justes = 0;
   const cases = [];
 
   partie.lignes.forEach((l, i) => {
@@ -206,16 +243,20 @@ function terminer(force) {
       const saisie = $(`#grille-jeu input[data-r="${i}"][data-c="${j}"]`).value.trim();
       const attendu = l * c;
       const juste = saisie !== '' && Number(saisie) === attendu;
-      if (juste) note++;
+      if (juste) justes++;
       cases.push({ saisie, attendu, juste });
     });
   });
 
+  const total = cases.length;
   const resultat = {
     id: Date.now(),
     eleve: partie.eleve,
     date: new Date().toISOString(),
-    note, temps
+    tables: partie.tables,
+    justes, total,
+    note: Math.round(justes / total * 100),   // ramenée sur 100
+    temps
   };
   resultats.push(resultat);
   ecrire(CLES.resultats, resultats);
@@ -224,15 +265,16 @@ function terminer(force) {
 }
 
 function afficherResultat(res, cases) {
-  $('#res-note').textContent   = res.note;
-  $('#res-temps').textContent  = formatTemps(res.temps);
-  $('#res-erreurs').textContent = 100 - res.note;
+  $('#res-note').textContent    = res.note;
+  $('#res-justes').textContent  = `${res.justes}/${res.total}`;
+  $('#res-temps').textContent   = formatTemps(res.temps);
+  $('#res-erreurs').textContent = res.total - res.justes;
 
   const perso = resultats.filter(r => r.eleve === res.eleve);
   const best = meilleur(perso);
   const record = best.id === res.id && perso.length > 1;
 
-  $('#res-titre').textContent = res.note === 100
+  $('#res-titre').textContent = res.justes === res.total
     ? `Sans faute, bravo ${res.eleve} ! 🎉`
     : `Résultat de ${res.eleve}`;
   $('#res-message').textContent = record
@@ -289,10 +331,11 @@ function afficherScores() {
         <td>${formatDate(r.date)}</td>
         <td>${echapper(r.eleve)}</td>
         <td><strong>${r.note}</strong>/100</td>
+        <td title="Tables : ${(r.tables || [1,2,3,4,5,6,7,8,9,10]).join(', ')}">${r.justes ?? r.note}/${r.total ?? 100}</td>
         <td>${formatTemps(r.temps)}</td>
         <td><button class="sup" data-id="${r.id}" title="Supprimer">✕</button></td>
       </tr>`).join('')
-    : '<tr><td colspan="5" class="vide">Rien à afficher.</td></tr>';
+    : '<tr><td colspan="6" class="vide">Rien à afficher.</td></tr>';
 }
 
 $('#filtre-eleve').addEventListener('change', afficherScores);
@@ -316,14 +359,17 @@ $('#btn-effacer').addEventListener('click', () => {
 /* Feuilles à imprimer                                                 */
 /* ------------------------------------------------------------------ */
 function feuilleHTML() {
-  const lignes = melanger(TABLES), colonnes = melanger(TABLES);
+  const lignes = melanger(tables), colonnes = melanger(tables);
   let grille = '<tr><th class="coin">X</th>' +
     colonnes.map(c => `<th>${c}</th>`).join('') + '</tr>';
   lignes.forEach(l => {
     grille += `<tr><th>${l}</th>` + colonnes.map(() => '<td></td>').join('') + '</tr>';
   });
 
-  return `<div class="feuille">
+  // hauteur de case : au plus 17 mm, et assez petite pour tenir sur une page
+  const hauteur = Math.min(17, Math.round(195 / (lignes.length + 1) * 10) / 10);
+
+  return `<div class="feuille" style="--case-h:${hauteur}mm">
     <div class="nom-ligne">Nom : ______________________</div>
     <div class="entete">
       <table>
@@ -332,7 +378,7 @@ function feuilleHTML() {
         <tr><td>Temps :</td><td class="champ"></td></tr>
       </table>
       <table>
-        <tr><td>NOTE :</td><td class="champ note-case">/100</td></tr>
+        <tr><td>NOTE :</td><td class="champ note-case">/${lignes.length * colonnes.length}</td></tr>
       </table>
     </div>
     <table class="grille">${grille}</table>
@@ -349,5 +395,6 @@ $('#nb-grilles').addEventListener('change', genererFeuilles);
 $('#btn-imprimer').addEventListener('click', () => window.print());
 
 /* ------------------------------------------------------------------ */
+construireChoixTables();
 rafraichirEleves();
 })();

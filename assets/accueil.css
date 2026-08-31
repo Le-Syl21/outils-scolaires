@@ -30,3 +30,13 @@
   .carte-outil{transition:none}
   .carte-outil:hover,.carte-outil:focus-visible{transform:none}
 }
+
+/* L'appel aux retours, sous les outils */
+.retours{
+  max-width:1000px;margin:8px auto 0;padding:24px 28px;
+  background:var(--carte);border-radius:var(--radius);box-shadow:var(--ombre);
+  border-left:6px solid var(--orange);
+}
+.retours h2{margin:0 0 8px;font-size:1.25rem;color:var(--orange)}
+.retours p{margin:0 0 12px;color:var(--gris);max-width:70ch}
+.retours a.btn{display:inline-block;text-decoration:none}

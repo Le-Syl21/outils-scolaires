@@ -91,10 +91,16 @@ function svgQuadrillage(cotes, contenu, options = {}) {
   </svg>`;
 }
 
+const COULEURS_TRAIT = {
+  juste: '#1f8a4c',      // le trait attendu, bien tracé
+  manquant: '#8a7a72',   // oublié : montré en pointillé
+  'en-trop': '#c62828',  // tracé alors qu'il n'y était pas
+};
+
 const traitSVG = (cle, classe = '') =>
   (([a, b]) => `<line class="trait ${classe}" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"
-    stroke="${classe === 'juste' ? '#1f8a4c' : ENCRE}" stroke-width="0.09"
-    stroke-linecap="round"/>`)(pointsDeCle(cle));
+    stroke="${COULEURS_TRAIT[classe] || ENCRE}" stroke-width="0.09" stroke-linecap="round"
+    ${classe === 'manquant' ? 'stroke-dasharray="0.28 0.22"' : ''}/>`)(pointsDeCle(cle));
 
 /* La figure pleine, pour la récompense */
 const polygoneSVG = (figure) =>
@@ -245,39 +251,53 @@ function verifier() {
   const justes  = [...traces].filter(c => attendus.has(c));
   const enTrop  = [...traces].filter(c => !attendus.has(c));
   const oublies = [...attendus].filter(c => !traces.has(c));
+  const parfait = !oublies.length && !enTrop.length;
 
-  if (oublies.length || enTrop.length) {
-    const details = [];
-    if (oublies.length) details.push(`${oublies.length} trait(s) manquant(s)`);
-    if (enTrop.length) details.push(`${enTrop.length} trait(s) en trop`);
-    $('#message-partie').textContent = 'Pas encore : ' + details.join(', ') + '. Continue !';
-    $('#message-partie').className = 'message erreur';
-    return;
-  }
-
-  /* réussite : le chrono s'arrête, la figure se colorie et dit son nom */
   clearInterval(partie.minuteur);
   partie.finie = true;
   const temps = Math.max(1, tempsEcoule());
-  const resultat = {
+  const erreurs = oublies.length + enTrop.length;
+  /* la note tient compte des traits en trop, qui alourdissent le dessin */
+  const note = Math.round(justes.length / (partie.attendus.length + enTrop.length) * 100);
+  /* même barème qu'au défi des tables : une erreur coûte le temps de
+     quelques traits justes, donc un pourcentage du temps mis */
+  const corrige = justes.length
+    ? Math.round(temps * (1 + COUT_ERREUR * erreurs / justes.length))
+    : temps * 10;
+
+  resultats.push({
     id: Date.now(),
     date: new Date().toISOString(),
     eleve: partie.eleve,
     figure: partie.figure.nom,
     palier: partie.figure.palier,
     traits: partie.attendus.length,
-    essais: partie.traces.length,
-    temps,
-    corrige: temps,          // sans erreur au moment de valider
-  };
-  resultats.push(resultat);
+    justes: justes.length,
+    erreurs,
+    note, temps, corrige,
+  });
   ecrire(CLES.resultats, resultats);
 
+  /* la correction : ce qui est juste, ce qui manque, ce qui est en trop */
+  const correction = justes.map(c => traitSVG(c, 'juste')).join('')
+    + oublies.map(c => traitSVG(c, 'manquant')).join('')
+    + enTrop.map(c => traitSVG(c, 'en-trop')).join('');
   $('#copie').innerHTML = svgQuadrillage(partie.figure.grille,
-    polygoneSVG(partie.figure) + partie.traces.map(c => traitSVG(c, 'juste')).join(''));
-  $('#message-partie').innerHTML =
-    `<strong>${echapper(partie.figure.nom)}</strong> — reproduit en ${formatTemps(temps)} !`;
-  $('#message-partie').className = 'message reussite';
+    (parfait ? polygoneSVG(partie.figure) : '') + correction);
+
+  if (parfait) {
+    $('#message-partie').innerHTML =
+      `<strong>${echapper(partie.figure.nom)}</strong> — sans faute, en ${formatTemps(temps)} !`;
+    $('#message-partie').className = 'message reussite';
+  } else {
+    const details = [];
+    if (oublies.length) details.push(`${oublies.length} oublié(s), en pointillé`);
+    if (enTrop.length) details.push(`${enTrop.length} en trop, en rouge`);
+    $('#message-partie').innerHTML =
+      `<strong>${note}/100</strong> — ${justes.length} trait(s) sur ${partie.attendus.length} : `
+      + `${details.join(', ')}. Temps ${formatTemps(temps)}, corrigé ${formatTemps(corrige)}.`;
+    $('#message-partie').className = 'message erreur';
+  }
   $('#apres-partie').classList.remove('hidden');
   afficherScores();
 }
@@ -285,6 +305,10 @@ function verifier() {
 $('#btn-demarrer').addEventListener('click', () => demarrer(Number($('#choix-figure').value)));
 $('#btn-hasard').addEventListener('click', () => demarrer(-1));
 $('#btn-suivante').addEventListener('click', () => demarrer(-1));
+$('#btn-refaire').addEventListener('click', () => {
+  const liste = figuresDuPalier();
+  demarrer(liste.indexOf(partie.figure));
+});
 $('#btn-retour').addEventListener('click', () => {
   if (partie) clearInterval(partie.minuteur);
   $('#ecran-partie').classList.add('hidden');
@@ -354,7 +378,7 @@ function afficherScores() {
         <td>${formatDate(r.date)}</td>
         <td>${echapper(r.eleve)}</td>
         <td>${echapper(r.figure)}</td>
-        <td>${r.traits}</td>
+        <td>${r.justes ?? r.traits}/${r.traits}${r.note !== undefined ? ` · ${r.note}/100` : ''}</td>
         <td>${formatTemps(r.temps)}</td>
         <td><strong>${formatTemps(r.corrige)}</strong></td>
         <td><button class="sup" data-id="${r.id}" title="Supprimer">✕</button></td>
